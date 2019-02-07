@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Mediabrainz</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- labels of destinations -->
+    <string name="start_fragment_label">Start</string>
+
+    <!-- menu items -->
+    <string name="drawer_item_main">Main</string>
+
+</resources>
