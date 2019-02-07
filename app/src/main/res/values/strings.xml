@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Mediabrainz</string>
+    <string name="app_name">MediaBrainz</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -9,5 +9,23 @@
 
     <!-- menu items -->
     <string name="drawer_item_main">Main</string>
+
+    <!-- Release group types -->
+    <string name="rt_album">Album</string>
+    <string name="rt_broadcast">Broadcast</string>
+    <string name="rt_single">Single</string>
+    <string name="rt_ep">EP</string>
+    <string name="rt_other">Other</string>
+    <string name="rt_dj_mix">Dj-Mix</string>
+    <string name="rt_compilation">Compilation</string>
+    <string name="rt_mixtape">Mixtape</string>
+    <string name="rt_soundtrack">Soundtrack</string>
+    <string name="rt_spokenword">Spoken word</string>
+    <string name="rt_interview">Interview</string>
+    <string name="rt_audiobook">Audio book</string>
+    <string name="rt_live">Live</string>
+    <string name="rt_remix">Remix</string>
+    <string name="rt_street">Street</string>
+    <string name="rt_unknown">Unknown</string>
 
 </resources>
