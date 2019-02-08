@@ -6,6 +6,7 @@
 
     <!-- labels of destinations -->
     <string name="start_fragment_label">Start</string>
+    <string name="about_fragment_label">About</string>
 
     <!-- menu items -->
     <string name="drawer_item_main">Main</string>
@@ -27,5 +28,8 @@
     <string name="rt_remix">Remix</string>
     <string name="rt_street">Street</string>
     <string name="rt_unknown">Unknown</string>
+
+    <!-- AboutFragment -->
+    <string name="version_text">Version %1$s</string>
 
 </resources>
