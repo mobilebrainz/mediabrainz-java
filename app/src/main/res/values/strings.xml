@@ -56,4 +56,9 @@
     <string name="settings_summary_release_group_official">Show only official release groups</string>
     <string name="settings_title_release_group_official">Official release groups</string>
 
+    <!-- Preferences Toasts -->
+    <string name="toast_search_err">Add some text to search</string>
+    <string name="toast_search_cleared">Search history deleted</string>
+    <string name="toast_recommends_cleared">Recommends deleted</string>
+
 </resources>

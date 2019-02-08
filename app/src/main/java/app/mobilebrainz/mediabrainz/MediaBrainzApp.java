@@ -12,6 +12,7 @@ import app.mediabrainz.api.Config;
 import app.mobilebrainz.mediabrainz.account.OAuth;
 import app.mobilebrainz.mediabrainz.account.Preferences;
 import app.mobilebrainz.mediabrainz.apihandler.Api;
+import app.mobilebrainz.mediabrainz.data.room.database.AppDatabase;
 
 
 public class MediaBrainzApp extends Application {
@@ -21,7 +22,7 @@ public class MediaBrainzApp extends Application {
 
     public static OAuth oauth;
     public static Api api;
-    //public static AppDatabase appDatabase;
+    public static AppDatabase appDatabase;
 
     private static MediaBrainzApp instance;
     private static Preferences preferences;
@@ -37,7 +38,7 @@ public class MediaBrainzApp extends Application {
         api = new Api(oauth);
         preferences = new Preferences();
 
-        //appDatabase = AppDatabase.getDatabase(this);
+        appDatabase = AppDatabase.getDatabase(this);
     }
 
     public static MediaBrainzApp getContext() {

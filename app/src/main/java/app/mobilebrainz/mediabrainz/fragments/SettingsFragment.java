@@ -8,6 +8,8 @@ import android.widget.Toast;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import app.mobilebrainz.mediabrainz.R;
+import app.mobilebrainz.mediabrainz.data.room.repository.RecommendRepository;
+import app.mobilebrainz.mediabrainz.data.room.repository.SuggestionRepository;
 
 
 public class SettingsFragment extends PreferenceFragmentCompat implements
@@ -41,20 +43,18 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
 
     private void clearSuggestionHistory() {
         //todo: make progress?
-        /*
+        //todo: remove to ViewModel?
         new SuggestionRepository().deleteAll(() -> {
             Toast.makeText(getActivity(), R.string.toast_search_cleared, Toast.LENGTH_SHORT).show();
         });
-        */
     }
 
     private void clearRecommends() {
         //todo: make progress?
-        /*
+        //todo: remove to ViewModel?
         new RecommendRepository().deleteAll(() -> {
             Toast.makeText(getActivity(), R.string.toast_recommends_cleared, Toast.LENGTH_SHORT).show();
         });
-        */
     }
 
     @Override
