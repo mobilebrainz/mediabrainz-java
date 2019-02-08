@@ -8,6 +8,7 @@
     <string name="start_fragment_label">Start</string>
     <string name="about_fragment_label">About</string>
     <string name="settings_fragment_label">Settings</string>
+    <string name="login_fragment_label">Log In</string>
 
     <!-- menu items -->
     <string name="drawer_item_main">Main</string>
@@ -60,5 +61,22 @@
     <string name="toast_search_err">Add some text to search</string>
     <string name="toast_search_cleared">Search history deleted</string>
     <string name="toast_recommends_cleared">Recommends deleted</string>
+
+    <!-- Strings related to login -->
+    <string name="login">Log In</string>
+    <string name="login_title">Sign in</string>
+    <string name="login_error">Error</string>
+    <string name="login_success">Success</string>
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_create_account">Create Account</string>
+    <string name="action_forgot_username">Forgot Username</string>
+    <string name="action_forgot_password">Forgot Password</string>
+    <string name="action_sign_in_short" translatable="false">Sign in</string>
+    <string name="error_invalid_username">This username is invalid</string>
+    <string name="error_invalid_password">This password is invalid</string>
+    <string name="error_field_required">This field is required</string>
+
 
 </resources>

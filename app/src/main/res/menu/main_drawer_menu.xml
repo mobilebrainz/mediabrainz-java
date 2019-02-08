@@ -12,6 +12,10 @@
                     android:icon="@drawable/ic_home_24"
                     android:title="@string/start_fragment_label"/>
                 <item
+                    android:id="@+id/loginFragment"
+                    android:icon="@drawable/ic_login_24"
+                    android:title="@string/login_fragment_label"/>
+                <item
                     android:id="@+id/aboutFragment"
                     android:icon="@drawable/ic_info_24"
                     android:title="@string/about_fragment_label"/>
