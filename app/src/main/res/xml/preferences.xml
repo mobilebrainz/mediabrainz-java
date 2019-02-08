@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="@string/settings_search">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="search_suggestions"
+            android:summary="@string/settings_summary_suggestions"
+            android:title="@string/settings_title_suggestions"/>
+
+        <Preference
+            android:key="clear_suggestions"
+            android:title="@string/settings_clear_suggestions"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_title_images">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="load_images"
+            android:title="@string/settings_load_images"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_title_miscellanea">
+
+        <Preference
+            android:key="clear_recommends"
+            android:title="@string/settings_clear_recommends"/>
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="load_ratings"
+            android:summary="@string/settings_summary_load_ratings"
+            android:title="@string/settings_title_load_ratings"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_title_artist_preferences">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="release_group_official"
+            android:summary="@string/settings_summary_release_group_official"
+            android:title="@string/settings_title_release_group_official"/>
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="propagate_artist_tags"
+            android:summary="@string/settings_summary_propagate_artist_tags"
+            android:title="@string/settings_title_propagate_artist_tags"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/settings_title_youtube_preferences">
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="play_youtube"
+            android:summary="@string/settings_summary_play_youtube"
+            android:title="@string/settings_title_play_youtube"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

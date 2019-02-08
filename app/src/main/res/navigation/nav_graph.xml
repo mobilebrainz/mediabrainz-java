@@ -14,5 +14,9 @@
         android:id="@+id/aboutFragment"
         android:name="app.mobilebrainz.mediabrainz.fragments.AboutFragment"
         android:label="@string/about_fragment_label"/>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="app.mobilebrainz.mediabrainz.fragments.SettingsFragment"
+        android:label="@string/settings_fragment_label"/>
 
 </navigation>

@@ -7,6 +7,7 @@
     <!-- labels of destinations -->
     <string name="start_fragment_label">Start</string>
     <string name="about_fragment_label">About</string>
+    <string name="settings_fragment_label">Settings</string>
 
     <!-- menu items -->
     <string name="drawer_item_main">Main</string>
@@ -31,5 +32,28 @@
 
     <!-- AboutFragment -->
     <string name="version_text">Version %1$s</string>
+
+    <!-- Preferences -->
+    <string name="settings_search">Search</string>
+    <string name="settings_title_suggestions">Suggestions</string>
+    <string name="settings_summary_suggestions">Store and display search suggestions</string>
+    <string name="settings_clear_suggestions">Clear search history</string>
+    <string name="settings_clear_recommends">Clear recommends</string>
+    <string name="settings_title_images">Images</string>
+    <string name="settings_load_images">Load images</string>
+    <string name="settings_title_load_ratings">Load ratings</string>
+    <string name="settings_summary_load_ratings">Load ratings from external resources</string>
+
+    <string name="settings_title_miscellanea">Miscellanea</string>
+    <string name="settings_summary_propagate_artist_tags">Propagate artist tags to official albums</string>
+    <string name="settings_title_propagate_artist_tags">Propagate artist tags</string>
+
+    <string name="settings_title_youtube_preferences">Youtube Preferences</string>
+    <string name="settings_title_play_youtube">Choose youtube player</string>
+    <string name="settings_summary_play_youtube">Play youtube in YouTube Application</string>
+
+    <string name="settings_title_artist_preferences">Artist Preferences</string>
+    <string name="settings_summary_release_group_official">Show only official release groups</string>
+    <string name="settings_title_release_group_official">Official release groups</string>
 
 </resources>

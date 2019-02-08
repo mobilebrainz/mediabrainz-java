@@ -3,10 +3,9 @@ package app.mobilebrainz.mediabrainz.account;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-//todo: in old project android.support.v7.preference.PreferenceManager;
-import android.preference.PreferenceManager;
-
+import androidx.preference.PreferenceManager;
 import app.mobilebrainz.mediabrainz.MediaBrainzApp;
+
 
 public class Preferences {
 
