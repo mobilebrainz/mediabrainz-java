@@ -7,16 +7,16 @@
 
     <fragment
         android:id="@+id/startFragment"
-        android:name="app.mobilebrainz.mediabrainz.fragments.StartFragment"
+        android:name="app.mediabrainz.fragments.StartFragment"
         android:label="@string/start_fragment_label"
         tools:layout="@layout/start_fragment"/>
     <fragment
         android:id="@+id/aboutFragment"
-        android:name="app.mobilebrainz.mediabrainz.fragments.AboutFragment"
+        android:name="app.mediabrainz.fragments.AboutFragment"
         android:label="@string/about_fragment_label"/>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="app.mobilebrainz.mediabrainz.fragments.SettingsFragment"
+        android:name="app.mediabrainz.fragments.SettingsFragment"
         android:label="@string/settings_fragment_label"/>
 
 </navigation>
