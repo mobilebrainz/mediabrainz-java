@@ -23,6 +23,10 @@
         android:id="@+id/loginFragment"
         android:name="app.mediabrainz.fragments.LoginFragment"
         android:label="@string/login_fragment_label"
-        tools:layout="@layout/login_fragment"/>
+        tools:layout="@layout/login_fragment">
+        <action
+            android:id="@+id/action_loginFragment_to_startFragment"
+            app:destination="@id/startFragment"/>
+    </fragment>
 
 </navigation>

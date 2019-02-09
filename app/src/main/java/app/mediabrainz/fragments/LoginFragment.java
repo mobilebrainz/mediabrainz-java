@@ -19,12 +19,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 import app.mediabrainz.R;
 import app.mediabrainz.api.oauth.OAuthException;
 import app.mediabrainz.util.UiUtils;
 import app.mediabrainz.viewmodels.LoginVM;
-
-import static app.mediabrainz.MediaBrainzApp.oauth;
 
 
 public class LoginFragment extends Fragment {
@@ -78,8 +77,33 @@ public class LoginFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        loginVM = ViewModelProviders.of(this).get(LoginVM.class);
 
+        loginVM = ViewModelProviders.of(this).get(LoginVM.class);
+        loginVM.authorized.observe(this, resource -> {
+            if (resource == null) return;
+            switch (resource.getStatus()) {
+                case LOADING:
+                    showProgress(true);
+                    break;
+                case ERROR:
+                    showProgress(false);
+                    Throwable t = resource.getThrowable();
+                    if (t != null && t.equals(OAuthException.INVALID_AUTENTICATION_ERROR)) {
+                        usernameView.setError(getString(R.string.error_invalid_username));
+                        passwordView.setError(getString(R.string.error_invalid_password));
+                    } else {
+                        Snackbar.make(loginFormView, getText(R.string.login_error), Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
+                    break;
+                case SUCCESS:
+                    showProgress(false);
+                    //todo: navigate to startFragment ???
+                    //Snackbar.make(loginFormView, getText(R.string.login_success), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    Navigation.findNavController(loginFormView).navigate(R.id.action_loginFragment_to_startFragment);
+                    break;
+            }
+        });
     }
 
     private void attemptLogin() {
@@ -112,27 +136,7 @@ public class LoginFragment extends Fragment {
             if (getActivity() != null) {
                 UiUtils.hideKeyboard(getActivity());
             }
-            showProgress(true);
-
-            // todo: to viewModel
-            oauth.authorize(
-                    username, password,
-                    () -> {
-                        showProgress(false);
-                        //todo: navigate to ???
-                        Snackbar.make(loginFormView, getText(R.string.login_success), Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
-                    },
-                    t -> {
-                        showProgress(false);
-                        if (t.equals(OAuthException.INVALID_AUTENTICATION_ERROR)) {
-                            usernameView.setError(getString(R.string.error_invalid_username));
-                            passwordView.setError(getString(R.string.error_invalid_password));
-                        } else {
-                            Snackbar.make(loginFormView, getText(R.string.login_error), Snackbar.LENGTH_LONG)
-                                    .setAction("Action", null).show();
-                        }
-                    });
+            loginVM.authorize(username, password);
         }
     }
 
