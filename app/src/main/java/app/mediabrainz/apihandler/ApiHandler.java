@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
-import app.mediabrainz.functions.ErrorHandler;
+import app.mediabrainz.core.functions.ErrorHandler;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;

@@ -1,4 +1,4 @@
-package app.mediabrainz.functions;
+package app.mediabrainz.core.functions;
 
 
 public interface Action {

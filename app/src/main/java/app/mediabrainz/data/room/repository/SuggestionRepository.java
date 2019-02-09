@@ -9,7 +9,7 @@ import androidx.core.util.Consumer;
 import app.mediabrainz.MediaBrainzApp;
 import app.mediabrainz.data.room.dao.SuggestionDao;
 import app.mediabrainz.data.room.entity.Suggestion;
-import app.mediabrainz.functions.Action;
+import app.mediabrainz.core.functions.Action;
 
 
 public class SuggestionRepository {

@@ -6,15 +6,16 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.util.Consumer;
 import app.mediabrainz.api.Config;
 import app.mediabrainz.api.oauth.OAuthCredential;
 import app.mediabrainz.api.oauth.OAuthService;
 import app.mediabrainz.apihandler.ApiHandler;
-import app.mediabrainz.functions.Action;
-import app.mediabrainz.functions.DisposableAction;
-import app.mediabrainz.functions.ErrorHandler;
-import app.mediabrainz.util.ShowUtil;
+import app.mediabrainz.core.functions.Action;
+import app.mediabrainz.core.functions.DisposableAction;
+import app.mediabrainz.core.functions.ErrorHandler;
+import app.mediabrainz.core.util.UiUtils;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
@@ -48,12 +49,12 @@ public class OAuth {
         }
     }
 
-    public void authorize(@NonNull String username,
-                          @NonNull String password,
-                          Action action,
-                          ErrorHandler errorHandler) {
+    public Disposable authorize(@NonNull String username,
+                                @NonNull String password,
+                                @Nullable Action action,
+                                ErrorHandler errorHandler) {
 
-        ApiHandler.subscribe503(
+        return ApiHandler.subscribe503(
                 oauthService.authorize(username, password),
                 credential -> {
                     long expiresIn = System.currentTimeMillis() + credential.getExpiresIn() * 1000 - DELAY;
@@ -77,7 +78,7 @@ public class OAuth {
     }
 
     public Disposable refreshToken(@NonNull Context context, DisposableAction action) {
-        return refreshToken(action, t -> ShowUtil.showError(context, t));
+        return refreshToken(action, t -> UiUtils.showError(context, t));
     }
 
     public CompositeDisposable refreshToken(DisposableAction action, ErrorHandler errorHandler) {
@@ -135,14 +136,14 @@ public class OAuth {
         return ApiHandler.subscribe503(
                 oauthService.getTokenInfo(accountManager.getUserData(account, ACCESS_TOKEN)),
                 consumer,
-                t -> ShowUtil.showError(context, t));
+                t -> UiUtils.showError(context, t));
     }
 
     public Disposable loadUserInfo(@NonNull Context context, Consumer<OAuthCredential.UserInfo> consumer) {
         return refreshToken(context, () -> ApiHandler.subscribe503(
                 oauthService.getUserInfo(accountManager.getUserData(account, ACCESS_TOKEN)),
                 consumer,
-                t -> ShowUtil.showError(context, t)));
+                t -> UiUtils.showError(context, t)));
     }
 
     private void setConfigs() {

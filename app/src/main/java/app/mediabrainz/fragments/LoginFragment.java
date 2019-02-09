@@ -17,16 +17,15 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import app.mediabrainz.R;
 import app.mediabrainz.api.oauth.OAuthException;
-import app.mediabrainz.util.UiUtils;
+import app.mediabrainz.core.fragment.BaseFragment;
+import app.mediabrainz.core.util.UiUtils;
 import app.mediabrainz.viewmodels.LoginVM;
 
 
-public class LoginFragment extends Fragment {
+public class LoginFragment extends BaseFragment {
 
     private final String CREATE_ACCOUNT_URI = "https://musicbrainz.org/register";
     private final String FORGOT_USERNAME_URI = "https://musicbrainz.org/lost-username";
@@ -41,7 +40,7 @@ public class LoginFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.login_fragment, container, false);
+        View view = inflate(R.layout.login_fragment, container);
 
         loginFormView = view.findViewById(R.id.loginFormView);
         progressView = view.findViewById(R.id.progressView);
@@ -78,7 +77,7 @@ public class LoginFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        loginVM = ViewModelProviders.of(this).get(LoginVM.class);
+        loginVM = getViewModel(LoginVM.class);
         loginVM.authorized.observe(this, resource -> {
             if (resource == null) return;
             switch (resource.getStatus()) {
@@ -92,14 +91,13 @@ public class LoginFragment extends Fragment {
                         usernameView.setError(getString(R.string.error_invalid_username));
                         passwordView.setError(getString(R.string.error_invalid_password));
                     } else {
-                        Snackbar.make(loginFormView, getText(R.string.login_error), Snackbar.LENGTH_LONG)
-                                .setAction("Action", null).show();
+                        snackbarNotAction(loginFormView, R.string.login_error, Snackbar.LENGTH_LONG);
                     }
                     break;
                 case SUCCESS:
                     showProgress(false);
                     //todo: navigate to startFragment ???
-                    //Snackbar.make(loginFormView, getText(R.string.login_success), Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                    //snackbarNotAction(loginFormView, R.string.login_success, Snackbar.LENGTH_LONG);
                     Navigation.findNavController(loginFormView).navigate(R.id.action_loginFragment_to_startFragment);
                     break;
             }

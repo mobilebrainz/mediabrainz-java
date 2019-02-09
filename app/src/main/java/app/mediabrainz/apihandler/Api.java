@@ -74,7 +74,7 @@ import app.mediabrainz.api.site.UserProfile;
 import app.mediabrainz.api.site.UserProfileService;
 import app.mediabrainz.MediaBrainzApp;
 import app.mediabrainz.account.OAuth;
-import app.mediabrainz.functions.ErrorHandler;
+import app.mediabrainz.core.functions.ErrorHandler;
 import io.reactivex.disposables.Disposable;
 import okhttp3.ResponseBody;
 

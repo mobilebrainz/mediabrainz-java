@@ -1,4 +1,4 @@
-package app.mediabrainz.viewmodels.event;
+package app.mediabrainz.core.viewmodel.event;
 
 import android.util.Log;
 

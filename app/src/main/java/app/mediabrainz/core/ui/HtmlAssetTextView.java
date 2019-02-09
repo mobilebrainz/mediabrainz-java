@@ -1,4 +1,4 @@
-package app.mediabrainz.ui;
+package app.mediabrainz.core.ui;
 
 import android.content.Context;
 import android.text.Html;

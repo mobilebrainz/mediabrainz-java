@@ -1,7 +1,8 @@
 package app.mediabrainz.viewmodels;
 
-import androidx.lifecycle.ViewModel;
+import app.mediabrainz.core.viewmodel.BaseViewModel;
 
-public class StartVM extends ViewModel {
-    // TODO: Implement the ViewModel
+
+public class StartVM extends BaseViewModel {
+
 }
