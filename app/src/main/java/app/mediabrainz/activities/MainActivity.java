@@ -4,8 +4,12 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewParent;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.navigation.NavigationView;
+
+import java.lang.ref.WeakReference;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,15 +18,18 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import app.mediabrainz.R;
 import app.mediabrainz.core.activity.BaseActivity;
+import app.mediabrainz.core.navigation.NavigationUIExtension;
 
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements
+        NavigationView.OnNavigationItemSelectedListener {
 
     private NavController navController;
     private NavigationView navigationView;
@@ -46,14 +53,18 @@ public class MainActivity extends BaseActivity {
         navigationView = findViewById(R.id.navigationView);
         NavigationUI.setupActionBarWithNavController(this, navController, drawer);
         NavigationUI.setupWithNavController(navigationView, navController);
+        navigationView.setNavigationItemSelectedListener(this);
 
-        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            Menu drawerMenu = navigationView.getMenu();
-            MenuItem drawerMenuItem = drawerMenu.findItem(destination.getId());
-            if (drawerMenuItem != null && !drawerMenuItem.isChecked()) {
-                unCheckAllMenuItems(drawerMenu);
-                drawerMenuItem.setChecked(true);
-                scrollDrawerToPosition(drawerMenuItem.getOrder());
+        final WeakReference<NavigationView> weakReference = new WeakReference<>(navigationView);
+        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
+            @Override
+            public void onDestinationChanged(@NonNull NavController controller, @NonNull NavDestination destination, @Nullable Bundle arguments) {
+                NavigationView view = weakReference.get();
+                if (view == null) {
+                    navController.removeOnDestinationChangedListener(this);
+                } else {
+                    NavigationUIExtension.checkNavViewMenuItem(view, destination);
+                }
             }
         });
 
@@ -62,29 +73,6 @@ public class MainActivity extends BaseActivity {
         fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show());
         */
-    }
-
-    private void unCheckAllMenuItems(@NonNull final Menu menu) {
-        int size = menu.size();
-        for (int i = 0; i < size; i++) {
-            final MenuItem item = menu.getItem(i);
-            if (item.hasSubMenu()) {
-                unCheckAllMenuItems(item.getSubMenu());
-            } else {
-                item.setChecked(false);
-            }
-        }
-    }
-
-    private void scrollDrawerToPosition(int order) {
-        final int limit = 4;
-        if (order > limit) {
-            RecyclerView recyclerView = (RecyclerView) navigationView.getChildAt(0);
-            LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-            if (layoutManager != null) {
-                layoutManager.scrollToPositionWithOffset(order - limit, 0);
-            }
-        }
     }
 
     @Override
@@ -132,6 +120,28 @@ public class MainActivity extends BaseActivity {
                 break;
             default:
                 handled = NavigationUI.onNavDestinationSelected(menuItem, navController);
+        }
+        return handled;
+    }
+
+    //Custom NavigationUI.setupWithNavController(navigationView, navController);
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        boolean handled = true;
+        switch (menuItem.getItemId()) {
+            case R.id.feedbackAction:
+
+                break;
+
+            case R.id.scanBarcodeAction:
+
+                break;
+
+            default:
+                handled = NavigationUI.onNavDestinationSelected(menuItem, navController);
+        }
+        if (handled) {
+            NavigationUIExtension.handleBottomSheetBehavior(navigationView);
         }
         return handled;
     }

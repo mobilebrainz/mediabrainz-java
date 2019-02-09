@@ -10,6 +10,10 @@
     <string name="settings_fragment_label">Settings</string>
     <string name="login_fragment_label">Log In</string>
 
+    <!-- labels of menu actions -->
+    <string name="scan_barcode_action_label">Scan barcode</string>
+    <string name="feedback_action_label">Feedback</string>
+
     <!-- menu items -->
     <string name="drawer_item_main">Main</string>
 

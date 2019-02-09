@@ -10,24 +10,37 @@
                 <item
                     android:id="@+id/startFragment"
                     android:icon="@drawable/ic_home_24"
-                    android:orderInCategory="0"
+                    android:orderInCategory="1"
                     android:title="@string/start_fragment_label"/>
+
                 <item
                     android:id="@+id/loginFragment"
                     android:icon="@drawable/ic_login_24"
-                    android:orderInCategory="1"
+                    android:orderInCategory="2"
                     android:title="@string/login_fragment_label"/>
                 <item
                     android:id="@+id/aboutFragment"
                     android:icon="@drawable/ic_info_24"
-                    android:orderInCategory="2"
+                    android:orderInCategory="3"
                     android:title="@string/about_fragment_label"/>
+
                 <item
                     android:id="@+id/settingsFragment"
                     android:icon="@drawable/ic_settings_24"
-                    android:orderInCategory="3"
+                    android:orderInCategory="4"
                     android:title="@string/settings_fragment_label"/>
 
+                <item
+                    android:id="@+id/scanBarcodeAction"
+                    android:icon="@drawable/ic_barcode_scan_24"
+                    android:menuCategory="secondary"
+                    android:title="@string/scan_barcode_action_label"/>
+
+                <item
+                    android:id="@+id/feedbackAction"
+                    android:icon="@drawable/ic_email_24"
+                    android:menuCategory="secondary"
+                    android:title="@string/feedback_action_label"/>
             </group>
         </menu>
     </item>
