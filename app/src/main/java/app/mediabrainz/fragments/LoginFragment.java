@@ -91,13 +91,13 @@ public class LoginFragment extends BaseFragment {
                         usernameView.setError(getString(R.string.error_invalid_username));
                         passwordView.setError(getString(R.string.error_invalid_password));
                     } else {
-                        snackbarNotAction(loginFormView, R.string.login_error, Snackbar.LENGTH_LONG);
+                        snackbarNotAction(loginFormView, R.string.login_error);
                     }
                     break;
                 case SUCCESS:
                     showProgress(false);
                     //todo: navigate to startFragment ???
-                    //snackbarNotAction(loginFormView, R.string.login_success, Snackbar.LENGTH_LONG);
+                    //snackbarNotAction(loginFormView, R.string.login_success);
                     Navigation.findNavController(loginFormView).navigate(R.id.action_loginFragment_to_startFragment);
                     break;
             }

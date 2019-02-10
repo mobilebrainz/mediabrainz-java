@@ -77,9 +77,9 @@ public class NavigationUIExtension {
         Menu drawerMenu = navigationView.getMenu();
         MenuItem drawerMenuItem = drawerMenu.findItem(destination.getId());
         if (drawerMenuItem != null && !drawerMenuItem.isChecked()) {
-            NavigationUIExtension.unCheckAllMenuItems(drawerMenu);
+            unCheckAllMenuItems(drawerMenu);
             drawerMenuItem.setChecked(true);
-            NavigationUIExtension.scrollDrawerToPosition(navigationView, drawerMenuItem.getOrder());
+            //scrollDrawerToPosition(navigationView, drawerMenuItem.getOrder());
         }
     }
 

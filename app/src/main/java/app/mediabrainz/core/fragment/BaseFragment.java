@@ -47,8 +47,8 @@ public abstract class BaseFragment extends Fragment {
     }
 
     @MainThread
-    protected void snackbarNotAction(@NonNull View view, @StringRes int resId, @Snackbar.Duration int duration) {
-        Snackbar.make(view, resId, duration).setAction("Action", null).show();
+    protected void snackbarNotAction(@NonNull View view, @StringRes int resId) {
+        Snackbar.make(view, resId, Snackbar.LENGTH_LONG).setAction("Action", null).show();
     }
 
 }

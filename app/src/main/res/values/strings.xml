@@ -13,9 +13,11 @@
     <!-- labels of menu actions -->
     <string name="scan_barcode_action_label">Scan barcode</string>
     <string name="feedback_action_label">Feedback</string>
+    <string name="logout_action_label">Log Out</string>
 
     <!-- menu items -->
     <string name="drawer_item_main">Main</string>
+    <string name="drawer_item_actions">Actions</string>
 
     <!-- Release group types -->
     <string name="rt_album">Album</string>
@@ -81,6 +83,16 @@
     <string name="error_invalid_username">This username is invalid</string>
     <string name="error_invalid_password">This password is invalid</string>
     <string name="error_field_required">This field is required</string>
+
+    <!-- Send email -->
+    <string name="choose_email_client">Choose email client and send message</string>
+    <string name="send_mail_error">There are no email clients installed.</string>
+
+    <!-- ZXing integration - barcode -->
+    <string name="zx_title">Install Barcode Scanner?</string>
+    <string name="zx_message">This action requires Barcode Scanner. Would you like to install it?</string>
+    <string name="zx_pos">Install</string>
+    <string name="zx_neg">Cancel</string>
 
 
 </resources>
