@@ -28,5 +28,14 @@
             android:id="@+id/action_loginFragment_to_startFragment"
             app:destination="@id/startFragment"/>
     </fragment>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="app.mediabrainz.fragments.SearchFragment"
+        android:label="@string/search_fragment_label"
+        tools:layout="@layout/search_fragment">
+        <action
+            android:id="@+id/action_searchFragment2_to_loginFragment"
+            app:destination="@id/loginFragment"/>
+    </fragment>
 
 </navigation>

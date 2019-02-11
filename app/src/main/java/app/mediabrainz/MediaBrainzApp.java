@@ -5,12 +5,9 @@ import android.accounts.AccountManager;
 import android.app.Application;
 import android.content.pm.PackageManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import app.mediabrainz.api.Config;
 import app.mediabrainz.account.OAuth;
 import app.mediabrainz.account.Preferences;
+import app.mediabrainz.api.Config;
 import app.mediabrainz.apihandler.Api;
 import app.mediabrainz.data.room.database.AppDatabase;
 
@@ -26,8 +23,6 @@ public class MediaBrainzApp extends Application {
 
     private static MediaBrainzApp instance;
     private static Preferences preferences;
-
-    private static List<String> genres = new ArrayList<>();
 
     public void onCreate() {
         super.onCreate();
@@ -65,11 +60,4 @@ public class MediaBrainzApp extends Application {
         }
     }
 
-    public static List<String> getGenres() {
-        return genres;
-    }
-
-    public static void setGenres(List<String> genres) {
-        MediaBrainzApp.genres = genres;
-    }
 }

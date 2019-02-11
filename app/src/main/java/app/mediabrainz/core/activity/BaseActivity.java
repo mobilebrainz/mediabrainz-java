@@ -20,17 +20,20 @@ public abstract class BaseActivity extends AppCompatActivity {
         return ViewModelProviders.of(this).get(modelClass);
     }
 
+    // todo: remove to Util class??
     @MainThread
     protected void toast(final String msg) {
         if (TextUtils.isEmpty(msg)) return;
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
+    // todo: remove to Util class??
     @MainThread
     protected void toast(@StringRes final int resId) {
         Toast.makeText(this, getString(resId), Toast.LENGTH_SHORT).show();
     }
 
+    // todo: remove to Util class??
     @MainThread
     protected void snackbarNotAction(@NonNull View view, @StringRes int resId) {
         Snackbar.make(view, resId, Snackbar.LENGTH_LONG).setAction("Action", null).show();
