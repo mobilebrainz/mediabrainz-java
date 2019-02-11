@@ -34,8 +34,37 @@
         android:label="@string/search_fragment_label"
         tools:layout="@layout/search_fragment">
         <action
-            android:id="@+id/action_searchFragment2_to_loginFragment"
+            android:id="@+id/action_searchFragment_to_loginFragment"
             app:destination="@id/loginFragment"/>
+        <action
+            android:id="@+id/action_searchFragment_to_resultSearchFragment"
+            app:destination="@id/resultSearchFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/resultSearchFragment"
+        android:name="app.mediabrainz.fragments.ResultSearchFragment"
+        android:label="@string/result_search_fragment_label"
+        tools:layout="@layout/result_search_fragment">
+        <argument
+            android:name="artistQuery"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="albumQuery"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="trackQuery"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="searchQuery"
+            app:argType="string"
+            app:nullable="true"/>
+        <argument
+            android:name="searchType"
+            app:argType="integer"
+            android:defaultValue="-1"/>
     </fragment>
 
 </navigation>

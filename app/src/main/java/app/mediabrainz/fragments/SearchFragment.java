@@ -2,7 +2,6 @@ package app.mediabrainz.fragments;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +24,6 @@ import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.core.util.UiUtils;
 import app.mediabrainz.data.room.entity.Suggestion;
 import app.mediabrainz.viewmodels.MainVM;
-import app.mediabrainz.viewmodels.SearchVM;
 
 import static app.mediabrainz.MediaBrainzApp.oauth;
 
@@ -72,13 +70,13 @@ public class SearchFragment extends BaseFragment {
             logInButton.setVisibility(View.VISIBLE);
             logInButton.setOnClickListener(v -> {
                 if (!isLoading && !isError) {
-                    Navigation.findNavController(v).navigate(R.id.action_searchFragment2_to_loginFragment);
+                    Navigation.findNavController(v).navigate(R.id.action_searchFragment_to_loginFragment);
                 }
             });
         }
         return view;
     }
-    
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -148,12 +146,14 @@ public class SearchFragment extends BaseFragment {
                 UiUtils.hideKeyboard(getActivity());
             }
             if (genres.contains(query)) {
-                Log.i(TAG, "selectedSearch: ");
                 //ActivityFactory.startTagActivity(getContext(), query, true);
+
             } else {
-                Log.i(TAG, "selectedSearch: ");
-                SearchType searchType = SearchType.values()[searchSpinner.getSelectedItemPosition()];
-                //((SelectedSearchFragmentListener) getContext()).searchType(searchType, query);
+                int searchType = SearchType.values()[searchSpinner.getSelectedItemPosition()].ordinal();
+                SearchFragmentDirections.ActionSearchFragmentToResultSearchFragment action = SearchFragmentDirections.actionSearchFragmentToResultSearchFragment(
+                        null, null, null, query);
+                action.setSearchType(searchType);
+                Navigation.findNavController(queryInputView).navigate(action);
             }
         }
         return false;
@@ -168,8 +168,9 @@ public class SearchFragment extends BaseFragment {
             if (getActivity() != null) {
                 UiUtils.hideKeyboard(getActivity());
             }
-            Log.i(TAG, "inputSearch: ");
-            //((SearchFragmentListener) getContext()).searchEntity(artist, album, track);
+            SearchFragmentDirections.ActionSearchFragmentToResultSearchFragment action = SearchFragmentDirections.actionSearchFragmentToResultSearchFragment(
+                    artist, album, track, null);
+            Navigation.findNavController(artistFieldView).navigate(action);
         }
     }
 
