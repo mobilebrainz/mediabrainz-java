@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cardview="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:layout_marginTop="0dp"
+    cardview:cardBackgroundColor="@color/card_background"
+    cardview:cardCornerRadius="0dp"
+    cardview:cardElevation="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/frameView"
+                android:layout_width="64dp"
+                android:layout_height="64dp">
+
+                <ProgressBar
+                    android:id="@+id/coverartLoadingView"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone"/>
+
+                <ImageView
+                    android:id="@+id/coverartView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_album_24_dark"
+                    android:visibility="invisible"/>
+
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/dateView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:paddingTop="4dp"
+                android:text="2345"
+                android:singleLine="true"
+                android:textColor="@color/colorPrimaryLight"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:paddingEnd="6dp"
+            android:paddingStart="8dp">
+
+            <TextView
+                android:id="@+id/releaseNameView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@color/colorPrimary"
+                android:textSize="14sp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/formatView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@color/colorPrimaryLight"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/statusView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@color/colorPrimaryLight"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/countryLabelView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@color/colorPrimaryLight"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/catalogView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@color/colorPrimaryLight"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/barcodeView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:textColor="@color/colorPrimaryLight"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

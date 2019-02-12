@@ -153,18 +153,15 @@ public class SearchFragment extends BaseFragment {
             if (getActivity() != null) {
                 UiUtils.hideKeyboard(getActivity());
             }
-
-            SearchType searchType = SearchType.values()[searchSpinner.getSelectedItemPosition()];
-            if (searchType == SearchType.TAG) {
-                searchVM.insertSuggestion(query, Suggestion.SuggestionField.TAG);
-            } else if (searchType == SearchType.USER) {
-                searchVM.insertSuggestion(query, USER);
-            }
-
             if (genres.contains(query)) {
                 //ActivityFactory.startTagActivity(getContext(), query, true);
-
             } else {
+                SearchType searchType = SearchType.values()[searchSpinner.getSelectedItemPosition()];
+                if (searchType == SearchType.TAG) {
+                    searchVM.insertSuggestion(query, Suggestion.SuggestionField.TAG);
+                } else if (searchType == SearchType.USER) {
+                    searchVM.insertSuggestion(query, USER);
+                }
                 SearchFragmentDirections.ActionSearchFragmentToResultSearchFragment action = SearchFragmentDirections.actionSearchFragmentToResultSearchFragment(
                         null, null, null, query);
                 action.setSearchType(searchType.ordinal());

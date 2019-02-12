@@ -5,22 +5,29 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import app.mediabrainz.R;
 import app.mediabrainz.adapter.recycler.ArtistSearchAdapter;
+import app.mediabrainz.adapter.recycler.ReleaseAdapter;
 import app.mediabrainz.adapter.recycler.ReleaseGroupSearchAdapter;
+import app.mediabrainz.adapter.recycler.SearchListAdapter;
 import app.mediabrainz.adapter.recycler.TrackSearchAdapter;
 import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.Recording;
+import app.mediabrainz.api.model.Release;
 import app.mediabrainz.api.model.ReleaseGroup;
 import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.viewmodels.ResultSearchVM;
+
+import static app.mediabrainz.MediaBrainzApp.oauth;
 
 
 public class ResultSearchFragment extends BaseFragment {
@@ -69,8 +76,11 @@ public class ResultSearchFragment extends BaseFragment {
 
             resultSearchVM = getViewModel(ResultSearchVM.class);
             observeArtistSearch();
-            observeRgSearch();
+            observeReleaseGroupSearch();
             observeRecordingSearch();
+            observeTagSearch();
+            observeUserSearch();
+            observeBarcodeSearch();
 
             search();
         }
@@ -107,7 +117,7 @@ public class ResultSearchFragment extends BaseFragment {
         });
     }
 
-    private void observeRgSearch() {
+    private void observeReleaseGroupSearch() {
         resultSearchVM.rgSearch.observe(this, resource -> {
             if (resource == null) return;
             switch (resource.getStatus()) {
@@ -169,6 +179,125 @@ public class ResultSearchFragment extends BaseFragment {
         });
     }
 
+    private void observeTagSearch() {
+        resultSearchVM.tagSearch.observe(this, resource -> {
+            if (resource == null) return;
+            switch (resource.getStatus()) {
+                case LOADING:
+                    viewProgressLoading(true);
+                    break;
+                case ERROR:
+                    showConnectionWarning(resource.getThrowable());
+                    break;
+                case SUCCESS:
+                    viewProgressLoading(false);
+                    List<String> result = resource.getData();
+                    if (result == null || result.isEmpty()) {
+                        noresultsView.setVisibility(View.VISIBLE);
+                    } else {
+                        SearchListAdapter adapter = new SearchListAdapter(result);
+                        searchRecyclerView.setAdapter(adapter);
+                        adapter.setHolderClickListener(position -> {
+                            //ActivityFactory.startTagActivity(this, strings.get(position), false);
+                        });
+                        if (result.size() == 1) {
+                            //ActivityFactory.startTagActivity(this, strings.get(0), false);
+                        }
+                    }
+                    break;
+            }
+        });
+    }
+
+    private void observeUserSearch() {
+        resultSearchVM.userSearch.observe(this, resource -> {
+            if (resource == null) return;
+            switch (resource.getStatus()) {
+                case LOADING:
+                    viewProgressLoading(true);
+                    break;
+                case ERROR:
+                    showConnectionWarning(resource.getThrowable());
+                    break;
+                case SUCCESS:
+                    viewProgressLoading(false);
+                    List<String> result = resource.getData();
+                    if (result == null || result.isEmpty()) {
+                        noresultsView.setVisibility(View.VISIBLE);
+                    } else {
+                        SearchListAdapter adapter = new SearchListAdapter(result);
+                        searchRecyclerView.setAdapter(adapter);
+                        adapter.setHolderClickListener(position -> {
+                            //ActivityFactory.startUserActivity(this, strings.get(position));
+                        });
+                        if (result.size() == 1) {
+                            //ActivityFactory.startUserActivity(this, strings.get(0));
+                        }
+                    }
+                    break;
+            }
+        });
+    }
+
+    private void observeBarcodeSearch() {
+        resultSearchVM.barcodeSearch.observe(this, resource -> {
+            if (resource == null) return;
+            switch (resource.getStatus()) {
+                case LOADING:
+                    viewProgressLoading(true);
+                    break;
+                case ERROR:
+                    showConnectionWarning(resource.getThrowable());
+                    break;
+                case SUCCESS:
+                    viewProgressLoading(false);
+                    Release.ReleaseSearch result = resource.getData();
+                    if (result == null || result.getCount() == 0) {
+                        showAddBarcodeDialog();
+                    } else {
+                        List<Release> releases = result.getReleases();
+                        ReleaseAdapter adapter = new ReleaseAdapter(releases, null);
+                        searchRecyclerView.setAdapter(adapter);
+                        adapter.setHolderClickListener(position -> {
+                            //onRelease(releases.get(position).getId());
+                        });
+                        if (releases.size() == 1) {
+                            //onRelease(releases.get(0).getId());
+                        }
+                    }
+                    break;
+            }
+        });
+    }
+
+    private void showAddBarcodeDialog() {
+        if (getContext() == null) return;
+        View titleView = getLayoutInflater().inflate(R.layout.layout_custom_alert_dialog_title, null);
+        TextView titleTextView = titleView.findViewById(R.id.titleTextView);
+        titleTextView.setText(getString(R.string.barcode_header, searchQuery));
+        if (oauth.hasAccount()) {
+            new AlertDialog.Builder(getContext())
+                    .setCustomTitle(titleView)
+                    .setMessage(getString(R.string.barcode_info_log))
+                    .setPositiveButton(R.string.barcode_btn, (dialog, which) -> {
+                        //getSupportFragmentManager().beginTransaction().add(R.id.contentView, BarcodeSearchFragment.newInstance(searchQuery)).commit();
+                    })
+                    .setNegativeButton(R.string.barcode_cancel, (dialog, which) -> {
+                        dialog.cancel();
+                        //ResultSearchActivity.this.finish();
+                    })
+                    .show();
+        } else {
+            new AlertDialog.Builder(getContext())
+                    .setCustomTitle(titleView)
+                    .setMessage(R.string.barcode_info_nolog)
+                    .setPositiveButton(R.string.login, (dialog, which) -> {
+                        //ActivityFactory.startLoginActivity(this);
+                        //ResultSearchActivity.this.finish();
+                    });
+        }
+    }
+
     private void configSearchRecycler() {
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         searchRecyclerView.setItemViewCacheSize(50);
@@ -186,13 +315,13 @@ public class ResultSearchFragment extends BaseFragment {
             //toolbarBottomTitleView.setText(searchQuery);
             if (searchType == SearchType.TAG.ordinal()) {
                 //toolbarTopTitleView.setText(R.string.search_tag_title);
-                //searchTag();
+                resultSearchVM.getTagSearch(searchQuery);
             } else if (searchType == SearchType.USER.ordinal()) {
                 //toolbarTopTitleView.setText(R.string.search_user_title);
-                //searchUser();
+                resultSearchVM.getUserSearch(searchQuery);
             } else if (searchType == SearchType.BARCODE.ordinal()) {
                 //toolbarTopTitleView.setText(R.string.search_barcode_title);
-                //searchBarcode();
+                resultSearchVM.getBarcodeSearch(searchQuery);
             }
         } else if (!TextUtils.isEmpty(trackQuery)) {
             //toolbarTopTitleView.setText(R.string.search_track_title);
@@ -208,6 +337,27 @@ public class ResultSearchFragment extends BaseFragment {
             resultSearchVM.getArtistSearch(artistQuery);
         }
     }
+
+    /*
+    private void searchBarcode() {
+        api.searchReleasesByBarcode(searchQuery,
+                releaseSearch -> {
+                    viewProgressLoading(false);
+                    releases = releaseSearch.getReleases();
+                    if (releaseSearch.getCount() == 0) {
+                        showAddBarcodeDialog();
+                    } else {
+                        ReleaseAdapter adapter = new ReleaseAdapter(releases, null);
+                        searchRecyclerView.setAdapter(adapter);
+                        adapter.setHolderClickListener(position -> onRelease(releases.get(position).getId()));
+                        if (releases.size() == 1) {
+                            onRelease(releases.get(0).getId());
+                        }
+                    }
+                },
+                this::showConnectionWarning);
+    }
+    */
 
     private void viewProgressLoading(boolean isView) {
         if (isView) {

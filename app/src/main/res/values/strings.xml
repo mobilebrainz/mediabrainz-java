@@ -122,6 +122,49 @@
     <string name="error_connect_title">No Internet Connection</string>
     <string name="error_connect_message">Please check your internet connection and try again</string>
 
+    <!-- ReleaseAdapter -->
+    <string name="r_tracks">%1$s / %2$d tracks</string>
+    <string name="r_barcode">Barcode: %1$s</string>
+    <string name="r_status">Status: %1$s</string>
+    <string name="r_catalog">Catalog: %1$s</string>
+    <string name="rg_text">Choose a release</string>
 
+    <!-- Release formats -->
+    <string name="fm_cd">CD</string>
+    <string name="fm_dvd">DVD</string>
+    <string name="fm_sacd">SACD</string>
+    <string name="fm_dd">DualDisc</string>
+    <string name="fm_ld">LaserDisc</string>
+    <string name="fm_md">MiniDisc</string>
+    <string name="fm_vinyl">Vinyl</string>
+    <string name="fm_cassette">Cassette</string>
+    <string name="fm_cartridge">Cartridge</string>
+    <string name="fm_rtr">Reel-to-reel</string>
+    <string name="fm_dat">DAT</string>
+    <string name="fm_dm">Digital Media</string>
+    <string name="fm_other">Other</string>
+    <string name="fm_wax">Wax Cylinder</string>
+    <string name="fm_pr">Piano Roll</string>
+    <string name="fm_dcc">Digital Compact Cassette</string>
+    <string name="fm_vhs">VHS</string>
+    <string name="fm_vcd">Video-CD</string>
+    <string name="fm_svcd">Super Video-CD</string>
+    <string name="fm_bm">Betamax</string>
+    <string name="fm_hdcd">HD Compatible Digital</string>
+    <string name="fm_usb">USB Flash Drive</string>
+    <string name="fm_sm">SlotMusic</string>
+    <string name="fm_umd">Universal Media Disc</string>
+    <string name="fm_hddvd">HD-DVD</string>
+    <string name="fm_dvda">DVD-Audio</string>
+    <string name="fm_dvdv">DVD-Video</string>
+    <string name="fm_br">Blu-ray</string>
+    <string name="fm_unknown">Unknown format</string>
+
+    <!-- BarcodeDialog -->
+    <string name="barcode_header">Barcode %1$s not found!</string>
+    <string name="barcode_info_log">This barcode is not associated with a MusicBrainz release. Would you like to add it?</string>
+    <string name="barcode_info_nolog">This barcode is not associated with a MusicBrainz release. Log in to add it.</string>
+    <string name="barcode_btn">Add barcode</string>
+    <string name="barcode_cancel">Cancel</string>
 
 </resources>
