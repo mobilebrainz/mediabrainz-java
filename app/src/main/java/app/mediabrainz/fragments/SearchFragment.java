@@ -24,8 +24,13 @@ import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.core.util.UiUtils;
 import app.mediabrainz.data.room.entity.Suggestion;
 import app.mediabrainz.viewmodels.MainVM;
+import app.mediabrainz.viewmodels.SearchVM;
 
 import static app.mediabrainz.MediaBrainzApp.oauth;
+import static app.mediabrainz.data.room.entity.Suggestion.SuggestionField.ALBUM;
+import static app.mediabrainz.data.room.entity.Suggestion.SuggestionField.ARTIST;
+import static app.mediabrainz.data.room.entity.Suggestion.SuggestionField.TRACK;
+import static app.mediabrainz.data.room.entity.Suggestion.SuggestionField.USER;
 
 
 public class SearchFragment extends BaseFragment {
@@ -34,6 +39,7 @@ public class SearchFragment extends BaseFragment {
 
     private List<String> genres = new ArrayList<>();
     private MainVM mainVM;
+    private SearchVM searchVM;
     private boolean isLoading;
     private boolean isError;
 
@@ -80,6 +86,7 @@ public class SearchFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        searchVM = getViewModel(SearchVM.class);
         mainVM = getActivityViewModel(MainVM.class);
         mainVM.genresResource.observe(this, resource -> {
             if (resource == null) return;
@@ -141,18 +148,26 @@ public class SearchFragment extends BaseFragment {
 
     private boolean selectedSearch() {
         String query = queryInputView.getText().toString().trim().toLowerCase();
+
         if (!TextUtils.isEmpty(query)) {
             if (getActivity() != null) {
                 UiUtils.hideKeyboard(getActivity());
             }
+
+            SearchType searchType = SearchType.values()[searchSpinner.getSelectedItemPosition()];
+            if (searchType == SearchType.TAG) {
+                searchVM.insertSuggestion(query, Suggestion.SuggestionField.TAG);
+            } else if (searchType == SearchType.USER) {
+                searchVM.insertSuggestion(query, USER);
+            }
+
             if (genres.contains(query)) {
                 //ActivityFactory.startTagActivity(getContext(), query, true);
 
             } else {
-                int searchType = SearchType.values()[searchSpinner.getSelectedItemPosition()].ordinal();
                 SearchFragmentDirections.ActionSearchFragmentToResultSearchFragment action = SearchFragmentDirections.actionSearchFragmentToResultSearchFragment(
                         null, null, null, query);
-                action.setSearchType(searchType);
+                action.setSearchType(searchType.ordinal());
                 Navigation.findNavController(queryInputView).navigate(action);
             }
         }
@@ -167,6 +182,15 @@ public class SearchFragment extends BaseFragment {
         if (!TextUtils.isEmpty(track) || !TextUtils.isEmpty(album) || !TextUtils.isEmpty(artist)) {
             if (getActivity() != null) {
                 UiUtils.hideKeyboard(getActivity());
+            }
+            if (!TextUtils.isEmpty(artist)) {
+                searchVM.insertSuggestion(artist, ARTIST);
+            }
+            if (!TextUtils.isEmpty(album)) {
+                searchVM.insertSuggestion(album, ALBUM);
+            }
+            if (!TextUtils.isEmpty(track)) {
+                searchVM.insertSuggestion(track, TRACK);
             }
             SearchFragmentDirections.ActionSearchFragmentToResultSearchFragment action = SearchFragmentDirections.actionSearchFragmentToResultSearchFragment(
                     artist, album, track, null);

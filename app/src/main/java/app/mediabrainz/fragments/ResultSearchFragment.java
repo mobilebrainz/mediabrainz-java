@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import app.mediabrainz.MediaBrainzApp;
 import app.mediabrainz.R;
 import app.mediabrainz.adapter.recycler.ArtistSearchAdapter;
 import app.mediabrainz.adapter.recycler.ReleaseGroupSearchAdapter;
@@ -21,14 +20,7 @@ import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.Recording;
 import app.mediabrainz.api.model.ReleaseGroup;
 import app.mediabrainz.core.fragment.BaseFragment;
-import app.mediabrainz.data.room.entity.Suggestion;
-import app.mediabrainz.data.room.repository.SuggestionRepository;
-
-import static app.mediabrainz.MediaBrainzApp.api;
-import static app.mediabrainz.data.room.entity.Suggestion.SuggestionField.ALBUM;
-import static app.mediabrainz.data.room.entity.Suggestion.SuggestionField.ARTIST;
-import static app.mediabrainz.data.room.entity.Suggestion.SuggestionField.TRACK;
-import static app.mediabrainz.data.room.entity.Suggestion.SuggestionField.USER;
+import app.mediabrainz.viewmodels.ResultSearchVM;
 
 
 public class ResultSearchFragment extends BaseFragment {
@@ -42,6 +34,7 @@ public class ResultSearchFragment extends BaseFragment {
     private int searchType = -1;
     private boolean isLoading;
     private boolean isError;
+    private ResultSearchVM resultSearchVM;
 
     private View contentView;
     private RecyclerView searchRecyclerView;
@@ -74,8 +67,106 @@ public class ResultSearchFragment extends BaseFragment {
             searchQuery = args.getSearchQuery();
             searchType = args.getSearchType();
 
+            resultSearchVM = getViewModel(ResultSearchVM.class);
+            observeArtistSearch();
+            observeRgSearch();
+            observeRecordingSearch();
+
             search();
         }
+    }
+
+    private void observeArtistSearch() {
+        resultSearchVM.artistSearch.observe(this, resource -> {
+            if (resource == null) return;
+            switch (resource.getStatus()) {
+                case LOADING:
+                    viewProgressLoading(true);
+                    break;
+                case ERROR:
+                    showConnectionWarning(resource.getThrowable());
+                    break;
+                case SUCCESS:
+                    viewProgressLoading(false);
+                    Artist.ArtistSearch result = resource.getData();
+                    if (result == null || result.getCount() == 0) {
+                        noresultsView.setVisibility(View.VISIBLE);
+                    } else {
+                        List<Artist> artists = result.getArtists();
+                        ArtistSearchAdapter adapter = new ArtistSearchAdapter(artists);
+                        searchRecyclerView.setAdapter(adapter);
+                        adapter.setHolderClickListener(position -> {
+                            //ActivityFactory.startArtistActivity(this, artists.get(position).getId());
+                        });
+                        if (artists.size() == 1) {
+                            //ActivityFactory.startArtistActivity(this, artists.get(0).getId());
+                        }
+                    }
+                    break;
+            }
+        });
+    }
+
+    private void observeRgSearch() {
+        resultSearchVM.rgSearch.observe(this, resource -> {
+            if (resource == null) return;
+            switch (resource.getStatus()) {
+                case LOADING:
+                    viewProgressLoading(true);
+                    break;
+                case ERROR:
+                    showConnectionWarning(resource.getThrowable());
+                    break;
+                case SUCCESS:
+                    viewProgressLoading(false);
+                    ReleaseGroup.ReleaseGroupSearch result = resource.getData();
+                    if (result == null || result.getCount() == 0) {
+                        noresultsView.setVisibility(View.VISIBLE);
+                    } else {
+                        List<ReleaseGroup> releaseGroups = result.getReleaseGroups();
+                        ReleaseGroupSearchAdapter adapter = new ReleaseGroupSearchAdapter(releaseGroups);
+                        searchRecyclerView.setAdapter(adapter);
+                        adapter.setHolderClickListener(position -> {
+                            //showReleases(releaseGroups.get(position).getId());
+                        });
+                        if (releaseGroups.size() == 1) {
+                            //showReleases(releaseGroups.get(0).getId());
+                        }
+                    }
+                    break;
+            }
+        });
+    }
+
+    private void observeRecordingSearch() {
+        resultSearchVM.recordingSearch.observe(this, resource -> {
+            if (resource == null) return;
+            switch (resource.getStatus()) {
+                case LOADING:
+                    viewProgressLoading(true);
+                    break;
+                case ERROR:
+                    showConnectionWarning(resource.getThrowable());
+                    break;
+                case SUCCESS:
+                    viewProgressLoading(false);
+                    Recording.RecordingSearch result = resource.getData();
+                    if (result == null || result.getCount() == 0) {
+                        noresultsView.setVisibility(View.VISIBLE);
+                    } else {
+                        List<Recording> recordings = result.getRecordings();
+                        TrackSearchAdapter adapter = new TrackSearchAdapter(recordings);
+                        searchRecyclerView.setAdapter(adapter);
+                        adapter.setHolderClickListener(position -> {
+                            //ActivityFactory.startRecordingActivity(this, recordings.get(position).getId());
+                        });
+                        if (recordings.size() == 1) {
+                            //ActivityFactory.startRecordingActivity(this, recordings.get(0).getId());
+                        }
+                    }
+                    break;
+            }
+        });
     }
 
     private void configSearchRecycler() {
@@ -89,7 +180,7 @@ public class ResultSearchFragment extends BaseFragment {
     private void search() {
         noresultsView.setVisibility(View.GONE);
         viewError(false);
-        viewProgressLoading(true);
+        //viewProgressLoading(true);
 
         if (searchType != -1) {
             //toolbarBottomTitleView.setText(searchQuery);
@@ -106,111 +197,19 @@ public class ResultSearchFragment extends BaseFragment {
         } else if (!TextUtils.isEmpty(trackQuery)) {
             //toolbarTopTitleView.setText(R.string.search_track_title);
             //toolbarBottomTitleView.setText(!TextUtils.isEmpty(artistSearch) ? artistSearch + " / " + trackSearch : trackSearch);
-            searchRecording();
+            resultSearchVM.getRecordingSearch(artistQuery, albumQuery, trackQuery);
         } else if (!TextUtils.isEmpty(albumQuery)) {
             //toolbarTopTitleView.setText(R.string.search_album_title);
             //toolbarBottomTitleView.setText(!TextUtils.isEmpty(artistSearch) ? artistSearch + " / " + albumSearch : albumSearch);
-            searchAlbum();
+            resultSearchVM.getReleaseGroupSearch(artistQuery, albumQuery);
         } else if (!TextUtils.isEmpty(artistQuery)) {
             //toolbarTopTitleView.setText(R.string.search_artist_title);
             //toolbarBottomTitleView.setText(artistSearch);
-            searchArtist();
+            resultSearchVM.getArtistSearch(artistQuery);
         }
     }
 
-    private void searchRecording() {
-        api.searchRecording(
-                artistQuery, albumQuery, trackQuery,
-                result -> {
-                    viewProgressLoading(false);
-                    if (result.getCount() == 0) {
-                        noresultsView.setVisibility(View.VISIBLE);
-                    } else {
-                        List<Recording> recordings = result.getRecordings();
-                        TrackSearchAdapter adapter = new TrackSearchAdapter(recordings);
-                        searchRecyclerView.setAdapter(adapter);
-                        adapter.setHolderClickListener(position -> {
-                            //ActivityFactory.startRecordingActivity(this, recordings.get(position).getId());
-                        });
-                        saveQueryAsSuggestion();
-                        if (recordings.size() == 1) {
-                            //ActivityFactory.startRecordingActivity(this, recordings.get(0).getId());
-                        }
-                    }
-                },
-                this::showConnectionWarning
-        );
-    }
-
-    private void searchAlbum() {
-        api.searchAlbum(
-                artistQuery, albumQuery,
-                result -> {
-                    viewProgressLoading(false);
-                    if (result.getCount() == 0) {
-                        noresultsView.setVisibility(View.VISIBLE);
-                    } else {
-                        List<ReleaseGroup> releaseGroups = result.getReleaseGroups();
-                        ReleaseGroupSearchAdapter adapter = new ReleaseGroupSearchAdapter(releaseGroups);
-                        searchRecyclerView.setAdapter(adapter);
-                        adapter.setHolderClickListener(position -> {
-                            //showReleases(releaseGroups.get(position).getId());
-                        });
-                        saveQueryAsSuggestion();
-                        if (releaseGroups.size() == 1) {
-                            //showReleases(releaseGroups.get(0).getId());
-                        }
-                    }
-                },
-                this::showConnectionWarning);
-    }
-
-    private void searchArtist() {
-        api.searchArtist(
-                artistQuery,
-                result -> {
-                    viewProgressLoading(false);
-                    if (result.getCount() == 0) {
-                        noresultsView.setVisibility(View.VISIBLE);
-                    } else {
-                        List<Artist> artists = result.getArtists();
-                        ArtistSearchAdapter adapter = new ArtistSearchAdapter(artists);
-                        searchRecyclerView.setAdapter(adapter);
-                        adapter.setHolderClickListener(position -> {
-                            //ActivityFactory.startArtistActivity(this, artists.get(position).getId());
-                        });
-                        saveQueryAsSuggestion();
-                        if (artists.size() == 1) {
-                            //ActivityFactory.startArtistActivity(this, artists.get(0).getId());
-                        }
-                    }
-                },
-                this::showConnectionWarning);
-    }
-
-    private void saveQueryAsSuggestion() {
-        if (MediaBrainzApp.getPreferences().isSearchSuggestionsEnabled()) {
-            SuggestionRepository suggestionRepository = new SuggestionRepository();
-            if (!TextUtils.isEmpty(artistQuery)) {
-                suggestionRepository.insert(new Suggestion(artistQuery, ARTIST));
-            }
-            if (!TextUtils.isEmpty(albumQuery)) {
-                suggestionRepository.insert(new Suggestion(albumQuery, ALBUM));
-            }
-            if (!TextUtils.isEmpty(trackQuery)) {
-                suggestionRepository.insert(new Suggestion(trackQuery, TRACK));
-            }
-            if (!TextUtils.isEmpty(searchQuery)) {
-                if (searchType == SearchType.TAG.ordinal()) {
-                    suggestionRepository.insert(new Suggestion(searchQuery, Suggestion.SuggestionField.TAG));
-                } else if (searchType == SearchType.USER.ordinal()) {
-                    suggestionRepository.insert(new Suggestion(searchQuery, USER));
-                }
-            }
-        }
-    }
-
-    public void viewProgressLoading(boolean isView) {
+    private void viewProgressLoading(boolean isView) {
         if (isView) {
             isLoading = true;
             contentView.setAlpha(0.3F);
@@ -238,8 +237,7 @@ public class ResultSearchFragment extends BaseFragment {
         }
     }
 
-    public void showConnectionWarning(Throwable t) {
-        //ShowUtil.showError(this, t);
+    private void showConnectionWarning(Throwable t) {
         viewProgressLoading(false);
         viewError(true);
         errorView.findViewById(R.id.retryButton).setOnClickListener(v -> search());
