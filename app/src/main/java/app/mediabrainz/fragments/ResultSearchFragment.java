@@ -2,6 +2,7 @@ package app.mediabrainz.fragments;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import app.mediabrainz.MediaBrainzApp;
 import app.mediabrainz.R;
 import app.mediabrainz.adapter.recycler.ArtistSearchAdapter;
 import app.mediabrainz.adapter.recycler.ReleaseAdapter;
@@ -27,18 +29,22 @@ import app.mediabrainz.api.model.Release;
 import app.mediabrainz.api.model.ReleaseGroup;
 import app.mediabrainz.communicator.ShowToolbarTitleCommunicator;
 import app.mediabrainz.core.fragment.BaseFragment;
+import app.mediabrainz.data.room.entity.Suggestion;
+import app.mediabrainz.data.room.repository.SuggestionRepository;
 import app.mediabrainz.viewmodels.ArtistVM;
 import app.mediabrainz.viewmodels.MainVM;
 import app.mediabrainz.viewmodels.ResultSearchVM;
 
 import static app.mediabrainz.MediaBrainzApp.oauth;
+import static app.mediabrainz.data.room.entity.Suggestion.SuggestionField.ALBUM;
+import static app.mediabrainz.data.room.entity.Suggestion.SuggestionField.ARTIST;
+import static app.mediabrainz.data.room.entity.Suggestion.SuggestionField.TRACK;
+import static app.mediabrainz.data.room.entity.Suggestion.SuggestionField.USER;
 
 
 public class ResultSearchFragment extends BaseFragment {
 
     public static final String TAG = "ResultSearchF";
-
-    private MainVM mainVM;
 
     private String artistQuery;
     private String albumQuery;
@@ -47,6 +53,7 @@ public class ResultSearchFragment extends BaseFragment {
     private int searchType = -1;
     private boolean isLoading;
     private boolean isError;
+    private MainVM mainVM;
     private ResultSearchVM resultSearchVM;
 
     private View contentView;
@@ -114,7 +121,12 @@ public class ResultSearchFragment extends BaseFragment {
                         ArtistSearchAdapter adapter = new ArtistSearchAdapter(artists);
                         searchRecyclerView.setAdapter(adapter);
                         adapter.setHolderClickListener(position -> {
-                            mainVM.setArtistMbid(artists.get(position).getId());
+                            Artist artist = artists.get(position);
+                            mainVM.setArtistMbid(artist.getId());
+
+                            //todo: сохранять и результат поиска, и поисковое слово?
+                            insertQuerySuggestion();
+                            resultSearchVM.insertSuggestion(artist.getName(), ARTIST);
                             Navigation.findNavController(searchRecyclerView).navigate(R.id.artistReleasesFragment);
                         });
                         if (artists.size() == 1) {
@@ -147,6 +159,17 @@ public class ResultSearchFragment extends BaseFragment {
                         ReleaseGroupSearchAdapter adapter = new ReleaseGroupSearchAdapter(releaseGroups);
                         searchRecyclerView.setAdapter(adapter);
                         adapter.setHolderClickListener(position -> {
+                            ReleaseGroup releaseGroup = releaseGroups.get(position);
+
+                            //todo: сохранять и результат поиска, и поисковое слово?
+                            insertQuerySuggestion();
+                            resultSearchVM.insertSuggestion(releaseGroup.getTitle(), ALBUM);
+                            List<Artist.ArtistCredit> artists = releaseGroup.getArtistCredits();
+                            Log.i(TAG, "observeReleaseGroupSearch: ");
+                            if (artists != null && !artists.isEmpty()) {
+                                resultSearchVM.insertSuggestion(artists.get(0).getArtist().getName(), ARTIST);
+                            }
+
                             //showReleases(releaseGroups.get(position).getId());
                         });
                         if (releaseGroups.size() == 1) {
@@ -178,6 +201,17 @@ public class ResultSearchFragment extends BaseFragment {
                         TrackSearchAdapter adapter = new TrackSearchAdapter(recordings);
                         searchRecyclerView.setAdapter(adapter);
                         adapter.setHolderClickListener(position -> {
+                            Recording recording = recordings.get(position);
+
+                            //todo: сохранять и результат поиска, и поисковое слово?
+                            insertQuerySuggestion();
+                            resultSearchVM.insertSuggestion(recording.getTitle(), TRACK);
+                            List<Artist.ArtistCredit> artists = recording.getArtistCredits();
+                            Log.i(TAG, "observeRecordingSearch: ");
+                            if (artists != null && !artists.isEmpty()) {
+                                resultSearchVM.insertSuggestion(artists.get(0).getArtist().getName(), ARTIST);
+                            }
+
                             //ActivityFactory.startRecordingActivity(this, recordings.get(position).getId());
                         });
                         if (recordings.size() == 1) {
@@ -187,6 +221,12 @@ public class ResultSearchFragment extends BaseFragment {
                     break;
             }
         });
+    }
+
+    private void insertQuerySuggestion() {
+        resultSearchVM.insertSuggestion(artistQuery, ARTIST);
+        resultSearchVM.insertSuggestion(albumQuery, ALBUM);
+        resultSearchVM.insertSuggestion(trackQuery, TRACK);
     }
 
     private void observeTagSearch() {
@@ -208,6 +248,9 @@ public class ResultSearchFragment extends BaseFragment {
                         SearchListAdapter adapter = new SearchListAdapter(result);
                         searchRecyclerView.setAdapter(adapter);
                         adapter.setHolderClickListener(position -> {
+                            //todo: сохранять и результат поиска, и поисковое слово?
+                            resultSearchVM.insertSuggestion(searchQuery, Suggestion.SuggestionField.TAG);
+                            resultSearchVM.insertSuggestion(result.get(position), Suggestion.SuggestionField.TAG);
                             //ActivityFactory.startTagActivity(this, strings.get(position), false);
                         });
                         if (result.size() == 1) {
@@ -238,6 +281,10 @@ public class ResultSearchFragment extends BaseFragment {
                         SearchListAdapter adapter = new SearchListAdapter(result);
                         searchRecyclerView.setAdapter(adapter);
                         adapter.setHolderClickListener(position -> {
+                            //todo: сохранять и результат поиска, и поисковое слово?
+                            resultSearchVM.insertSuggestion(searchQuery, USER);
+                            resultSearchVM.insertSuggestion(result.get(position), USER);
+
                             //ActivityFactory.startUserActivity(this, strings.get(position));
                         });
                         if (result.size() == 1) {

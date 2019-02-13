@@ -1,8 +1,13 @@
 package app.mediabrainz.viewmodels;
 
+import android.text.TextUtils;
+
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
+import app.mediabrainz.MediaBrainzApp;
 import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.Recording;
 import app.mediabrainz.api.model.Release;
@@ -10,6 +15,8 @@ import app.mediabrainz.api.model.ReleaseGroup;
 import app.mediabrainz.core.viewmodel.BaseViewModel;
 import app.mediabrainz.core.viewmodel.event.Resource;
 import app.mediabrainz.core.viewmodel.event.Status;
+import app.mediabrainz.data.room.entity.Suggestion;
+import app.mediabrainz.data.room.repository.SuggestionRepository;
 
 import static app.mediabrainz.MediaBrainzApp.api;
 
@@ -22,6 +29,13 @@ public class ResultSearchVM extends BaseViewModel {
     public final MutableLiveData<Resource<List<String>>> tagSearch = new MutableLiveData<>();
     public final MutableLiveData<Resource<List<String>>> userSearch = new MutableLiveData<>();
     public final MutableLiveData<Resource<Release.ReleaseSearch>> barcodeSearch = new MutableLiveData<>();
+    private final SuggestionRepository suggestionRepository = new SuggestionRepository();
+
+    public void insertSuggestion(@Nullable String word, @NonNull Suggestion.SuggestionField suggestionField) {
+        if (MediaBrainzApp.getPreferences().isSearchSuggestionsEnabled() && !TextUtils.isEmpty(word)) {
+            suggestionRepository.insert(new Suggestion(word, suggestionField));
+        }
+    }
 
     public void getArtistSearch(String artistQuery) {
         Resource<Artist.ArtistSearch> resource = artistSearch.getValue();

@@ -20,6 +20,7 @@ public class Preferences {
 
         String RELEASE_GROUP_OFFICIAL = "release_group_official";
 
+        // data save
         String ARTIST_MBID = "artist_mbid";
     }
 
