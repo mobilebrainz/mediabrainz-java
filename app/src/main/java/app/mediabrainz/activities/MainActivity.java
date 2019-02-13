@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -26,7 +25,6 @@ import androidx.navigation.ui.NavigationUI;
 import app.mediabrainz.MediaBrainzApp;
 import app.mediabrainz.R;
 import app.mediabrainz.apihandler.Api;
-import app.mediabrainz.communicator.ShowToolbarTitleCommunicator;
 import app.mediabrainz.core.activity.BaseActivity;
 import app.mediabrainz.core.navigation.NavigationUIExtension;
 import app.mediabrainz.core.zxing.IntentIntegrator;
@@ -36,17 +34,12 @@ import app.mediabrainz.viewmodels.MainVM;
 
 import static app.mediabrainz.MediaBrainzApp.SUPPORT_MAIL;
 import static app.mediabrainz.MediaBrainzApp.oauth;
-import static app.mediabrainz.core.navigation.NavigationUIExtension.unCheckAllMenuItems;
 
 
 public class MainActivity extends BaseActivity implements
-        NavigationView.OnNavigationItemSelectedListener,
-        ShowToolbarTitleCommunicator {
+        NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
-
-    //todo: убрать.
-    //public static final String ARTIST_MBID = "ARTIST_MBID";
 
     private MainVM mainVM;
 
@@ -62,19 +55,6 @@ public class MainActivity extends BaseActivity implements
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        mainVM = getViewModel(MainVM.class);
-        if (TextUtils.isEmpty(mainVM.getArtistMbid())) {
-            mainVM.setArtistMbid(MediaBrainzApp.getPreferences().getArtistMbid());
-        }
-        //todo: убрать.
-        /*
-        if (savedInstanceState != null) {
-            mainVM.setArtistMbid(savedInstanceState.getString(ARTIST_MBID));
-        } else {
-            mainVM.setArtistMbid(MediaBrainzApp.getPreferences().getArtistMbid());
-        }
-        */
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
 
         drawer = findViewById(R.id.drawer);
@@ -84,18 +64,9 @@ public class MainActivity extends BaseActivity implements
         navigationView.setNavigationItemSelectedListener(this);
         navMenu = navigationView.getMenu();
 
-        navMenu.setGroupVisible(R.id.artistSubmenuInvis,false);
-        navMenu.setGroupVisible(R.id.artistSubmenuVis,false);
+        mainVM = getViewModel(MainVM.class);
 
-        mainVM.hasArtist.observe(this, hasArtist ->
-                navMenu.setGroupVisible(R.id.artistSubmenuInvis,true));
-
-        if (TextUtils.isEmpty(mainVM.getArtistMbid())) {
-            navMenu.setGroupVisible(R.id.artistSubmenuInvis,false);
-            navMenu.setGroupVisible(R.id.artistSubmenuVis,false);
-        } else {
-            navMenu.setGroupVisible(R.id.artistSubmenuInvis,true);
-        }
+        initArtistView();
 
         final WeakReference<NavigationView> weakReference = new WeakReference<>(navigationView);
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
@@ -108,7 +79,9 @@ public class MainActivity extends BaseActivity implements
                     //todo: при навигации в дровере иногда неправильно выделяет айтемы
                     //NavigationUIExtension.checkNavViewMenuItem(view, destination);
                     hideLogNavItems();
-                    showToolbarSubTitle(null);
+                    if (getSupportActionBar() != null) {
+                        getSupportActionBar().setSubtitle(null);
+                    }
                 }
             }
         });
@@ -120,22 +93,25 @@ public class MainActivity extends BaseActivity implements
         */
     }
 
+    private void initArtistView() {
+        if (TextUtils.isEmpty(mainVM.getArtistMbid())) {
+            mainVM.setArtistMbid(MediaBrainzApp.getPreferences().getArtistMbid());
+        }
+        mainVM.hasArtist.observe(this, hasArtist ->
+                navMenu.setGroupVisible(R.id.artistSubmenuInvis, true));
+
+        if (TextUtils.isEmpty(mainVM.getArtistMbid())) {
+            navMenu.setGroupVisible(R.id.artistSubmenuInvis, false);
+            navMenu.setGroupVisible(R.id.artistSubmenuVis, false);
+        } else {
+            navMenu.setGroupVisible(R.id.artistSubmenuInvis, true);
+        }
+    }
+
     private void hideLogNavItems() {
         navMenu.findItem(R.id.loginFragment).setVisible(!oauth.hasAccount());
         navMenu.findItem(R.id.logoutAction).setVisible(oauth.hasAccount());
     }
-
-    //todo: убрать.
-    /*
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        Log.i(TAG, "onSaveInstanceState: ");
-        if (!TextUtils.isEmpty(mainVM.getArtistMbid())) {
-            outState.putString(ARTIST_MBID, mainVM.getArtistMbid());
-        }
-    }
-    */
 
     @Override
     protected void onStop() {
@@ -202,13 +178,13 @@ public class MainActivity extends BaseActivity implements
                 break;
 
             case R.id.artistItemVis:
-                navMenu.setGroupVisible(R.id.artistSubmenuInvis,true);
-                navMenu.setGroupVisible(R.id.artistSubmenuVis,false);
+                navMenu.setGroupVisible(R.id.artistSubmenuInvis, true);
+                navMenu.setGroupVisible(R.id.artistSubmenuVis, false);
                 return true;
 
             case R.id.artistItemInvis:
-                navMenu.setGroupVisible(R.id.artistSubmenuInvis,false);
-                navMenu.setGroupVisible(R.id.artistSubmenuVis,true);
+                navMenu.setGroupVisible(R.id.artistSubmenuInvis, false);
+                navMenu.setGroupVisible(R.id.artistSubmenuVis, true);
                 return true;
 
             default:
@@ -241,20 +217,6 @@ public class MainActivity extends BaseActivity implements
                     MbUtils.emailIntent(SUPPORT_MAIL, Api.CLIENT), getString(R.string.choose_email_client)));
         } catch (android.content.ActivityNotFoundException ex) {
             snackbarNotAction(coordinatorLayout, R.string.send_mail_error);
-        }
-    }
-
-    @Override
-    public void showToolbarTitle(String title) {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(title);
-        }
-    }
-
-    @Override
-    public void showToolbarSubTitle(String subTitle) {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(subTitle);
         }
     }
 

@@ -12,11 +12,12 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import app.mediabrainz.MediaBrainzApp;
 import app.mediabrainz.R;
 import app.mediabrainz.adapter.recycler.ArtistSearchAdapter;
 import app.mediabrainz.adapter.recycler.ReleaseAdapter;
@@ -27,11 +28,8 @@ import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.Recording;
 import app.mediabrainz.api.model.Release;
 import app.mediabrainz.api.model.ReleaseGroup;
-import app.mediabrainz.communicator.ShowToolbarTitleCommunicator;
 import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.data.room.entity.Suggestion;
-import app.mediabrainz.data.room.repository.SuggestionRepository;
-import app.mediabrainz.viewmodels.ArtistVM;
 import app.mediabrainz.viewmodels.MainVM;
 import app.mediabrainz.viewmodels.ResultSearchVM;
 
@@ -365,43 +363,45 @@ public class ResultSearchFragment extends BaseFragment {
 
     private void search() {
         if (getActivity() == null) return;
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        if (actionBar == null) return;
+
         noresultsView.setVisibility(View.GONE);
         viewError(false);
 
-        ShowToolbarTitleCommunicator titleActivity = (ShowToolbarTitleCommunicator) getActivity();
         if (searchType != -1) {
-            titleActivity.showToolbarSubTitle(searchQuery);
+            actionBar.setSubtitle(searchQuery);
 
             if (searchType == SearchType.TAG.ordinal()) {
-                titleActivity.showToolbarTitle(getString(R.string.search_tag_title));
+                actionBar.setTitle(getString(R.string.search_tag_title));
                 resultSearchVM.getTagSearch(searchQuery);
 
             } else if (searchType == SearchType.USER.ordinal()) {
-                titleActivity.showToolbarTitle(getString(R.string.search_user_title));
+                actionBar.setTitle(getString(R.string.search_user_title));
                 resultSearchVM.getUserSearch(searchQuery);
 
             } else if (searchType == SearchType.BARCODE.ordinal()) {
-                titleActivity.showToolbarTitle(getString(R.string.search_barcode_title));
+                actionBar.setTitle(getString(R.string.search_barcode_title));
                 resultSearchVM.getBarcodeSearch(searchQuery);
             }
 
         } else if (!TextUtils.isEmpty(trackQuery)) {
-            titleActivity.showToolbarTitle(getString(R.string.search_track_title));
+            actionBar.setTitle(getString(R.string.search_track_title));
             // todo: do title without artistQuery?
-            titleActivity.showToolbarSubTitle(!TextUtils.isEmpty(artistQuery) ? artistQuery + " / " + trackQuery : trackQuery);
-            //titleActivity.showToolbarSubTitle(!TextUtils.isEmpty(trackQuery);
+            actionBar.setSubtitle(!TextUtils.isEmpty(artistQuery) ? artistQuery + " / " + trackQuery : trackQuery);
+            //actionBar.setSubtitle(!TextUtils.isEmpty(trackQuery);
             resultSearchVM.getRecordingSearch(artistQuery, albumQuery, trackQuery);
 
         } else if (!TextUtils.isEmpty(albumQuery)) {
-            titleActivity.showToolbarTitle(getString(R.string.search_album_title));
+            actionBar.setTitle(getString(R.string.search_album_title));
             // todo: do title without artistQuery?
-            titleActivity.showToolbarSubTitle(!TextUtils.isEmpty(artistQuery) ? artistQuery + " / " + albumQuery : albumQuery);
-            //titleActivity.showToolbarSubTitle(albumQuery);
+            actionBar.setSubtitle(!TextUtils.isEmpty(artistQuery) ? artistQuery + " / " + albumQuery : albumQuery);
+            //actionBar.setSubtitle(albumQuery);
             resultSearchVM.getReleaseGroupSearch(artistQuery, albumQuery);
 
         } else if (!TextUtils.isEmpty(artistQuery)) {
-            titleActivity.showToolbarTitle(getString(R.string.search_artist_title));
-            titleActivity.showToolbarSubTitle(artistQuery);
+            actionBar.setTitle(getString(R.string.search_artist_title));
+            actionBar.setSubtitle(artistQuery);
             resultSearchVM.getArtistSearch(artistQuery);
         }
     }

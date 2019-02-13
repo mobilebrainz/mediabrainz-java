@@ -3,6 +3,7 @@ package app.mediabrainz.account;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 import app.mediabrainz.MediaBrainzApp;
 
@@ -43,18 +44,13 @@ public class Preferences {
         prefs.edit().putBoolean(PreferenceName.LOAD_IMAGES, enabled).apply();
     }
 
-    public void setArtistMbid(String mbid) {
+    public void setArtistMbid(@NonNull String mbid) {
         SharedPreferences prefs = getDefaultPreferences();
         prefs.edit().putString(PreferenceName.ARTIST_MBID, mbid).apply();
     }
 
     public String getArtistMbid() {
-        SharedPreferences prefs = getDefaultPreferences();
-        if (prefs.contains(PreferenceName.ARTIST_MBID)) {
-            return prefs.getString(PreferenceName.ARTIST_MBID, null);
-        } else {
-            return null;
-        }
+        return getDefaultPreferences().getString(PreferenceName.ARTIST_MBID, null);
     }
 
     public boolean isLoadImagesEnabled() {
