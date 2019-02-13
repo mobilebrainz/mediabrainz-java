@@ -24,6 +24,7 @@ import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.Recording;
 import app.mediabrainz.api.model.Release;
 import app.mediabrainz.api.model.ReleaseGroup;
+import app.mediabrainz.communicator.ShowToolbarTitleCommunicator;
 import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.viewmodels.ResultSearchVM;
 
@@ -307,57 +308,47 @@ public class ResultSearchFragment extends BaseFragment {
     }
 
     private void search() {
+        if (getActivity() == null) return;
         noresultsView.setVisibility(View.GONE);
         viewError(false);
-        //viewProgressLoading(true);
 
+        ShowToolbarTitleCommunicator titleActivity = (ShowToolbarTitleCommunicator) getActivity();
         if (searchType != -1) {
-            //toolbarBottomTitleView.setText(searchQuery);
+            titleActivity.showToolbarSubTitle(searchQuery);
+
             if (searchType == SearchType.TAG.ordinal()) {
-                //toolbarTopTitleView.setText(R.string.search_tag_title);
+                titleActivity.showToolbarTitle(getString(R.string.search_tag_title));
                 resultSearchVM.getTagSearch(searchQuery);
+
             } else if (searchType == SearchType.USER.ordinal()) {
-                //toolbarTopTitleView.setText(R.string.search_user_title);
+                titleActivity.showToolbarTitle(getString(R.string.search_user_title));
                 resultSearchVM.getUserSearch(searchQuery);
+
             } else if (searchType == SearchType.BARCODE.ordinal()) {
-                //toolbarTopTitleView.setText(R.string.search_barcode_title);
+                titleActivity.showToolbarTitle(getString(R.string.search_barcode_title));
                 resultSearchVM.getBarcodeSearch(searchQuery);
             }
+
         } else if (!TextUtils.isEmpty(trackQuery)) {
-            //toolbarTopTitleView.setText(R.string.search_track_title);
-            //toolbarBottomTitleView.setText(!TextUtils.isEmpty(artistSearch) ? artistSearch + " / " + trackSearch : trackSearch);
+            titleActivity.showToolbarTitle(getString(R.string.search_track_title));
+            // todo: do title without artistQuery?
+            titleActivity.showToolbarSubTitle(!TextUtils.isEmpty(artistQuery) ? artistQuery + " / " + trackQuery : trackQuery);
+            //titleActivity.showToolbarSubTitle(!TextUtils.isEmpty(trackQuery);
             resultSearchVM.getRecordingSearch(artistQuery, albumQuery, trackQuery);
+
         } else if (!TextUtils.isEmpty(albumQuery)) {
-            //toolbarTopTitleView.setText(R.string.search_album_title);
-            //toolbarBottomTitleView.setText(!TextUtils.isEmpty(artistSearch) ? artistSearch + " / " + albumSearch : albumSearch);
+            titleActivity.showToolbarTitle(getString(R.string.search_album_title));
+            // todo: do title without artistQuery?
+            titleActivity.showToolbarSubTitle(!TextUtils.isEmpty(artistQuery) ? artistQuery + " / " + albumQuery : albumQuery);
+            //titleActivity.showToolbarSubTitle(albumQuery);
             resultSearchVM.getReleaseGroupSearch(artistQuery, albumQuery);
+
         } else if (!TextUtils.isEmpty(artistQuery)) {
-            //toolbarTopTitleView.setText(R.string.search_artist_title);
-            //toolbarBottomTitleView.setText(artistSearch);
+            titleActivity.showToolbarTitle(getString(R.string.search_artist_title));
+            titleActivity.showToolbarSubTitle(artistQuery);
             resultSearchVM.getArtistSearch(artistQuery);
         }
     }
-
-    /*
-    private void searchBarcode() {
-        api.searchReleasesByBarcode(searchQuery,
-                releaseSearch -> {
-                    viewProgressLoading(false);
-                    releases = releaseSearch.getReleases();
-                    if (releaseSearch.getCount() == 0) {
-                        showAddBarcodeDialog();
-                    } else {
-                        ReleaseAdapter adapter = new ReleaseAdapter(releases, null);
-                        searchRecyclerView.setAdapter(adapter);
-                        adapter.setHolderClickListener(position -> onRelease(releases.get(position).getId()));
-                        if (releases.size() == 1) {
-                            onRelease(releases.get(0).getId());
-                        }
-                    }
-                },
-                this::showConnectionWarning);
-    }
-    */
 
     private void viewProgressLoading(boolean isView) {
         if (isView) {

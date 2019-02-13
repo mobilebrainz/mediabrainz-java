@@ -23,6 +23,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 import app.mediabrainz.R;
 import app.mediabrainz.apihandler.Api;
+import app.mediabrainz.communicator.ShowToolbarTitleCommunicator;
 import app.mediabrainz.core.activity.BaseActivity;
 import app.mediabrainz.core.navigation.NavigationUIExtension;
 import app.mediabrainz.core.zxing.IntentIntegrator;
@@ -34,7 +35,8 @@ import static app.mediabrainz.MediaBrainzApp.oauth;
 
 
 public class MainActivity extends BaseActivity implements
-        NavigationView.OnNavigationItemSelectedListener {
+        NavigationView.OnNavigationItemSelectedListener,
+        ShowToolbarTitleCommunicator {
 
     private static final String TAG = "MainActivity";
 
@@ -74,6 +76,7 @@ public class MainActivity extends BaseActivity implements
                 } else {
                     NavigationUIExtension.checkNavViewMenuItem(view, destination);
                     hideLogNavItems();
+                    showToolbarSubTitle(null);
                 }
             }
         });
@@ -189,6 +192,20 @@ public class MainActivity extends BaseActivity implements
                     MbUtils.emailIntent(SUPPORT_MAIL, Api.CLIENT), getString(R.string.choose_email_client)));
         } catch (android.content.ActivityNotFoundException ex) {
             snackbarNotAction(coordinatorLayout, R.string.send_mail_error);
+        }
+    }
+
+    @Override
+    public void showToolbarTitle(String title) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(title);
+        }
+    }
+
+    @Override
+    public void showToolbarSubTitle(String subTitle) {
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(subTitle);
         }
     }
 
