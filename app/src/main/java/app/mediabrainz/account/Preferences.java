@@ -19,6 +19,8 @@ public class Preferences {
         String PLAY_YOUTUBE = "play_youtube";
 
         String RELEASE_GROUP_OFFICIAL = "release_group_official";
+
+        String ARTIST_MBID = "artist_mbid";
     }
 
     public void clearData() {
@@ -38,6 +40,20 @@ public class Preferences {
     public void setLoadImagesEnabled(boolean enabled) {
         SharedPreferences prefs = getDefaultPreferences();
         prefs.edit().putBoolean(PreferenceName.LOAD_IMAGES, enabled).apply();
+    }
+
+    public void setArtistMbid(String mbid) {
+        SharedPreferences prefs = getDefaultPreferences();
+        prefs.edit().putString(PreferenceName.ARTIST_MBID, mbid).apply();
+    }
+
+    public String getArtistMbid() {
+        SharedPreferences prefs = getDefaultPreferences();
+        if (prefs.contains(PreferenceName.ARTIST_MBID)) {
+            return prefs.getString(PreferenceName.ARTIST_MBID, null);
+        } else {
+            return null;
+        }
     }
 
     public boolean isLoadImagesEnabled() {

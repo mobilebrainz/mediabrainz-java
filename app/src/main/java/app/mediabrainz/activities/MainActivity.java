@@ -3,6 +3,8 @@ package app.mediabrainz.activities;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -21,6 +23,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+import app.mediabrainz.MediaBrainzApp;
 import app.mediabrainz.R;
 import app.mediabrainz.apihandler.Api;
 import app.mediabrainz.communicator.ShowToolbarTitleCommunicator;
@@ -29,9 +32,11 @@ import app.mediabrainz.core.navigation.NavigationUIExtension;
 import app.mediabrainz.core.zxing.IntentIntegrator;
 import app.mediabrainz.core.zxing.IntentResult;
 import app.mediabrainz.util.MbUtils;
+import app.mediabrainz.viewmodels.MainVM;
 
 import static app.mediabrainz.MediaBrainzApp.SUPPORT_MAIL;
 import static app.mediabrainz.MediaBrainzApp.oauth;
+import static app.mediabrainz.core.navigation.NavigationUIExtension.unCheckAllMenuItems;
 
 
 public class MainActivity extends BaseActivity implements
@@ -40,6 +45,12 @@ public class MainActivity extends BaseActivity implements
 
     private static final String TAG = "MainActivity";
 
+    //todo: убрать.
+    //public static final String ARTIST_MBID = "ARTIST_MBID";
+
+    private MainVM mainVM;
+
+    private Menu navMenu;
     private NavController navController;
     private NavigationView navigationView;
     private DrawerLayout drawer;
@@ -52,12 +63,18 @@ public class MainActivity extends BaseActivity implements
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (savedInstanceState != null) {
-            //optionsNavId = savedInstanceState.getInt(OPTIONS_NAV_ID, OPTIONS_NAV_DEFAULT);
-        } else {
-            //optionsNavId = OPTIONS_NAV_DEFAULT;
+        mainVM = getViewModel(MainVM.class);
+        if (TextUtils.isEmpty(mainVM.getArtistMbid())) {
+            mainVM.setArtistMbid(MediaBrainzApp.getPreferences().getArtistMbid());
         }
-
+        //todo: убрать.
+        /*
+        if (savedInstanceState != null) {
+            mainVM.setArtistMbid(savedInstanceState.getString(ARTIST_MBID));
+        } else {
+            mainVM.setArtistMbid(MediaBrainzApp.getPreferences().getArtistMbid());
+        }
+        */
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
 
         drawer = findViewById(R.id.drawer);
@@ -65,6 +82,20 @@ public class MainActivity extends BaseActivity implements
         navigationView = findViewById(R.id.navigationView);
         NavigationUI.setupActionBarWithNavController(this, navController, drawer);
         navigationView.setNavigationItemSelectedListener(this);
+        navMenu = navigationView.getMenu();
+
+        navMenu.setGroupVisible(R.id.artistSubmenuInvis,false);
+        navMenu.setGroupVisible(R.id.artistSubmenuVis,false);
+
+        mainVM.hasArtist.observe(this, hasArtist ->
+                navMenu.setGroupVisible(R.id.artistSubmenuInvis,true));
+
+        if (TextUtils.isEmpty(mainVM.getArtistMbid())) {
+            navMenu.setGroupVisible(R.id.artistSubmenuInvis,false);
+            navMenu.setGroupVisible(R.id.artistSubmenuVis,false);
+        } else {
+            navMenu.setGroupVisible(R.id.artistSubmenuInvis,true);
+        }
 
         final WeakReference<NavigationView> weakReference = new WeakReference<>(navigationView);
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
@@ -74,7 +105,8 @@ public class MainActivity extends BaseActivity implements
                 if (view == null) {
                     navController.removeOnDestinationChangedListener(this);
                 } else {
-                    NavigationUIExtension.checkNavViewMenuItem(view, destination);
+                    //todo: при навигации в дровере иногда неправильно выделяет айтемы
+                    //NavigationUIExtension.checkNavViewMenuItem(view, destination);
                     hideLogNavItems();
                     showToolbarSubTitle(null);
                 }
@@ -89,21 +121,28 @@ public class MainActivity extends BaseActivity implements
     }
 
     private void hideLogNavItems() {
-        Menu menu = navigationView.getMenu();
-        menu.findItem(R.id.loginFragment).setVisible(!oauth.hasAccount());
-        menu.findItem(R.id.logoutAction).setVisible(oauth.hasAccount());
+        navMenu.findItem(R.id.loginFragment).setVisible(!oauth.hasAccount());
+        navMenu.findItem(R.id.logoutAction).setVisible(oauth.hasAccount());
     }
 
+    //todo: убрать.
+    /*
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        //outState.putInt(OPTIONS_NAV_ID, optionsNavId);
+        Log.i(TAG, "onSaveInstanceState: ");
+        if (!TextUtils.isEmpty(mainVM.getArtistMbid())) {
+            outState.putString(ARTIST_MBID, mainVM.getArtistMbid());
+        }
     }
+    */
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        //optionsNavId = savedInstanceState.getInt(OPTIONS_NAV_ID, OPTIONS_NAV_DEFAULT);
+    protected void onStop() {
+        super.onStop();
+        if (!TextUtils.isEmpty(mainVM.getArtistMbid())) {
+            MediaBrainzApp.getPreferences().setArtistMbid(mainVM.getArtistMbid());
+        }
     }
 
     @Override
@@ -161,6 +200,16 @@ public class MainActivity extends BaseActivity implements
                 oauth.logOut();
                 navController.navigate(R.id.startFragment);
                 break;
+
+            case R.id.artistItemVis:
+                navMenu.setGroupVisible(R.id.artistSubmenuInvis,true);
+                navMenu.setGroupVisible(R.id.artistSubmenuVis,false);
+                return true;
+
+            case R.id.artistItemInvis:
+                navMenu.setGroupVisible(R.id.artistSubmenuInvis,false);
+                navMenu.setGroupVisible(R.id.artistSubmenuVis,true);
+                return true;
 
             default:
                 handled = NavigationUI.onNavDestinationSelected(menuItem, navController);

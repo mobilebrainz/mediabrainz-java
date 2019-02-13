@@ -11,6 +11,7 @@
     <string name="settings_fragment_label">Settings</string>
     <string name="login_fragment_label">Log In</string>
     <string name="result_search_fragment_label">Search Result</string>
+    <string name="artist_releases_fragment_label">Artist Releases</string>
 
     <!-- labels of menu actions -->
     <string name="scan_barcode_action_label">Scan barcode</string>
@@ -19,6 +20,7 @@
 
     <!-- menu items -->
     <string name="drawer_item_main">Main</string>
+    <string name="drawer_item_artist">Artist</string>
     <string name="drawer_item_actions">Actions</string>
 
     <!-- Release group types -->

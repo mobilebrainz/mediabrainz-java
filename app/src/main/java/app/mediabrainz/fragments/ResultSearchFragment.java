@@ -12,6 +12,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import app.mediabrainz.R;
@@ -26,6 +27,8 @@ import app.mediabrainz.api.model.Release;
 import app.mediabrainz.api.model.ReleaseGroup;
 import app.mediabrainz.communicator.ShowToolbarTitleCommunicator;
 import app.mediabrainz.core.fragment.BaseFragment;
+import app.mediabrainz.viewmodels.ArtistVM;
+import app.mediabrainz.viewmodels.MainVM;
 import app.mediabrainz.viewmodels.ResultSearchVM;
 
 import static app.mediabrainz.MediaBrainzApp.oauth;
@@ -34,6 +37,8 @@ import static app.mediabrainz.MediaBrainzApp.oauth;
 public class ResultSearchFragment extends BaseFragment {
 
     public static final String TAG = "ResultSearchF";
+
+    private MainVM mainVM;
 
     private String artistQuery;
     private String albumQuery;
@@ -75,6 +80,8 @@ public class ResultSearchFragment extends BaseFragment {
             searchQuery = args.getSearchQuery();
             searchType = args.getSearchType();
 
+            mainVM = getActivityViewModel(MainVM.class);
+
             resultSearchVM = getViewModel(ResultSearchVM.class);
             observeArtistSearch();
             observeReleaseGroupSearch();
@@ -107,10 +114,12 @@ public class ResultSearchFragment extends BaseFragment {
                         ArtistSearchAdapter adapter = new ArtistSearchAdapter(artists);
                         searchRecyclerView.setAdapter(adapter);
                         adapter.setHolderClickListener(position -> {
-                            //ActivityFactory.startArtistActivity(this, artists.get(position).getId());
+                            mainVM.setArtistMbid(artists.get(position).getId());
+                            Navigation.findNavController(searchRecyclerView).navigate(R.id.artistReleasesFragment);
                         });
                         if (artists.size() == 1) {
-                            //ActivityFactory.startArtistActivity(this, artists.get(0).getId());
+                            mainVM.setArtistMbid(artists.get(0).getId());
+                            Navigation.findNavController(searchRecyclerView).navigate(R.id.artistReleasesFragment);
                         }
                     }
                     break;

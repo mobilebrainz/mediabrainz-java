@@ -50,7 +50,7 @@ public class NavigationUIExtension {
         return behavior instanceof BottomSheetBehavior ? (BottomSheetBehavior) behavior : null;
     }
 
-    private static void unCheckAllMenuItems(@NonNull final Menu menu) {
+    public static void unCheckAllMenuItems(@NonNull final Menu menu) {
         int size = menu.size();
         for (int i = 0; i < size; i++) {
             final MenuItem item = menu.getItem(i);
