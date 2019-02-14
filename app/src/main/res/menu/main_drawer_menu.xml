@@ -77,8 +77,12 @@
             android:icon="@drawable/ic_album_24"
             android:title="@string/artist_releases_fragment_label"/>
 
-    </group>
+        <item
+            android:id="@+id/artistLinksFragment"
+            android:icon="@drawable/ic_link_24"
+            android:title="@string/artist_links_fragment_label"/>
 
+    </group>
 
     <item android:title="@string/drawer_item_actions">
         <menu>

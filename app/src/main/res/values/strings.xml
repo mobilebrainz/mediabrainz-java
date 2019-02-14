@@ -15,6 +15,7 @@
     <string name="login_fragment_label">Log In</string>
     <string name="result_search_fragment_label">Search Result</string>
     <string name="artist_releases_fragment_label">Artist Releases</string>
+    <string name="artist_links_fragment_label">Artist Links</string>
 
     <!-- labels of menu actions -->
     <string name="scan_barcode_action_label">Scan barcode</string>

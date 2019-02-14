@@ -72,4 +72,10 @@
         android:label="@string/artist_releases_fragment_label"
         tools:layout="@layout/fragment_pager_without_icons"/>
 
+    <fragment
+        android:id="@+id/artistLinksFragment"
+        android:name="app.mediabrainz.fragments.ArtistLinksFragment"
+        android:label="@string/artist_links_fragment_label"
+        tools:layout="@layout/fragment_recycler_view"/>
+
 </navigation>
