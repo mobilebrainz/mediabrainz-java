@@ -5,8 +5,7 @@ import android.text.TextUtils;
 import java.util.List;
 
 import androidx.lifecycle.MutableLiveData;
-import app.mediabrainz.MediaBrainzApp;
-import app.mediabrainz.core.viewmodel.BaseViewModel;
+import app.mediabrainz.core.viewmodel.CompositeDisposableViewModel;
 import app.mediabrainz.core.viewmodel.event.Resource;
 import app.mediabrainz.core.viewmodel.event.SingleLiveEvent;
 import app.mediabrainz.core.viewmodel.event.Status;
@@ -14,7 +13,7 @@ import app.mediabrainz.core.viewmodel.event.Status;
 import static app.mediabrainz.MediaBrainzApp.api;
 
 
-public class MainVM extends BaseViewModel {
+public class MainVM extends CompositeDisposableViewModel {
 
     private String artistMbid;
     public final MutableLiveData<Resource<List<String>>> genresResource = new MutableLiveData<>();

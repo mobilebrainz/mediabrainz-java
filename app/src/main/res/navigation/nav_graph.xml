@@ -70,6 +70,6 @@
         android:id="@+id/artistReleasesFragment"
         android:name="app.mediabrainz.fragments.ArtistReleasesFragment"
         android:label="@string/artist_releases_fragment_label"
-        tools:layout="@layout/artist_releases_fragment"/>
+        tools:layout="@layout/fragment_pager_without_icons"/>
 
 </navigation>

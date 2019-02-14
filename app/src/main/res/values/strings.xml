@@ -4,6 +4,9 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string name="retry">Retry</string>
+    <string name="no_ratings">0 ratings</string>
+
     <!-- labels of destinations -->
     <string name="start_fragment_label">Start</string>
     <string name="search_fragment_label">Search</string>
@@ -168,5 +171,20 @@
     <string name="barcode_info_nolog">This barcode is not associated with a MusicBrainz release. Log in to add it.</string>
     <string name="barcode_btn">Add barcode</string>
     <string name="barcode_cancel">Cancel</string>
+
+    !-- ReleaseGroupsPagerAdapter -->
+    <string name="release_group_albums">Albums</string>
+    <string name="release_group_eps">EPs</string>
+    <string name="release_group_lives">Lives</string>
+    <string name="release_group_compilations">Compilations</string>
+    <string name="release_group_singles">Singles</string>
+    <string name="release_group_official">Show only official release groups</string>
+
+    <!-- Ratings nad Tags -->
+    <string name="vote_tag">Vote Tag</string>
+    <string name="rate_entity">Rate: %1$s</string>
+    <string name="edit_login">You must log in before you can edit!</string>
+    <string name="tag_hint">Tag (genre)</string>
+    <string name="rating_text">%1$.2f (%2$d)</string>
 
 </resources>

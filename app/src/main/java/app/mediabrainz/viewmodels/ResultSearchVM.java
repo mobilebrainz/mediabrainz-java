@@ -12,7 +12,7 @@ import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.Recording;
 import app.mediabrainz.api.model.Release;
 import app.mediabrainz.api.model.ReleaseGroup;
-import app.mediabrainz.core.viewmodel.BaseViewModel;
+import app.mediabrainz.core.viewmodel.CompositeDisposableViewModel;
 import app.mediabrainz.core.viewmodel.event.Resource;
 import app.mediabrainz.core.viewmodel.event.Status;
 import app.mediabrainz.data.room.entity.Suggestion;
@@ -21,7 +21,7 @@ import app.mediabrainz.data.room.repository.SuggestionRepository;
 import static app.mediabrainz.MediaBrainzApp.api;
 
 
-public class ResultSearchVM extends BaseViewModel {
+public class ResultSearchVM extends CompositeDisposableViewModel {
 
     public final MutableLiveData<Resource<Artist.ArtistSearch>> artistSearch = new MutableLiveData<>();
     public final MutableLiveData<Resource<ReleaseGroup.ReleaseGroupSearch>> rgSearch = new MutableLiveData<>();

@@ -1,8 +1,8 @@
 package app.mediabrainz.viewmodels;
 
-import app.mediabrainz.core.viewmodel.BaseViewModel;
+import app.mediabrainz.core.viewmodel.CompositeDisposableViewModel;
 
 
-public class StartVM extends BaseViewModel {
+public class StartVM extends CompositeDisposableViewModel {
 
 }
