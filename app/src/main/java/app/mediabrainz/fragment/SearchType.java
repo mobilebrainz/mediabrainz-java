@@ -1,4 +1,4 @@
-package app.mediabrainz.fragments;
+package app.mediabrainz.fragment;
 
 import app.mediabrainz.R;
 

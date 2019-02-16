@@ -1,4 +1,4 @@
-package app.mediabrainz.fragments;
+package app.mediabrainz.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import app.mediabrainz.R;
 import app.mediabrainz.core.fragment.BaseFragment;
-import app.mediabrainz.viewmodels.StartVM;
+import app.mediabrainz.viewmodel.StartVM;
 
 
 public class StartFragment extends BaseFragment {

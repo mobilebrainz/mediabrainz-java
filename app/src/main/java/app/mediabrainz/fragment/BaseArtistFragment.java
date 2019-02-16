@@ -1,4 +1,4 @@
-package app.mediabrainz.fragments;
+package app.mediabrainz.fragment;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,8 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import app.mediabrainz.R;
 import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.core.fragment.BaseFragment;
-import app.mediabrainz.viewmodels.ArtistVM;
-import app.mediabrainz.viewmodels.MainVM;
+import app.mediabrainz.viewmodel.ArtistVM;
+import app.mediabrainz.viewmodel.MainVM;
 
 
 public abstract class BaseArtistFragment extends BaseFragment {

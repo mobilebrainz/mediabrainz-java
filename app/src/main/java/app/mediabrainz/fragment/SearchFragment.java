@@ -1,4 +1,4 @@
-package app.mediabrainz.fragments;
+package app.mediabrainz.fragment;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -23,7 +23,7 @@ import app.mediabrainz.adapter.SuggestionListAdapter;
 import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.core.util.UiUtils;
 import app.mediabrainz.data.room.entity.Suggestion;
-import app.mediabrainz.viewmodels.MainVM;
+import app.mediabrainz.viewmodel.MainVM;
 
 import static app.mediabrainz.MediaBrainzApp.oauth;
 

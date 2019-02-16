@@ -1,4 +1,4 @@
-package app.mediabrainz.data;
+package app.mediabrainz.data.datasource;
 
 import java.util.ArrayList;
 import java.util.Collections;

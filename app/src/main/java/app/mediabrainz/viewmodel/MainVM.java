@@ -1,4 +1,4 @@
-package app.mediabrainz.viewmodels;
+package app.mediabrainz.viewmodel;
 
 import android.text.TextUtils;
 

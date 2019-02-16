@@ -1,4 +1,4 @@
-package app.mediabrainz.activities;
+package app.mediabrainz.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -30,7 +30,7 @@ import app.mediabrainz.core.navigation.NavigationUIExtension;
 import app.mediabrainz.core.zxing.IntentIntegrator;
 import app.mediabrainz.core.zxing.IntentResult;
 import app.mediabrainz.util.MbUtils;
-import app.mediabrainz.viewmodels.MainVM;
+import app.mediabrainz.viewmodel.MainVM;
 
 import static app.mediabrainz.MediaBrainzApp.SUPPORT_MAIL;
 import static app.mediabrainz.MediaBrainzApp.oauth;
@@ -89,7 +89,7 @@ public class MainActivity extends BaseActivity implements
         /*
         FloatingActionButton fab = findViewById(R.id.fabView);
         fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
+                .setAction("Action", null).showArtists());
         */
     }
 

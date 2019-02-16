@@ -9,7 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import app.mediabrainz.activities.MainActivity;
+import app.mediabrainz.activity.MainActivity;
 
 import static android.accounts.AccountManager.KEY_BOOLEAN_RESULT;
 

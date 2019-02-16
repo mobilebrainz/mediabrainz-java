@@ -1,4 +1,4 @@
-package app.mediabrainz.fragments;
+package app.mediabrainz.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

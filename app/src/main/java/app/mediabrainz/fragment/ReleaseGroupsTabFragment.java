@@ -1,4 +1,4 @@
-package app.mediabrainz.fragments;
+package app.mediabrainz.fragment;
 
 
 import android.content.SharedPreferences;
@@ -27,7 +27,7 @@ import app.mediabrainz.core.adapter.RetryCallback;
 import app.mediabrainz.core.fragment.LazyFragment;
 import app.mediabrainz.core.viewmodel.ReleaseGroupsVM;
 import app.mediabrainz.core.viewmodel.event.Status;
-import app.mediabrainz.viewmodels.MainVM;
+import app.mediabrainz.viewmodel.MainVM;
 
 
 import static app.mediabrainz.account.Preferences.PreferenceName.RELEASE_GROUP_OFFICIAL;

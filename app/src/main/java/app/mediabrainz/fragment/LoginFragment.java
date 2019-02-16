@@ -1,4 +1,4 @@
-package app.mediabrainz.fragments;
+package app.mediabrainz.fragment;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -13,8 +13,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.Navigation;
@@ -22,7 +20,7 @@ import app.mediabrainz.R;
 import app.mediabrainz.api.oauth.OAuthException;
 import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.core.util.UiUtils;
-import app.mediabrainz.viewmodels.LoginVM;
+import app.mediabrainz.viewmodel.LoginVM;
 
 
 public class LoginFragment extends BaseFragment {

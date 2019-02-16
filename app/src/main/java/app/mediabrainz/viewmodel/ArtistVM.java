@@ -1,6 +1,4 @@
-package app.mediabrainz.viewmodels;
-
-import java.util.List;
+package app.mediabrainz.viewmodel;
 
 import androidx.lifecycle.MutableLiveData;
 import app.mediabrainz.api.model.Artist;

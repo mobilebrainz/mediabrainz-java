@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentManager;
 import app.mediabrainz.R;
 import app.mediabrainz.api.model.ReleaseGroup;
 import app.mediabrainz.core.adapter.UpdatableFragmentPagerAdapter;
-import app.mediabrainz.fragments.ReleaseGroupsTabFragment;
+import app.mediabrainz.fragment.ReleaseGroupsTabFragment;
 
 import static app.mediabrainz.api.model.ReleaseGroup.PrimaryType.ALBUM;
 import static app.mediabrainz.api.model.ReleaseGroup.PrimaryType.EP;

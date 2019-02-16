@@ -1,4 +1,4 @@
-package app.mediabrainz.viewmodels;
+package app.mediabrainz.viewmodel;
 
 import app.mediabrainz.core.viewmodel.CompositeDisposableViewModel;
 import app.mediabrainz.core.viewmodel.event.Resource;
