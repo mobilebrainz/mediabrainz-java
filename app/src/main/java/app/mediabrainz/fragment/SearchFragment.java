@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
@@ -40,7 +41,6 @@ public class SearchFragment extends BaseFragment {
     private View contentView;
     private View errorView;
     private View progressView;
-    private View logInButton;
     private AutoCompleteTextView artistFieldView;
     private AutoCompleteTextView albumFieldView;
     private AutoCompleteTextView trackFieldView;
@@ -53,7 +53,6 @@ public class SearchFragment extends BaseFragment {
         View view = inflate(R.layout.search_fragment, container);
 
         contentView = view.findViewById(R.id.contentView);
-        logInButton = view.findViewById(R.id.logInButton);
         errorView = view.findViewById(R.id.errorView);
         progressView = view.findViewById(R.id.progressView);
         artistFieldView = view.findViewById(R.id.artistFieldView);
@@ -67,6 +66,7 @@ public class SearchFragment extends BaseFragment {
         view.findViewById(R.id.inputSearchButton).setOnClickListener(v -> inputSearch());
 
         if (!oauth.hasAccount()) {
+            Button logInButton = view.findViewById(R.id.logInButton);
             logInButton.setVisibility(View.VISIBLE);
             logInButton.setOnClickListener(v -> {
                 if (!isLoading && !isError) {
@@ -80,26 +80,19 @@ public class SearchFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         mainVM = getActivityViewModel(MainVM.class);
-        mainVM.genresResource.observe(this, resource -> {
-            if (resource == null) return;
-            switch (resource.getStatus()) {
-                case LOADING:
-                    viewProgressLoading(true);
-                    break;
-                case ERROR:
-                    showConnectionWarning(resource.getThrowable());
-                    break;
-                case SUCCESS:
-                    viewProgressLoading(false);
-                    genres = resource.getData();
-                    break;
-            }
-        });
+        observe();
 
         setupSearchTypeSpinner();
         if (checkNetworkConnection()) load();
-        else showConnectionWarning(null);
+        else showError(true);
+    }
+
+    private void observe() {
+        mainVM.genresld.observe(this, genres -> this.genres = genres);
+        mainVM.progressld.observe(this, this::showProgressLoading);
+        mainVM.errorld.observe(this, this::showError);
     }
 
     private void setupSearchTypeSpinner() {
@@ -175,8 +168,7 @@ public class SearchFragment extends BaseFragment {
     }
 
     private void load() {
-        viewError(false);
-        mainVM.getGenres();
+        mainVM.loadGenres();
     }
 
     @Override
@@ -195,17 +187,12 @@ public class SearchFragment extends BaseFragment {
         }
     }
 
-    private void showConnectionWarning(Throwable t) {
-        viewProgressLoading(false);
-        viewError(true);
-        errorView.findViewById(R.id.retryButton).setOnClickListener(v -> load());
-    }
-
-    private void viewError(boolean isView) {
-        if (isView) {
+    private void showError(boolean show) {
+        if (show) {
             isError = true;
             contentView.setVisibility(View.INVISIBLE);
             errorView.setVisibility(View.VISIBLE);
+            errorView.findViewById(R.id.retryButton).setOnClickListener(v -> load());
         } else {
             isError = false;
             errorView.setVisibility(View.GONE);
@@ -213,8 +200,8 @@ public class SearchFragment extends BaseFragment {
         }
     }
 
-    private void viewProgressLoading(boolean isView) {
-        if (isView) {
+    private void showProgressLoading(boolean show) {
+        if (show) {
             isLoading = true;
             contentView.setAlpha(0.25F);
             progressView.setVisibility(View.VISIBLE);

@@ -17,20 +17,21 @@ public class MainVM extends CompositeDisposableViewModel {
 
     private String artistMbid;
     public final MutableLiveData<Resource<List<String>>> genresResource = new MutableLiveData<>();
+
+    public final MutableLiveData<List<String>> genresld = new MutableLiveData<>();
+
     public final SingleLiveEvent<Boolean> hasArtist = new SingleLiveEvent<>();
 
-    public void getGenres() {
-        Resource<List<String>> resource = genresResource.getValue();
-        if (resource == null || resource.getData() == null || resource.getStatus() != Status.SUCCESS) {
-            loadGenres();
-        }
-    }
-
     public void loadGenres() {
-        genresResource.setValue(Resource.loading());
-        dispose(api.getGenres(
-                genres -> genresResource.setValue(Resource.success(genres)),
-                t -> genresResource.setValue(Resource.error(t))));
+        if (genresld.getValue() == null) {
+            initLoading();
+            dispose(api.getGenres(
+                    genres -> {
+                        progressld.setValue(false);
+                        genresld.setValue(genres);
+                    },
+                    this::setError));
+        }
     }
 
     public String getArtistMbid() {

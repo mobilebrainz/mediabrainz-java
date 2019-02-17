@@ -13,23 +13,14 @@ import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.Recording;
 import app.mediabrainz.api.model.Release;
 import app.mediabrainz.api.model.ReleaseGroup;
-import app.mediabrainz.api.model.Tag;
 import app.mediabrainz.core.viewmodel.CompositeDisposableViewModel;
-import app.mediabrainz.core.viewmodel.event.Resource;
-import app.mediabrainz.core.viewmodel.event.Status;
-import app.mediabrainz.data.datamapper.ArtistMapper;
 import app.mediabrainz.data.room.entity.Suggestion;
-import app.mediabrainz.data.room.entity.User;
 import app.mediabrainz.data.room.repository.SuggestionRepository;
 
 import static app.mediabrainz.MediaBrainzApp.api;
 
 
 public class ResultSearchVM extends CompositeDisposableViewModel {
-
-    public final MutableLiveData<Boolean> progressld = new MutableLiveData<>();
-    public final MutableLiveData<Boolean> noresultsld = new MutableLiveData<>();
-    public final MutableLiveData<Boolean> errorld = new MutableLiveData<>();
 
     public final MutableLiveData<List<Artist>> artistsld = new MutableLiveData<>();
     public final MutableLiveData<List<ReleaseGroup>> releaseGroupsld = new MutableLiveData<>();
@@ -44,17 +35,6 @@ public class ResultSearchVM extends CompositeDisposableViewModel {
         if (MediaBrainzApp.getPreferences().isSearchSuggestionsEnabled() && !TextUtils.isEmpty(word)) {
             suggestionRepository.insert(new Suggestion(word, suggestionField));
         }
-    }
-
-    private void initLoading() {
-        errorld.setValue(false);
-        noresultsld.setValue(false);
-        progressld.setValue(true);
-    }
-
-    private void setError() {
-        progressld.setValue(false);
-        errorld.setValue(true);
     }
 
     public void searchArtists(String query) {
@@ -79,7 +59,7 @@ public class ResultSearchVM extends CompositeDisposableViewModel {
                             noresultsld.setValue(true);
                         }
                     },
-                    t -> setError()));
+                    this::setError));
         }
     }
 
@@ -95,7 +75,7 @@ public class ResultSearchVM extends CompositeDisposableViewModel {
                             noresultsld.setValue(true);
                         }
                     },
-                    t -> setError()));
+                    this::setError));
         }
     }
 
@@ -111,7 +91,7 @@ public class ResultSearchVM extends CompositeDisposableViewModel {
                             noresultsld.setValue(true);
                         }
                     },
-                    t -> setError()));
+                    this::setError));
         }
     }
 
@@ -127,7 +107,7 @@ public class ResultSearchVM extends CompositeDisposableViewModel {
                             noresultsld.setValue(true);
                         }
                     },
-                    t -> setError()));
+                    this::setError));
         }
     }
 
@@ -143,7 +123,7 @@ public class ResultSearchVM extends CompositeDisposableViewModel {
                             noresultsld.setValue(true);
                         }
                     },
-                    t -> setError()));
+                    this::setError));
         }
     }
 
@@ -159,7 +139,7 @@ public class ResultSearchVM extends CompositeDisposableViewModel {
                         }
                         releasesld.setValue(releases);
                     },
-                    t -> setError()));
+                    this::setError));
         }
     }
 
