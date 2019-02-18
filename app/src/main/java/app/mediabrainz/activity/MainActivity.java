@@ -72,7 +72,7 @@ public class MainActivity extends BaseActivity implements
                 if (view == null) {
                     navController.removeOnDestinationChangedListener(this);
                 } else {
-                    //todo: при навигации в дровере иногда неправильно выделяет айтемы
+                    //todo: при навигации в дровере иногда неправильно выделяет айтемы, но надо сделать чтобы правильно выделялись айтемы при бекпрессе
                     //NavigationUIExtension.checkNavViewMenuItem(view, destination);
                     hideLogNavItems();
                 }
@@ -138,7 +138,13 @@ public class MainActivity extends BaseActivity implements
         boolean handled = true;
         switch (menuItem.getItemId()) {
             case android.R.id.home:
-                drawer.openDrawer(GravityCompat.START);
+                //drawer.openDrawer(GravityCompat.START);
+                if (navController.getCurrentDestination() != null &&
+                        navController.getCurrentDestination().getId() != R.id.startFragment) {
+                    onBackPressed();
+                } else {
+                    drawer.openDrawer(GravityCompat.START);
+                }
                 break;
             default:
                 handled = NavigationUI.onNavDestinationSelected(menuItem, navController);
