@@ -14,6 +14,7 @@
     <string name="settings_fragment_label">Settings</string>
     <string name="login_fragment_label">Log In</string>
     <string name="result_search_fragment_label">Search Result</string>
+    <string name="artist_fragment_label">Artist</string>
     <string name="artist_releases_fragment_label">Artist Releases</string>
     <string name="artist_links_fragment_label">Artist Links</string>
 
@@ -24,7 +25,7 @@
 
     <!-- menu items -->
     <string name="drawer_item_main">Main</string>
-    <string name="drawer_item_artist">Artist</string>
+    <string name="drawer_item_items">Items</string>
     <string name="drawer_item_actions">Actions</string>
 
     <!-- Release group types -->
@@ -187,5 +188,11 @@
     <string name="edit_login">You must log in before you can edit!</string>
     <string name="tag_hint">Tag (genre)</string>
     <string name="rating_text">%1$.2f (%2$d)</string>
+
+    <!-- Menus -->
+    <string name="releases_item">Releases</string>
+    <string name="relations_item">Relations</string>
+    <string name="tags_item">Tags</string>
+    <string name="links_item">Links</string>
 
 </resources>

@@ -65,6 +65,21 @@
             android:name="searchType"
             app:argType="integer"
             android:defaultValue="-1"/>
+        <action
+            android:id="@+id/action_resultSearchFragment_to_artistFragment"
+            app:destination="@id/artistFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/artistFragment"
+        android:name="app.mediabrainz.fragment.ArtistFragment"
+        android:label="@string/artist_fragment_label"
+        tools:layout="@layout/artist_fragment">
+        <action
+            android:id="@+id/action_artistFragment_to_artistReleasesFragment"
+            app:destination="@id/artistReleasesFragment"/>
+        <action
+            android:id="@+id/action_artistFragment_to_artistLinksFragment"
+            app:destination="@id/artistLinksFragment"/>
     </fragment>
     <fragment
         android:id="@+id/artistReleasesFragment"

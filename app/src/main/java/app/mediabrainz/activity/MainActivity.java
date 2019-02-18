@@ -30,7 +30,7 @@ import app.mediabrainz.core.navigation.NavigationUIExtension;
 import app.mediabrainz.core.zxing.IntentIntegrator;
 import app.mediabrainz.core.zxing.IntentResult;
 import app.mediabrainz.util.MbUtils;
-import app.mediabrainz.viewmodel.MainVM;
+import app.mediabrainz.viewmodel.ArtistVM;
 
 import static app.mediabrainz.MediaBrainzApp.SUPPORT_MAIL;
 import static app.mediabrainz.MediaBrainzApp.oauth;
@@ -40,8 +40,6 @@ public class MainActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
-
-    private MainVM mainVM;
 
     private Menu navMenu;
     private NavController navController;
@@ -64,8 +62,6 @@ public class MainActivity extends BaseActivity implements
         navigationView.setNavigationItemSelectedListener(this);
         navMenu = navigationView.getMenu();
 
-        mainVM = getViewModel(MainVM.class);
-
         initArtistView();
 
         final WeakReference<NavigationView> weakReference = new WeakReference<>(navigationView);
@@ -79,9 +75,6 @@ public class MainActivity extends BaseActivity implements
                     //todo: при навигации в дровере иногда неправильно выделяет айтемы
                     //NavigationUIExtension.checkNavViewMenuItem(view, destination);
                     hideLogNavItems();
-                    if (getSupportActionBar() != null) {
-                        getSupportActionBar().setSubtitle(null);
-                    }
                 }
             }
         });
@@ -94,18 +87,12 @@ public class MainActivity extends BaseActivity implements
     }
 
     private void initArtistView() {
-        if (TextUtils.isEmpty(mainVM.getArtistMbid())) {
-            mainVM.setArtistMbid(MediaBrainzApp.getPreferences().getArtistMbid());
+        ArtistVM artistVM = getViewModel(ArtistVM.class);
+        if (TextUtils.isEmpty(artistVM.getArtistMbid())) {
+            artistVM.setArtistMbid(MediaBrainzApp.getPreferences().getArtistMbid());
         }
-        mainVM.hasArtist.observe(this, hasArtist ->
-                navMenu.setGroupVisible(R.id.artistSubmenuInvis, true));
-
-        if (TextUtils.isEmpty(mainVM.getArtistMbid())) {
-            navMenu.setGroupVisible(R.id.artistSubmenuInvis, false);
-            navMenu.setGroupVisible(R.id.artistSubmenuVis, false);
-        } else {
-            navMenu.setGroupVisible(R.id.artistSubmenuInvis, true);
-        }
+        artistVM.hasArtist.observe(this, hasArtist -> navMenu.findItem(R.id.artistFragment).setVisible(true));
+        navMenu.findItem(R.id.artistFragment).setVisible(!TextUtils.isEmpty(artistVM.getArtistMbid()));
     }
 
     private void hideLogNavItems() {
@@ -116,8 +103,9 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-        if (!TextUtils.isEmpty(mainVM.getArtistMbid())) {
-            MediaBrainzApp.getPreferences().setArtistMbid(mainVM.getArtistMbid());
+        ArtistVM artistVM = getViewModel(ArtistVM.class);
+        if (!TextUtils.isEmpty(artistVM.getArtistMbid())) {
+            MediaBrainzApp.getPreferences().setArtistMbid(artistVM.getArtistMbid());
         }
     }
 
@@ -176,16 +164,6 @@ public class MainActivity extends BaseActivity implements
                 oauth.logOut();
                 navController.navigate(R.id.startFragment);
                 break;
-
-            case R.id.artistItemVis:
-                navMenu.setGroupVisible(R.id.artistSubmenuInvis, true);
-                navMenu.setGroupVisible(R.id.artistSubmenuVis, false);
-                return true;
-
-            case R.id.artistItemInvis:
-                navMenu.setGroupVisible(R.id.artistSubmenuInvis, false);
-                navMenu.setGroupVisible(R.id.artistSubmenuVis, true);
-                return true;
 
             default:
                 handled = NavigationUI.onNavDestinationSelected(menuItem, navController);

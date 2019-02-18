@@ -3,6 +3,7 @@ package app.mediabrainz.core.fragment;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +20,9 @@ import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
@@ -29,6 +32,17 @@ import static androidx.core.content.ContextCompat.getSystemService;
 
 
 public abstract class BaseFragment extends Fragment {
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (getActivity() != null) {
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setSubtitle(null);
+            }
+        }
+    }
 
     protected <T extends ViewModel> T getViewModel(@NonNull Class<T> modelClass) {
         return ViewModelProviders.of(this).get(modelClass);

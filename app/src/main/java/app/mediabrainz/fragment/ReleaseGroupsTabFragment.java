@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -27,6 +29,7 @@ import app.mediabrainz.core.adapter.RetryCallback;
 import app.mediabrainz.core.fragment.LazyFragment;
 import app.mediabrainz.core.viewmodel.ReleaseGroupsVM;
 import app.mediabrainz.core.viewmodel.event.Status;
+import app.mediabrainz.viewmodel.ArtistVM;
 import app.mediabrainz.viewmodel.MainVM;
 
 
@@ -39,6 +42,7 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
 
     private static final String RELEASES_TAB = "RELEASES_TAB";
 
+    private ArtistVM artistVM;
     private String artistMbid;
     private ReleaseGroupsPagerAdapter.ReleaseTab releaseGroupType;
     private ReleaseGroupsVM releaseGroupsVM;
@@ -84,10 +88,17 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() != null) {
-            artistMbid = getActivityViewModel(MainVM.class).getArtistMbid();
+            artistVM = getActivityViewModel(ArtistVM.class);
+            artistMbid = artistVM.getArtistMbid();
             if (!TextUtils.isEmpty(artistMbid)) {
                 loadView();
             }
+            artistVM.artistld.observe(this, artist -> {
+                ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+                if (actionBar != null) {
+                    actionBar.setSubtitle(artist.getName());
+                }
+            });
         }
     }
 

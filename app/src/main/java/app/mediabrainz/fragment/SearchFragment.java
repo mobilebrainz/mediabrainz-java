@@ -66,7 +66,7 @@ public class SearchFragment extends BaseFragment {
         view.findViewById(R.id.inputSearchButton).setOnClickListener(v -> inputSearch());
 
         if (!oauth.hasAccount()) {
-            Button logInButton = view.findViewById(R.id.logInButton);
+            View logInButton = view.findViewById(R.id.logInButton);
             logInButton.setVisibility(View.VISIBLE);
             logInButton.setOnClickListener(v -> {
                 if (!isLoading && !isError) {

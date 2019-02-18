@@ -30,6 +30,7 @@ import app.mediabrainz.api.model.Release;
 import app.mediabrainz.api.model.ReleaseGroup;
 import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.data.room.entity.Suggestion;
+import app.mediabrainz.viewmodel.ArtistVM;
 import app.mediabrainz.viewmodel.MainVM;
 import app.mediabrainz.viewmodel.ResultSearchVM;
 
@@ -50,7 +51,7 @@ public class ResultSearchFragment extends BaseFragment {
     private String searchQuery;
     private int searchType = -1;
 
-    private MainVM mainVM;
+    //private MainVM mainVM;
     private ResultSearchVM resultSearchVM;
 
     private View contentView;
@@ -84,7 +85,7 @@ public class ResultSearchFragment extends BaseFragment {
             searchQuery = args.getSearchQuery();
             searchType = args.getSearchType();
 
-            mainVM = getActivityViewModel(MainVM.class);
+            //mainVM = getActivityViewModel(MainVM.class);
             resultSearchVM = getViewModel(ResultSearchVM.class);
             observe();
             search();
@@ -107,18 +108,20 @@ public class ResultSearchFragment extends BaseFragment {
     private void showArtists(List<Artist> artists) {
         ArtistSearchAdapter adapter = new ArtistSearchAdapter(artists);
         searchRecyclerView.setAdapter(adapter);
+        final ArtistVM artistVM = getActivityViewModel(ArtistVM.class);
         adapter.setHolderClickListener(position -> {
             Artist artist = artists.get(position);
-            mainVM.setArtistMbid(artist.getId());
 
             //todo: сохранять и результат поиска, и поисковое слово?
             insertQuerySuggestion();
             resultSearchVM.insertSuggestion(artist.getName(), ARTIST);
-            Navigation.findNavController(searchRecyclerView).navigate(R.id.artistReleasesFragment);
+
+            artistVM.setArtistMbid(artist.getId());
+            Navigation.findNavController(searchRecyclerView).navigate(R.id.action_resultSearchFragment_to_artistFragment);
         });
         if (artists.size() == 1) {
-            mainVM.setArtistMbid(artists.get(0).getId());
-            Navigation.findNavController(searchRecyclerView).navigate(R.id.artistReleasesFragment);
+            artistVM.setArtistMbid(artists.get(0).getId());
+            Navigation.findNavController(searchRecyclerView).navigate(R.id.action_resultSearchFragment_to_artistFragment);
         }
     }
 

@@ -33,6 +33,7 @@ public class ArtistLinksFragment extends BaseArtistFragment {
         progressView = view.findViewById(R.id.progressView);
         noresultsView = view.findViewById(R.id.noresultsView);
         recyclerView = view.findViewById(R.id.recyclerView);
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
 
         return view;
     }

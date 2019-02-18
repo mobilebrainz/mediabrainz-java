@@ -1,31 +1,54 @@
 package app.mediabrainz.viewmodel;
 
+import android.text.TextUtils;
+
 import androidx.lifecycle.MutableLiveData;
 import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.core.viewmodel.CompositeDisposableViewModel;
-import app.mediabrainz.core.viewmodel.event.Resource;
-import app.mediabrainz.core.viewmodel.event.Status;
+import app.mediabrainz.core.viewmodel.event.SingleLiveEvent;
 
 import static app.mediabrainz.MediaBrainzApp.api;
 
 
 public class ArtistVM extends CompositeDisposableViewModel {
 
-    public MutableLiveData<Resource<Artist>> artistResource = new MutableLiveData<>();
+    private String artistMbid;
+    public final SingleLiveEvent<Boolean> hasArtist = new SingleLiveEvent<>();
+    public final MutableLiveData<Artist> artistld = new MutableLiveData<>();
 
-    public void getArtist(String mbid) {
-        Resource<Artist> resource = artistResource.getValue();
-        if (resource == null || resource.getData() == null || resource.getStatus() != Status.SUCCESS
-            || !mbid.equals(resource.getData().getId())) {
-                loadArtist(mbid);
+    public void loadArtist() {
+        if (artistld.getValue() == null) {
+            refreshArtist();
         }
     }
 
-    public void loadArtist(String mbid) {
-        artistResource.setValue(Resource.loading());
-        dispose(api.getArtist(mbid,
-                artist -> artistResource.setValue(Resource.success(artist)),
-                t -> artistResource.setValue(Resource.error(t))));
+    public void refreshArtist() {
+        if (!TextUtils.isEmpty(artistMbid)) {
+            initLoading();
+            dispose(api.getArtist(artistMbid,
+                    artist -> {
+                        progressld.setValue(false);
+                        if (artist != null) {
+                            artistld.setValue(artist);
+                        } else {
+                            noresultsld.setValue(true);
+                        }
+                    },
+                    this::setError));
+        }
+    }
+
+    public String getArtistMbid() {
+        return artistMbid;
+    }
+
+    public void setArtistMbid(String artistMbid) {
+        if (!TextUtils.isEmpty(artistMbid)) {
+            if (this.artistMbid == null) {
+                hasArtist.setValue(true);
+            }
+            this.artistMbid = artistMbid;
+        }
     }
 
 }

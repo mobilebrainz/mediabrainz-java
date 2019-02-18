@@ -35,54 +35,27 @@
         </menu>
     </item>
 
-    <!--
-    <item
-        android:id="@+id/artistItem"
-        android:title="@string/drawer_item_artist">
+    <item android:title="@string/drawer_item_items">
         <menu>
-            <group
-                android:id="@+id/artistSubmenu"
-                android:checkableBehavior="single">
+            <group android:checkableBehavior="single">
                 <item
-                    android:id="@+id/artistReleasesFragment"
+                    android:id="@+id/artistFragment"
+                    android:icon="@drawable/ic_artist_24"
+                    android:title="@string/artist_fragment_label"/>
+                <!--
+                <item
+                    android:id="@+id/releaseFragment"
                     android:icon="@drawable/ic_album_24"
-                    android:title="@string/artist_releases_fragment_label"/>
+                    android:title="@string/release_fragment_label"/>
 
+                <item
+                    android:id="@+id/recordingFragment"
+                    android:icon="@drawable/ic_track_24"
+                    android:title="@string/recirding_fragment_label"/>
+                -->
             </group>
         </menu>
     </item>
-    -->
-
-    <group
-        android:id="@+id/artistSubmenuInvis"
-        android:checkableBehavior="single">
-        <item
-            android:id="@+id/artistItemInvis"
-            android:icon="@drawable/ic_expand_more_24"
-            android:title="@string/drawer_item_artist"
-            />
-    </group>
-
-    <group
-        android:id="@+id/artistSubmenuVis"
-        android:checkableBehavior="single"
-        android:visible="false">
-        <item
-            android:id="@+id/artistItemVis"
-            android:icon="@drawable/ic_expand_less_24"
-            android:title="@string/drawer_item_artist"/>
-
-        <item
-            android:id="@+id/artistReleasesFragment"
-            android:icon="@drawable/ic_album_24"
-            android:title="@string/artist_releases_fragment_label"/>
-
-        <item
-            android:id="@+id/artistLinksFragment"
-            android:icon="@drawable/ic_link_24"
-            android:title="@string/artist_links_fragment_label"/>
-
-    </group>
 
     <item android:title="@string/drawer_item_actions">
         <menu>
