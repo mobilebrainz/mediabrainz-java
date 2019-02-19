@@ -60,7 +60,7 @@ public class ArtistFragment extends BaseArtistFragment implements
 
                     break;
                 case R.id.tagsItem:
-
+                    Navigation.findNavController(v).navigate(R.id.action_artistFragment_to_artistTagsPagerFragment);
                     break;
                 case R.id.linksItem:
                     Navigation.findNavController(v).navigate(R.id.action_artistFragment_to_artistLinksFragment);

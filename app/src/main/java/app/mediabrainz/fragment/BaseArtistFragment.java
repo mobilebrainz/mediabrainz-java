@@ -43,11 +43,13 @@ public abstract class BaseArtistFragment extends BaseFragment {
             artistVM.progressld.observe(this, this::showProgressLoading);
             artistVM.errorld.observe(this, this::showError);
             artistVM.artistld.observe(this, artist -> {
-                ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-                if (actionBar != null) {
-                    actionBar.setSubtitle(artist.getName());
+                if (artist != null) {
+                    ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+                    if (actionBar != null) {
+                        actionBar.setSubtitle(artist.getName());
+                    }
+                    show(artist);
                 }
-                show(artist);
             });
             artistVM.loadArtist();
         }

@@ -48,6 +48,7 @@ public class ArtistVM extends CompositeDisposableViewModel {
                 hasArtist.setValue(true);
             }
             this.artistMbid = artistMbid;
+            artistld.setValue(null);
         }
     }
 

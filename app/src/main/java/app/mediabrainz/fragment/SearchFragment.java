@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ import app.mediabrainz.adapter.SuggestionListAdapter;
 import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.core.util.UiUtils;
 import app.mediabrainz.data.room.entity.Suggestion;
-import app.mediabrainz.viewmodel.MainVM;
+import app.mediabrainz.viewmodel.TagsVM;
 
 import static app.mediabrainz.MediaBrainzApp.oauth;
 
@@ -34,7 +33,7 @@ public class SearchFragment extends BaseFragment {
     private static final String TAG = "SearchFragment";
 
     private List<String> genres = new ArrayList<>();
-    private MainVM mainVM;
+    private TagsVM tagsVM;
     private boolean isLoading;
     private boolean isError;
 
@@ -81,7 +80,7 @@ public class SearchFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mainVM = getActivityViewModel(MainVM.class);
+        tagsVM = getActivityViewModel(TagsVM.class);
         observe();
 
         setupSearchTypeSpinner();
@@ -90,9 +89,9 @@ public class SearchFragment extends BaseFragment {
     }
 
     private void observe() {
-        mainVM.genresld.observe(this, genres -> this.genres = genres);
-        mainVM.progressld.observe(this, this::showProgressLoading);
-        mainVM.errorld.observe(this, this::showError);
+        tagsVM.genresld.observe(this, genres -> this.genres = genres);
+        tagsVM.progressld.observe(this, this::showProgressLoading);
+        tagsVM.errorld.observe(this, this::showError);
     }
 
     private void setupSearchTypeSpinner() {
@@ -168,7 +167,7 @@ public class SearchFragment extends BaseFragment {
     }
 
     private void load() {
-        mainVM.loadGenres();
+        tagsVM.loadGenres();
     }
 
     @Override

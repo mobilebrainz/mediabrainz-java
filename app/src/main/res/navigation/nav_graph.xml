@@ -80,6 +80,9 @@
         <action
             android:id="@+id/action_artistFragment_to_artistLinksFragment"
             app:destination="@id/artistLinksFragment"/>
+        <action
+            android:id="@+id/action_artistFragment_to_artistTagsPagerFragment"
+            app:destination="@id/artistTagsPagerFragment"/>
     </fragment>
     <fragment
         android:id="@+id/artistReleasesFragment"
@@ -91,6 +94,12 @@
         android:id="@+id/artistLinksFragment"
         android:name="app.mediabrainz.fragment.ArtistLinksFragment"
         android:label="@string/artist_links_fragment_label"
-        tools:layout="@layout/fragment_recycler_view"/>
+        tools:layout="@layout/fragment_swipe_recycler_view"/>
+
+    <fragment
+        android:id="@+id/artistTagsPagerFragment"
+        android:name="app.mediabrainz.fragment.ArtistTagsPagerFragment"
+        android:label="@string/artist_tags_pager_fragment_label"
+        tools:layout="@layout/fragment_edit_tags_pager"/>
 
 </navigation>

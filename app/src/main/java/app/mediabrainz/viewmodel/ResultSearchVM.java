@@ -37,8 +37,8 @@ public class ResultSearchVM extends CompositeDisposableViewModel {
         }
     }
 
-    public void searchArtists(String query) {
-        if (artistsld.getValue() == null) {
+    public void searchArtists(String query, boolean refresh) {
+        if (refresh || artistsld.getValue() == null) {
             initLoading();
             dispose(api.searchArtist(query,
                     result -> {
@@ -63,8 +63,8 @@ public class ResultSearchVM extends CompositeDisposableViewModel {
         }
     }
 
-    public void searchReleaseGroups(String artistQuery, String albumQuery) {
-        if (releaseGroupsld.getValue() == null) {
+    public void searchReleaseGroups(String artistQuery, String albumQuery, boolean refresh) {
+        if (refresh || releaseGroupsld.getValue() == null) {
             initLoading();
             dispose(api.searchAlbum(artistQuery, albumQuery,
                     result -> {
@@ -79,8 +79,8 @@ public class ResultSearchVM extends CompositeDisposableViewModel {
         }
     }
 
-    public void searchRecordigs(String artistQuery, String albumQuery, String trackQuery) {
-        if (recordingsld.getValue() == null) {
+    public void searchRecordigs(String artistQuery, String albumQuery, String trackQuery, boolean refresh) {
+        if (refresh || recordingsld.getValue() == null) {
             initLoading();
             dispose(api.searchRecording(artistQuery, albumQuery, trackQuery,
                     result -> {
@@ -95,8 +95,8 @@ public class ResultSearchVM extends CompositeDisposableViewModel {
         }
     }
 
-    public void searchTags(String searchQuery) {
-        if (tagsld.getValue() == null) {
+    public void searchTags(String searchQuery, boolean refresh) {
+        if (refresh || tagsld.getValue() == null) {
             initLoading();
             dispose(api.searchTagFromSite(searchQuery, 1, 100,
                     result -> {
@@ -111,8 +111,8 @@ public class ResultSearchVM extends CompositeDisposableViewModel {
         }
     }
 
-    public void searchUsers(String searchQuery) {
-        if (usersld.getValue() == null) {
+    public void searchUsers(String searchQuery, boolean refresh) {
+        if (refresh || usersld.getValue() == null) {
             initLoading();
             dispose(api.searchUserFromSite(searchQuery, 1, 100,
                     result -> {
@@ -127,8 +127,8 @@ public class ResultSearchVM extends CompositeDisposableViewModel {
         }
     }
 
-    public void searchReleasesByBarcode(String barcode) {
-        if (releasesld.getValue() == null) {
+    public void searchReleasesByBarcode(String barcode, boolean refresh) {
+        if (refresh || releasesld.getValue() == null) {
             initLoading();
             dispose(api.searchReleasesByBarcode(barcode,
                     result -> {

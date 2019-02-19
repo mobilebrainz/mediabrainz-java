@@ -27,7 +27,7 @@ public class ArtistLinksFragment extends BaseArtistFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflate(R.layout.fragment_recycler_view, container);
+        View view = inflate(R.layout.fragment_swipe_recycler_view, container);
 
         errorView = view.findViewById(R.id.errorView);
         progressView = view.findViewById(R.id.progressView);

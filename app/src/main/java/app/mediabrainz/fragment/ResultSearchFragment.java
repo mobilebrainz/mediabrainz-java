@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import app.mediabrainz.R;
 import app.mediabrainz.adapter.recycler.ArtistSearchAdapter;
 import app.mediabrainz.adapter.recycler.ReleaseAdapter;
@@ -50,26 +51,31 @@ public class ResultSearchFragment extends BaseFragment {
     private String trackQuery;
     private String searchQuery;
     private int searchType = -1;
+    private boolean isLoading;
+    private boolean isError;
 
-    //private MainVM mainVM;
     private ResultSearchVM resultSearchVM;
 
+    protected SwipeRefreshLayout swipeRefreshLayout;
     private View contentView;
     private RecyclerView searchRecyclerView;
     private View errorView;
-    private View progressView;
     private View noresultsView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflate(R.layout.result_search_fragment, container);
 
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         contentView = view.findViewById(R.id.contentView);
         errorView = view.findViewById(R.id.errorView);
-        progressView = view.findViewById(R.id.progressView);
         noresultsView = view.findViewById(R.id.noresultsView);
         searchRecyclerView = view.findViewById(R.id.searchRecyclerView);
         configSearchRecycler();
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (!isLoading) search(true);
+        });
 
         return view;
     }
@@ -85,15 +91,17 @@ public class ResultSearchFragment extends BaseFragment {
             searchQuery = args.getSearchQuery();
             searchType = args.getSearchType();
 
-            //mainVM = getActivityViewModel(MainVM.class);
             resultSearchVM = getViewModel(ResultSearchVM.class);
             observe();
-            search();
+            search(false);
         }
     }
 
     private void observe() {
-        resultSearchVM.progressld.observe(this, this::showProgressLoading);
+        resultSearchVM.progressld.observe(this, aBoolean -> {
+            isLoading = aBoolean;
+            swipeRefreshLayout.setRefreshing(aBoolean);
+        });
         resultSearchVM.errorld.observe(this, this::showError);
         resultSearchVM.noresultsld.observe(this, this::showNoResult);
 
@@ -252,7 +260,7 @@ public class ResultSearchFragment extends BaseFragment {
         searchRecyclerView.setHasFixedSize(true);
     }
 
-    private void search() {
+    private void search(boolean refresh) {
         if (getActivity() == null) return;
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar == null) return;
@@ -262,15 +270,15 @@ public class ResultSearchFragment extends BaseFragment {
 
             if (searchType == SearchType.TAG.ordinal()) {
                 actionBar.setTitle(getString(R.string.search_tag_title));
-                resultSearchVM.searchTags(searchQuery);
+                resultSearchVM.searchTags(searchQuery, refresh);
 
             } else if (searchType == SearchType.USER.ordinal()) {
                 actionBar.setTitle(getString(R.string.search_user_title));
-                resultSearchVM.searchUsers(searchQuery);
+                resultSearchVM.searchUsers(searchQuery, refresh);
 
             } else if (searchType == SearchType.BARCODE.ordinal()) {
                 actionBar.setTitle(getString(R.string.search_barcode_title));
-                resultSearchVM.searchReleasesByBarcode(searchQuery);
+                resultSearchVM.searchReleasesByBarcode(searchQuery, refresh);
             }
 
         } else if (!TextUtils.isEmpty(trackQuery)) {
@@ -278,19 +286,19 @@ public class ResultSearchFragment extends BaseFragment {
             // todo: do title without artistQuery?
             actionBar.setSubtitle(!TextUtils.isEmpty(artistQuery) ? artistQuery + " / " + trackQuery : trackQuery);
             //actionBar.setSubtitle(!TextUtils.isEmpty(trackQuery);
-            resultSearchVM.searchRecordigs(artistQuery, albumQuery, trackQuery);
+            resultSearchVM.searchRecordigs(artistQuery, albumQuery, trackQuery, refresh);
 
         } else if (!TextUtils.isEmpty(albumQuery)) {
             actionBar.setTitle(getString(R.string.search_album_title));
             // todo: do title without artistQuery?
             actionBar.setSubtitle(!TextUtils.isEmpty(artistQuery) ? artistQuery + " / " + albumQuery : albumQuery);
             //actionBar.setSubtitle(albumQuery);
-            resultSearchVM.searchReleaseGroups(artistQuery, albumQuery);
+            resultSearchVM.searchReleaseGroups(artistQuery, albumQuery, refresh);
 
         } else if (!TextUtils.isEmpty(artistQuery)) {
             actionBar.setTitle(getString(R.string.search_artist_title));
             actionBar.setSubtitle(artistQuery);
-            resultSearchVM.searchArtists(artistQuery);
+            resultSearchVM.searchArtists(artistQuery, refresh);
         }
     }
 
@@ -298,29 +306,18 @@ public class ResultSearchFragment extends BaseFragment {
         noresultsView.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
-    private void showProgressLoading(boolean show) {
-        if (show) {
-            contentView.setAlpha(0.3F);
-            searchRecyclerView.setAlpha(0.3F);
-            progressView.setVisibility(View.VISIBLE);
-        } else {
-            contentView.setAlpha(1.0F);
-            searchRecyclerView.setAlpha(1.0F);
-            progressView.setVisibility(View.GONE);
-        }
-    }
-
     private void showError(boolean show) {
         if (show) {
             searchRecyclerView.setVisibility(View.INVISIBLE);
             contentView.setVisibility(View.INVISIBLE);
             errorView.setVisibility(View.VISIBLE);
-            errorView.findViewById(R.id.retryButton).setOnClickListener(v -> search());
+            errorView.findViewById(R.id.retryButton).setOnClickListener(v -> search(true));
         } else {
             errorView.setVisibility(View.GONE);
             contentView.setVisibility(View.VISIBLE);
             searchRecyclerView.setVisibility(View.VISIBLE);
         }
+        isError = show;
     }
 
 }
