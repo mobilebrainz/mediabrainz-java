@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,9 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
 
     private static final String RELEASES_TAB = "RELEASES_TAB";
 
+    public static final String TAG = "ReleaseGroupsTabF";
+
+    private boolean isError;
     private ArtistVM artistVM;
     private String artistMbid;
     private ReleaseGroupsPagerAdapter.ReleaseTab releaseGroupType;
@@ -129,6 +133,19 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
 
         initSwipeToRefresh();
     }
+    
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            if (isError) {
+                snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
+                        v -> retry());
+            } else if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
+                getErrorSnackbar().dismiss();
+            }
+        }
+    }
 
     private void initSwipeToRefresh() {
         releaseGroupsVM.getRefreshState().observe(this, networkState -> {
@@ -141,14 +158,15 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
                         errorMessageTextView.setText(networkState.getMessage());
                     }
 
-                    /*
                     if (networkState.getStatus() == Status.ERROR) {
-                        snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
-                                v -> retry());
-                    } else if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
-                        getErrorSnackbar().dismiss();
+                        snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry, v -> retry());
+                        isError = true;
+                    } else {
+                        if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
+                            getErrorSnackbar().dismiss();
+                        }
+                        isError = false;
                     }
-                    */
 
                     retryLoadingButton.setVisibility(networkState.getStatus() == Status.ERROR ? View.VISIBLE : View.GONE);
                     loadingProgressBar.setVisibility(networkState.getStatus() == Status.LOADING ? View.VISIBLE : View.GONE);
@@ -168,6 +186,7 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
 
     @Override
     public void retry() {
+        Log.i(TAG, "retry: ");
         if (releaseGroupsVM != null) {
             releaseGroupsVM.retry();
         }
