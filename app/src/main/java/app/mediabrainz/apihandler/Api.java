@@ -362,13 +362,15 @@ public class Api {
                         ArtistIncType.RATINGS,
                         ArtistIncType.GENRES,
                         ArtistIncType.TAGS,
+                        ArtistIncType.RELEASE_GROUPS,
                         ArtistIncType.USER_RATINGS,
                         ArtistIncType.USER_GENRES,
                         ArtistIncType.USER_TAGS} :
                 new ArtistIncType[]{
                         ArtistIncType.RATINGS,
                         ArtistIncType.GENRES,
-                        ArtistIncType.TAGS};
+                        ArtistIncType.TAGS,
+                        ArtistIncType.RELEASE_GROUPS};
         return oauth.refreshToken(
                 () -> ApiHandler.subscribe503(
                         new ArtistLookupService(artistMbid)

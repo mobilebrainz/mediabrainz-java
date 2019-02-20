@@ -38,7 +38,6 @@ public class EditTagsTabFragment extends BaseFragment {
     private TagsVM tagsVM;
     private int tagsTab = 0;
 
-    private View noresultsView;
     private RecyclerView recyclerView;
 
     public static EditTagsTabFragment newInstance(int tagsTab) {
@@ -52,10 +51,7 @@ public class EditTagsTabFragment extends BaseFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflate(R.layout.fragment_recycler_view, container);
-
-        noresultsView = layout.findViewById(R.id.noresultsView);
         recyclerView = layout.findViewById(R.id.recyclerView);
-
         return layout;
     }
 
@@ -76,8 +72,6 @@ public class EditTagsTabFragment extends BaseFragment {
     }
 
     private void load() {
-        noresultsView.setVisibility(View.GONE);
-
         final List<Tag> tags = new ArrayList<>();
         final List<Tag> userTags = new ArrayList<>();
         final List<Tag> parentUserGenres = tagsVM.getUserItemGenres();

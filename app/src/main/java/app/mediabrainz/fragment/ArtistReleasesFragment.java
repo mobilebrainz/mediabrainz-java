@@ -27,18 +27,21 @@ public class ArtistReleasesFragment extends BaseArtistFragment {
         pagerView = view.findViewById(R.id.pagerView);
         tabsView = view.findViewById(R.id.tabsView);
         progressView = view.findViewById(R.id.progressView);
-        noresultsView = view.findViewById(R.id.noresultsView);
 
         return view;
     }
 
     @Override
     protected void show(Artist artist) {
-        ReleaseGroupsPagerAdapter pagerAdapter = new ReleaseGroupsPagerAdapter(getChildFragmentManager(), getResources());
-        pagerView.setAdapter(pagerAdapter);
-        pagerView.setOffscreenPageLimit(pagerAdapter.getCount());
-        tabsView.setupWithViewPager(pagerView);
-        pagerAdapter.setupTabViews(tabsView);
+        if (artist.getReleaseGroups() != null && !artist.getReleaseGroups().isEmpty()) {
+            ReleaseGroupsPagerAdapter pagerAdapter = new ReleaseGroupsPagerAdapter(getChildFragmentManager(), getResources());
+            pagerView.setAdapter(pagerAdapter);
+            pagerView.setOffscreenPageLimit(pagerAdapter.getCount());
+            tabsView.setupWithViewPager(pagerView);
+            pagerAdapter.setupTabViews(tabsView);
+        } else {
+            snackbarNotAction(pagerView, R.string.no_results);
+        }
     }
 
 }
