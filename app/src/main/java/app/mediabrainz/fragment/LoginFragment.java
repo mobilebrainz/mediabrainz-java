@@ -67,11 +67,7 @@ public class LoginFragment extends BaseFragment {
         forgotPasswordButton.setOnClickListener(
                 v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(FORGOT_PASSWORD_URI))));
 
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            if (!isLoading) {
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
+        swipeRefreshLayout.setEnabled(false);
 
         return view;
     }

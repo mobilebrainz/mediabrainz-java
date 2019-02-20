@@ -71,9 +71,8 @@ public class SearchFragment extends BaseFragment {
             });
         }
 
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            if (!isLoading) swipeRefreshLayout.setRefreshing(false);
-        });
+        swipeRefreshLayout.setEnabled(false);
+
         return view;
     }
 
@@ -88,7 +87,12 @@ public class SearchFragment extends BaseFragment {
     }
 
     private void observe() {
-        tagsVM.genresld.observe(this, genres -> this.genres = genres);
+        tagsVM.genresld.observe(this, genres -> {
+            this.genres = genres;
+            if (SearchType.TAG.ordinal() == searchSpinner.getSelectedItemPosition() && !genres.isEmpty()) {
+                setGenreSelectedAdapter();
+            }
+        });
         tagsVM.progressld.observe(this, aBoolean -> {
             isLoading = aBoolean;
             swipeRefreshLayout.setRefreshing(aBoolean);
@@ -104,6 +108,18 @@ public class SearchFragment extends BaseFragment {
         });
     }
 
+    private void setGenreSelectedAdapter() {
+        if (adapter == null) {
+            int size = genres.size();
+            adapter = new ArrayAdapter<>(
+                    Objects.requireNonNull(getContext()),
+                    android.R.layout.simple_dropdown_item_1line,
+                    genres.toArray(new String[size]));
+        }
+        queryInputView.setThreshold(1);
+        queryInputView.setAdapter(adapter);
+    }
+
     private void setupSearchTypeSpinner() {
         List<CharSequence> types = new ArrayList<>();
         for (SearchType searchType : SearchType.values()) {
@@ -115,20 +131,13 @@ public class SearchFragment extends BaseFragment {
 
         searchSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
+                //todo: неправильно - при первом селекте идёт подгрузка, но только после повторного селекта заполняется ArrayAdapter
                 if (SearchType.TAG.ordinal() == pos && tagsVM.getGenres() == null) return;
 
                 if (getContext() != null) {
                     //todo: не подкидывает теги, а только жанры
                     if (SearchType.TAG.ordinal() == pos && !genres.isEmpty()) {
-                        if (adapter == null) {
-                            int size = genres.size();
-                            adapter = new ArrayAdapter<>(
-                                    Objects.requireNonNull(getContext()),
-                                    android.R.layout.simple_dropdown_item_1line,
-                                    genres.toArray(new String[size]));
-                        }
-                        queryInputView.setThreshold(1);
-                        queryInputView.setAdapter(adapter);
+                        setGenreSelectedAdapter();
                     } else if (SearchType.USER.ordinal() == pos && MediaBrainzApp.getPreferences().isSearchSuggestionsEnabled()) {
                         queryInputView.setThreshold(2);
                         queryInputView.setAdapter(new SuggestionListAdapter(getContext(), Suggestion.SuggestionField.USER));

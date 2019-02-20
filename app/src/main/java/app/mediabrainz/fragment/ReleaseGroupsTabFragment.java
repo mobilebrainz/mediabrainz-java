@@ -3,15 +3,12 @@ package app.mediabrainz.fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,8 +28,6 @@ import app.mediabrainz.core.fragment.LazyFragment;
 import app.mediabrainz.core.viewmodel.ReleaseGroupsVM;
 import app.mediabrainz.core.viewmodel.event.Status;
 import app.mediabrainz.viewmodel.ArtistVM;
-import app.mediabrainz.viewmodel.MainVM;
-
 
 import static app.mediabrainz.account.Preferences.PreferenceName.RELEASE_GROUP_OFFICIAL;
 
@@ -46,6 +41,7 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
     public static final String TAG = "ReleaseGroupsTabF";
 
     private boolean isError;
+    private boolean isLoading;
     private ArtistVM artistVM;
     private String artistMbid;
     private ReleaseGroupsPagerAdapter.ReleaseTab releaseGroupType;
@@ -54,11 +50,6 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView pagedRecyclerView;
     private ReleaseGroupsAdapter adapter;
-
-    private TextView errorMessageTextView;
-    private Button retryLoadingButton;
-    private ProgressBar loadingProgressBar;
-    private View itemNetworkStateView;
 
     private MutableLiveData<Boolean> mutableIsOfficial = new MutableLiveData<>();
 
@@ -78,12 +69,6 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
 
         pagedRecyclerView = layout.findViewById(R.id.pagedRecyclerView);
         swipeRefreshLayout = layout.findViewById(R.id.swipeRefreshLayout);
-        errorMessageTextView = layout.findViewById(R.id.errorMessageTextView);
-        loadingProgressBar = layout.findViewById(R.id.loadingProgressBar);
-        itemNetworkStateView = layout.findViewById(R.id.itemNetworkStateView);
-
-        retryLoadingButton = layout.findViewById(R.id.retryLoadingButton);
-        retryLoadingButton.setOnClickListener(view -> retry());
 
         return layout;
     }
@@ -113,7 +98,7 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
         adapter = new ReleaseGroupsAdapter(this);
         adapter.setHolderClickListener(releaseGroup -> {
             //if (getContext() instanceof OnReleaseGroupCommunicator) {
-                //((OnReleaseGroupCommunicator) getContext()).onReleaseGroup(releaseGroup.getId());
+            //((OnReleaseGroupCommunicator) getContext()).onReleaseGroup(releaseGroup.getId());
             //}
         });
 
@@ -133,54 +118,41 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
 
         initSwipeToRefresh();
     }
-    
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser) {
-            if (isError) {
-                snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
-                        v -> retry());
-            } else if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
-                getErrorSnackbar().dismiss();
-            }
+        showError(isVisibleToUser);
+    }
+
+    private void showError(boolean isVisibleToUser) {
+        if (isVisibleToUser && isError) {
+            snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry, v -> retry());
+        } else if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
+            getErrorSnackbar().dismiss();
         }
     }
 
     private void initSwipeToRefresh() {
         releaseGroupsVM.getRefreshState().observe(this, networkState -> {
             if (networkState != null) {
+                isError = networkState.getStatus() == Status.ERROR;
+                showError(true);
+                isLoading = networkState.getStatus() == Status.LOADING;
+                swipeRefreshLayout.setRefreshing(isLoading);
+
                 if (adapter.getCurrentList() == null || adapter.getCurrentList().size() == 0) {
-                    itemNetworkStateView.setVisibility(View.VISIBLE);
-
-                    errorMessageTextView.setVisibility(networkState.getMessage() != null ? View.VISIBLE : View.GONE);
-                    if (networkState.getMessage() != null) {
-                        errorMessageTextView.setText(networkState.getMessage());
-                    }
-
-                    if (networkState.getStatus() == Status.ERROR) {
-                        snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry, v -> retry());
-                        isError = true;
-                    } else {
-                        if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
-                            getErrorSnackbar().dismiss();
-                        }
-                        isError = false;
-                    }
-
-                    retryLoadingButton.setVisibility(networkState.getStatus() == Status.ERROR ? View.VISIBLE : View.GONE);
-                    loadingProgressBar.setVisibility(networkState.getStatus() == Status.LOADING ? View.VISIBLE : View.GONE);
-
-                    swipeRefreshLayout.setEnabled(networkState.getStatus() == Status.SUCCESS);
+                    //swipeRefreshLayout.setEnabled(networkState.getStatus() == Status.SUCCESS);
                     pagedRecyclerView.scrollToPosition(0);
                 }
             }
         });
 
         swipeRefreshLayout.setOnRefreshListener(() -> {
-            releaseGroupsVM.refresh();
-            swipeRefreshLayout.setRefreshing(false);
-            pagedRecyclerView.scrollToPosition(0);
+            if (!isLoading) {
+                releaseGroupsVM.refresh();
+                pagedRecyclerView.scrollToPosition(0);
+            }
         });
     }
 

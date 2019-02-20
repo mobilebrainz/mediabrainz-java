@@ -95,8 +95,8 @@ public abstract class BaseFragment extends Fragment {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onDestroyView() {
+        super.onDestroyView();
         if (errorSnackbar != null && errorSnackbar.isShown()) {
             errorSnackbar.dismiss();
         }
@@ -104,6 +104,5 @@ public abstract class BaseFragment extends Fragment {
             infoSnackbar.dismiss();
         }
     }
-
 }
 
