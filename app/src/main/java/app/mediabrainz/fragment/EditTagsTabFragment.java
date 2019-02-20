@@ -80,14 +80,14 @@ public class EditTagsTabFragment extends BaseFragment {
 
         final List<Tag> tags = new ArrayList<>();
         final List<Tag> userTags = new ArrayList<>();
-        final List<Tag> parentUserGenres = tagsVM.getUserGenres();
-        final List<Tag> parentUserTags = tagsVM.getUserTags();
+        final List<Tag> parentUserGenres = tagsVM.getUserItemGenres();
+        final List<Tag> parentUserTags = tagsVM.getUserItemTags();
 
         EditTagsPagerAdapter.TagsTab tagType = EditTagsPagerAdapter.TagsTab.values()[tagsTab];
         switch (tagType) {
             case TAGS:
-                List<Tag> genres = tagsVM.getGenres();
-                for (Tag tag : tagsVM.getTags()) {
+                List<Tag> genres = tagsVM.getItemGenres();
+                for (Tag tag : tagsVM.getItemtags()) {
                     if (!genres.contains(tag)) {
                         tags.add(tag);
                     }
@@ -101,7 +101,7 @@ public class EditTagsTabFragment extends BaseFragment {
                 }
                 break;
             case GENRES:
-                tags.addAll(tagsVM.getGenres());
+                tags.addAll(tagsVM.getItemGenres());
                 if (parentUserGenres != null) {
                     userTags.addAll(parentUserGenres);
                 }

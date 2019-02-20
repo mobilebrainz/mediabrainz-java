@@ -21,13 +21,8 @@ public class ArtistFragment extends BaseArtistFragment implements
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflate(R.layout.artist_fragment, container);
-
-        errorView = view.findViewById(R.id.errorView);
-        progressView = view.findViewById(R.id.progressView);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
-
         initTopMenu(view);
-
         return view;
     }
 
@@ -46,12 +41,12 @@ public class ArtistFragment extends BaseArtistFragment implements
 
     @Override
     protected void show(Artist artist) {
-        Log.i(TAG, "show: ");
+        //Log.i(TAG, "show: ");
     }
 
     @Override
     public void onClick(View v) {
-        if (!isLoading) {
+        if (!isLoading && !isError) {
             switch (v.getId()) {
                 case R.id.releasesItem:
                     Navigation.findNavController(v).navigate(R.id.action_artistFragment_to_artistReleasesFragment);

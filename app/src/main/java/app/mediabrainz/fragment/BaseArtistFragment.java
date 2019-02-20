@@ -19,7 +19,6 @@ public abstract class BaseArtistFragment extends BaseFragment {
     protected boolean isLoading;
     protected boolean isError;
 
-    protected View errorView;
     protected View progressView;
     protected View noresultsView;
     protected SwipeRefreshLayout swipeRefreshLayout;
@@ -29,7 +28,15 @@ public abstract class BaseArtistFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initArtistVM();
+
+        if (getActivity() != null) {
+            artistVM = getActivityViewModel(ArtistVM.class);
+            observeProgress();
+            observeError();
+            observeArtist();
+            observeNoResult();
+        }
+
         if (swipeRefreshLayout != null) {
             swipeRefreshLayout.setOnRefreshListener(() -> {
                 if (!isLoading) artistVM.refreshArtist();
@@ -37,51 +44,48 @@ public abstract class BaseArtistFragment extends BaseFragment {
         }
     }
 
-    private void initArtistVM() {
-        if (getActivity() != null) {
-            artistVM = getActivityViewModel(ArtistVM.class);
-            artistVM.progressld.observe(this, this::showProgressLoading);
-            artistVM.errorld.observe(this, this::showError);
-            artistVM.artistld.observe(this, artist -> {
-                if (artist != null) {
-                    ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-                    if (actionBar != null) {
-                        actionBar.setSubtitle(artist.getName());
-                    }
-                    show(artist);
+    private void observeProgress() {
+        artistVM.progressld.observe(this, aBoolean -> {
+            isLoading = aBoolean;
+            if (swipeRefreshLayout != null) {
+                swipeRefreshLayout.setRefreshing(aBoolean);
+            } else if (progressView != null) {
+                progressView.setVisibility(aBoolean ? View.VISIBLE : View.GONE);
+            }
+        });
+    }
+
+    private void observeError() {
+        artistVM.errorld.observe(this, aBoolean -> {
+            isError = aBoolean;
+            if (aBoolean && swipeRefreshLayout != null) {
+                snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
+                        v -> artistVM.refreshArtist());
+            } else if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
+                getErrorSnackbar().dismiss();
+            }
+        });
+    }
+
+    private void observeArtist() {
+        artistVM.artistld.observe(this, artist -> {
+            if (artist != null && getActivity() != null && getActivity() instanceof AppCompatActivity) {
+                ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+                if (actionBar != null) {
+                    actionBar.setSubtitle(artist.getName());
                 }
-            });
-            artistVM.loadArtist();
-        }
+                show(artist);
+            }
+        });
+        artistVM.loadArtist();
     }
 
-    protected void showProgressLoading(boolean show) {
-        if (show) {
-            isLoading = true;
-            if (swipeRefreshLayout != null) {
-                swipeRefreshLayout.setRefreshing(true);
-            } else if (progressView != null) {
-                progressView.setVisibility(View.VISIBLE);
+    private void observeNoResult() {
+        artistVM.noresultsld.observe(this, aBoolean -> {
+            if (aBoolean && swipeRefreshLayout != null) {
+                snackbarNotAction(swipeRefreshLayout, R.string.no_results);
             }
-        } else {
-            isLoading = false;
-            if (swipeRefreshLayout != null) {
-                swipeRefreshLayout.setRefreshing(false);
-            } else if (progressView != null) {
-                progressView.setVisibility(View.GONE);
-            }
-        }
-    }
-
-    protected void showError(boolean show) {
-        if (show) {
-            isError = true;
-            errorView.setVisibility(View.VISIBLE);
-            errorView.findViewById(R.id.retryButton).setOnClickListener(v -> artistVM.refreshArtist());
-        } else {
-            isError = false;
-            errorView.setVisibility(View.GONE);
-        }
+        });
     }
 
 }

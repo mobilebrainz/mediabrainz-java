@@ -34,6 +34,7 @@ import static androidx.core.content.ContextCompat.getSystemService;
 public abstract class BaseFragment extends Fragment {
 
     private Snackbar errorSnackbar;
+    private Snackbar infoSnackbar;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -75,7 +76,8 @@ public abstract class BaseFragment extends Fragment {
 
     @MainThread
     protected void snackbarNotAction(@NonNull View view, @StringRes int resId) {
-        Snackbar.make(view, resId, Snackbar.LENGTH_LONG).show();
+        infoSnackbar = Snackbar.make(view, resId, Snackbar.LENGTH_LONG);
+        infoSnackbar.show();
     }
 
     @MainThread
@@ -88,36 +90,19 @@ public abstract class BaseFragment extends Fragment {
         return errorSnackbar;
     }
 
+    public Snackbar getInfoSnackbar() {
+        return infoSnackbar;
+    }
+
     @Override
     public void onStop() {
         super.onStop();
-        if (errorSnackbar != null) {
+        if (errorSnackbar != null && errorSnackbar.isShown()) {
             errorSnackbar.dismiss();
         }
-    }
-
-
-    // todo: remove to Util class??
-    protected boolean checkNetworkConnection() {
-        boolean isNetworkConnected = false;
-        if (getContext() != null) {
-            ConnectivityManager connectivityManager = getSystemService(getContext(), ConnectivityManager.class);
-            if (connectivityManager != null) {
-                NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-                isNetworkConnected = (networkInfo != null && networkInfo.isConnected());
-                Log.i("checkNetworkConnect", "checkNetworkConnection: ");
-                if (!isNetworkConnected) {
-                    Log.i("checkNetworkConnect", "checkNetworkConnection: ");
-                    new AlertDialog.Builder(getContext())
-                            .setTitle(R.string.error_connect_title)
-                            .setMessage(R.string.error_connect_message)
-                            .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                            })
-                            .setIcon(android.R.drawable.ic_dialog_alert).show();
-                }
-            }
+        if (infoSnackbar != null && infoSnackbar.isShown()) {
+            infoSnackbar.dismiss();
         }
-        return isNetworkConnected;
     }
 
 }

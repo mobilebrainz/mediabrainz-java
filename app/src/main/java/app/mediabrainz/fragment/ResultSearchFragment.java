@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.android.material.snackbar.Snackbar;
-
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -53,19 +51,18 @@ public class ResultSearchFragment extends BaseFragment {
     private String searchQuery;
     private int searchType = -1;
     private boolean isLoading;
+    private boolean isError;
 
     private ResultSearchVM resultSearchVM;
 
     protected SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView searchRecyclerView;
-    private View noresultsView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflate(R.layout.result_search_fragment, container);
 
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
-        noresultsView = view.findViewById(R.id.noresultsView);
         searchRecyclerView = view.findViewById(R.id.searchRecyclerView);
         configSearchRecycler();
 
@@ -99,6 +96,7 @@ public class ResultSearchFragment extends BaseFragment {
             swipeRefreshLayout.setRefreshing(aBoolean);
         });
         resultSearchVM.errorld.observe(this, aBoolean -> {
+            isError = aBoolean;
             if (aBoolean) {
                 snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
                         v -> search(true));
@@ -106,8 +104,11 @@ public class ResultSearchFragment extends BaseFragment {
                 getErrorSnackbar().dismiss();
             }
         });
-        resultSearchVM.noresultsld.observe(this, this::showNoResult);
-
+        resultSearchVM.noresultsld.observe(this, aBoolean -> {
+            if (aBoolean && swipeRefreshLayout != null) {
+                snackbarNotAction(swipeRefreshLayout, R.string.no_results);
+            }
+        });
         resultSearchVM.artistsld.observe(this, this::showArtists);
         resultSearchVM.releaseGroupsld.observe(this, this::showReleaseGroups);
         resultSearchVM.recordingsld.observe(this, this::showRecordings);
@@ -121,16 +122,17 @@ public class ResultSearchFragment extends BaseFragment {
         searchRecyclerView.setAdapter(adapter);
         final ArtistVM artistVM = getActivityViewModel(ArtistVM.class);
         adapter.setHolderClickListener(position -> {
+            if (isLoading || isError) return;
             Artist artist = artists.get(position);
 
             //todo: сохранять и результат поиска, и поисковое слово?
-            insertQuerySuggestion();
+            //insertQuerySuggestion();
             resultSearchVM.insertSuggestion(artist.getName(), ARTIST);
 
             artistVM.setArtistMbid(artist.getId());
             Navigation.findNavController(searchRecyclerView).navigate(R.id.action_resultSearchFragment_to_artistFragment);
         });
-        if (artists.size() == 1) {
+        if (!(isLoading || isError) && artists.size() == 1) {
             artistVM.setArtistMbid(artists.get(0).getId());
             Navigation.findNavController(searchRecyclerView).navigate(R.id.action_resultSearchFragment_to_artistFragment);
         }
@@ -140,19 +142,19 @@ public class ResultSearchFragment extends BaseFragment {
         ReleaseGroupSearchAdapter adapter = new ReleaseGroupSearchAdapter(releaseGroups);
         searchRecyclerView.setAdapter(adapter);
         adapter.setHolderClickListener(position -> {
+            if (isLoading || isError) return;
             ReleaseGroup releaseGroup = releaseGroups.get(position);
 
             //todo: сохранять и результат поиска, и поисковое слово?
-            insertQuerySuggestion();
+            //insertQuerySuggestion();
             resultSearchVM.insertSuggestion(releaseGroup.getTitle(), ALBUM);
             List<Artist.ArtistCredit> artists = releaseGroup.getArtistCredits();
-            Log.i(TAG, "observeReleaseGroupSearch: ");
             if (artists != null && !artists.isEmpty()) {
                 resultSearchVM.insertSuggestion(artists.get(0).getArtist().getName(), ARTIST);
             }
             //showReleases(releaseGroups.get(position).getId());
         });
-        if (releaseGroups.size() == 1) {
+        if (!(isLoading || isError) && releaseGroups.size() == 1) {
             //showReleases(releaseGroups.get(0).getId());
         }
     }
@@ -161,19 +163,19 @@ public class ResultSearchFragment extends BaseFragment {
         TrackSearchAdapter adapter = new TrackSearchAdapter(recordings);
         searchRecyclerView.setAdapter(adapter);
         adapter.setHolderClickListener(position -> {
+            if (isLoading || isError) return;
             Recording recording = recordings.get(position);
 
             //todo: сохранять и результат поиска, и поисковое слово?
-            insertQuerySuggestion();
+            //insertQuerySuggestion();
             resultSearchVM.insertSuggestion(recording.getTitle(), TRACK);
             List<Artist.ArtistCredit> artists = recording.getArtistCredits();
-            Log.i(TAG, "observeRecordingSearch: ");
             if (artists != null && !artists.isEmpty()) {
                 resultSearchVM.insertSuggestion(artists.get(0).getArtist().getName(), ARTIST);
             }
             //ActivityFactory.startRecordingActivity(this, recordings.get(position).getId());
         });
-        if (recordings.size() == 1) {
+        if (!(isLoading || isError) && recordings.size() == 1) {
             //ActivityFactory.startRecordingActivity(this, recordings.get(0).getId());
         }
     }
@@ -182,12 +184,13 @@ public class ResultSearchFragment extends BaseFragment {
         SearchListAdapter adapter = new SearchListAdapter(tags);
         searchRecyclerView.setAdapter(adapter);
         adapter.setHolderClickListener(position -> {
+            if (isLoading || isError) return;
             //todo: сохранять и результат поиска, и поисковое слово?
-            resultSearchVM.insertSuggestion(searchQuery, Suggestion.SuggestionField.TAG);
+            //resultSearchVM.insertSuggestion(searchQuery, Suggestion.SuggestionField.TAG);
             resultSearchVM.insertSuggestion(tags.get(position), Suggestion.SuggestionField.TAG);
             //ActivityFactory.startTagActivity(this, strings.get(position), false);
         });
-        if (tags.size() == 1) {
+        if (!(isLoading || isError) && tags.size() == 1) {
             //ActivityFactory.startTagActivity(this, strings.get(0), false);
         }
     }
@@ -196,12 +199,13 @@ public class ResultSearchFragment extends BaseFragment {
         SearchListAdapter adapter = new SearchListAdapter(users);
         searchRecyclerView.setAdapter(adapter);
         adapter.setHolderClickListener(position -> {
+            if (isLoading || isError) return;
             //todo: сохранять и результат поиска, и поисковое слово?
-            resultSearchVM.insertSuggestion(searchQuery, USER);
+            //resultSearchVM.insertSuggestion(searchQuery, USER);
             resultSearchVM.insertSuggestion(users.get(position), USER);
             //ActivityFactory.startUserActivity(this, strings.get(position));
         });
-        if (users.size() == 1) {
+        if (!(isLoading || isError) && users.size() == 1) {
             //ActivityFactory.startUserActivity(this, strings.get(0));
         }
     }
@@ -213,9 +217,10 @@ public class ResultSearchFragment extends BaseFragment {
             ReleaseAdapter adapter = new ReleaseAdapter(releases, null);
             searchRecyclerView.setAdapter(adapter);
             adapter.setHolderClickListener(position -> {
+                if (isLoading || isError) return;
                 //onRelease(releases.get(position).getId());
             });
-            if (releases.size() == 1) {
+            if (!(isLoading || isError) && releases.size() == 1) {
                 //onRelease(releases.get(0).getId());
             }
         }
@@ -303,10 +308,6 @@ public class ResultSearchFragment extends BaseFragment {
             actionBar.setSubtitle(artistQuery);
             resultSearchVM.searchArtists(artistQuery, refresh);
         }
-    }
-
-    private void showNoResult(boolean show) {
-        noresultsView.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
 }

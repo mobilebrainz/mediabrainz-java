@@ -26,7 +26,6 @@ public class ArtistReleasesFragment extends BaseArtistFragment {
 
         pagerView = view.findViewById(R.id.pagerView);
         tabsView = view.findViewById(R.id.tabsView);
-        errorView = view.findViewById(R.id.errorView);
         progressView = view.findViewById(R.id.progressView);
         noresultsView = view.findViewById(R.id.noresultsView);
 

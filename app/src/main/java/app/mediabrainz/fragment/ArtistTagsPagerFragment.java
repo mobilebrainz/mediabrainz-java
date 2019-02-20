@@ -40,7 +40,6 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
     private TagsVM tagsVM;
     private int tagsTab = EditTagsPagerAdapter.TagsTab.GENRES.ordinal();
 
-    private View contentView;
     private TextView loginWarningView;
     private AutoCompleteTextView tagInputView;
     private ImageButton tagButton;
@@ -53,9 +52,6 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
         View layout = inflate(R.layout.fragment_edit_tags_pager, container);
 
         swipeRefreshLayout = layout.findViewById(R.id.swipeRefreshLayout);
-        contentView = layout.findViewById(R.id.contentView);
-        errorView = layout.findViewById(R.id.errorView);
-        progressView = layout.findViewById(R.id.progressView);
         loginWarningView = layout.findViewById(R.id.loginWarningView);
         tagInputView = layout.findViewById(R.id.tagInputView);
         tagButton = layout.findViewById(R.id.tagButton);
@@ -73,10 +69,10 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
 
         tagsVM = getActivityViewModel(TagsVM.class);
         observe();
-        tagsVM.setTags(artist.getTags());
-        tagsVM.setUserTags(artist.getUserTags());
-        tagsVM.setGenres(artist.getGenres());
-        tagsVM.setUserGenres(artist.getUserGenres());
+        tagsVM.setItemtags(artist.getTags());
+        tagsVM.setUserItemTags(artist.getUserTags());
+        tagsVM.setItemGenres(artist.getGenres());
+        tagsVM.setUserItemGenres(artist.getUserGenres());
 
         EditTagsPagerAdapter pagerAdapter = new EditTagsPagerAdapter(getChildFragmentManager(), getResources());
         pagerView.setAdapter(pagerAdapter);
@@ -95,7 +91,7 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
             tagInputView.setThreshold(1);
             tagInputView.setAdapter(adapter);
         });
-        tagsVM.loadGenres();
+        tagsVM.getGenres();
     }
 
     @Override
@@ -106,7 +102,7 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
 
     private void setEditListeners() {
         tagButton.setOnClickListener(v -> {
-            if (progressView.getVisibility() == View.VISIBLE) {
+            if (isLoading) {
                 return;
             }
             if (oauth.hasAccount()) {

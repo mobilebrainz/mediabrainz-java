@@ -18,10 +18,10 @@ import static app.mediabrainz.api.model.ReleaseGroup.SecondaryType.NOTHING;
 
 public class TagsVM extends CompositeDisposableViewModel {
 
-    private List<Tag> tags = new ArrayList<>();
-    private List<Tag> userTags = new ArrayList<>();
-    private List<Tag> genres = new ArrayList<>();
-    private List<Tag> userGenres = new ArrayList<>();
+    private List<Tag> Itemtags = new ArrayList<>();
+    private List<Tag> userItemTags = new ArrayList<>();
+    private List<Tag> ItemGenres = new ArrayList<>();
+    private List<Tag> userItemGenres = new ArrayList<>();
 
     public final MutableLiveData<List<String>> genresld = new MutableLiveData<>();
     public final SingleLiveEvent<Boolean> postArtistTagEvent = new SingleLiveEvent<>();
@@ -86,7 +86,7 @@ public class TagsVM extends CompositeDisposableViewModel {
                 }));
     }
 
-    public void loadGenres() {
+    public List<String> getGenres() {
         if (genresld.getValue() == null) {
             initLoading();
             dispose(api.getGenres(
@@ -95,38 +95,40 @@ public class TagsVM extends CompositeDisposableViewModel {
                         progressld.setValue(false);
                     },
                     this::setError));
+            return null;
         }
+        return genresld.getValue();
     }
 
-    public List<Tag> getTags() {
-        return tags;
+    public List<Tag> getItemtags() {
+        return Itemtags;
     }
 
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
+    public void setItemtags(List<Tag> itemtags) {
+        this.Itemtags = itemtags;
     }
 
-    public List<Tag> getUserTags() {
-        return userTags;
+    public List<Tag> getUserItemTags() {
+        return userItemTags;
     }
 
-    public void setUserTags(List<Tag> userTags) {
-        this.userTags = userTags;
+    public void setUserItemTags(List<Tag> userItemTags) {
+        this.userItemTags = userItemTags;
     }
 
-    public List<Tag> getGenres() {
-        return genres;
+    public List<Tag> getItemGenres() {
+        return ItemGenres;
     }
 
-    public void setGenres(List<Tag> genres) {
-        this.genres = genres;
+    public void setItemGenres(List<Tag> itemGenres) {
+        this.ItemGenres = itemGenres;
     }
 
-    public List<Tag> getUserGenres() {
-        return userGenres;
+    public List<Tag> getUserItemGenres() {
+        return userItemGenres;
     }
 
-    public void setUserGenres(List<Tag> userGenres) {
-        this.userGenres = userGenres;
+    public void setUserItemGenres(List<Tag> userItemGenres) {
+        this.userItemGenres = userItemGenres;
     }
 }

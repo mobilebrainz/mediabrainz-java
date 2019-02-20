@@ -17,6 +17,7 @@ import java.util.Objects;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.Navigation;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import app.mediabrainz.MediaBrainzApp;
 import app.mediabrainz.R;
 import app.mediabrainz.adapter.SuggestionListAdapter;
@@ -37,23 +38,19 @@ public class SearchFragment extends BaseFragment {
     private boolean isLoading;
     private boolean isError;
 
-    private View contentView;
-    private View errorView;
-    private View progressView;
     private AutoCompleteTextView artistFieldView;
     private AutoCompleteTextView albumFieldView;
     private AutoCompleteTextView trackFieldView;
     private AutoCompleteTextView queryInputView;
     private Spinner searchSpinner;
     private ArrayAdapter<String> adapter;
+    protected SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflate(R.layout.search_fragment, container);
 
-        contentView = view.findViewById(R.id.contentView);
-        errorView = view.findViewById(R.id.errorView);
-        progressView = view.findViewById(R.id.progressView);
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         artistFieldView = view.findViewById(R.id.artistFieldView);
         albumFieldView = view.findViewById(R.id.albumFieldView);
         trackFieldView = view.findViewById(R.id.trackFieldView);
@@ -73,25 +70,38 @@ public class SearchFragment extends BaseFragment {
                 }
             });
         }
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (!isLoading) swipeRefreshLayout.setRefreshing(false);
+        });
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        tagsVM = getActivityViewModel(TagsVM.class);
-        observe();
-
-        setupSearchTypeSpinner();
-        if (checkNetworkConnection()) load();
-        else showError(true);
+        if (getActivity() != null) {
+            tagsVM = getActivityViewModel(TagsVM.class);
+            observe();
+            setupSearchTypeSpinner();
+        }
     }
 
     private void observe() {
         tagsVM.genresld.observe(this, genres -> this.genres = genres);
-        tagsVM.progressld.observe(this, this::showProgressLoading);
-        tagsVM.errorld.observe(this, this::showError);
+        tagsVM.progressld.observe(this, aBoolean -> {
+            isLoading = aBoolean;
+            swipeRefreshLayout.setRefreshing(aBoolean);
+        });
+        tagsVM.errorld.observe(this, aBoolean -> {
+            isError = aBoolean;
+            if (aBoolean) {
+                snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
+                        v -> tagsVM.getGenres());
+            } else if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
+                getErrorSnackbar().dismiss();
+            }
+        });
     }
 
     private void setupSearchTypeSpinner() {
@@ -105,6 +115,8 @@ public class SearchFragment extends BaseFragment {
 
         searchSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
+                if (SearchType.TAG.ordinal() == pos && tagsVM.getGenres() == null) return;
+
                 if (getContext() != null) {
                     //todo: не подкидывает теги, а только жанры
                     if (SearchType.TAG.ordinal() == pos && !genres.isEmpty()) {
@@ -133,8 +145,9 @@ public class SearchFragment extends BaseFragment {
     }
 
     private boolean selectedSearch() {
-        String query = queryInputView.getText().toString().trim().toLowerCase();
+        if (isLoading || isError) return false;
 
+        String query = queryInputView.getText().toString().trim().toLowerCase();
         if (!TextUtils.isEmpty(query)) {
             if (getActivity() != null) {
                 UiUtils.hideKeyboard(getActivity());
@@ -152,6 +165,8 @@ public class SearchFragment extends BaseFragment {
     }
 
     private void inputSearch() {
+        if (isLoading || isError) return;
+
         String artist = artistFieldView.getText().toString().trim();
         String album = albumFieldView.getText().toString().trim();
         String track = trackFieldView.getText().toString().trim();
@@ -164,10 +179,6 @@ public class SearchFragment extends BaseFragment {
                     artist, album, track, null);
             Navigation.findNavController(artistFieldView).navigate(action);
         }
-    }
-
-    private void load() {
-        tagsVM.loadGenres();
     }
 
     @Override
@@ -186,28 +197,4 @@ public class SearchFragment extends BaseFragment {
         }
     }
 
-    private void showError(boolean show) {
-        if (show) {
-            isError = true;
-            contentView.setVisibility(View.INVISIBLE);
-            errorView.setVisibility(View.VISIBLE);
-            errorView.findViewById(R.id.retryButton).setOnClickListener(v -> load());
-        } else {
-            isError = false;
-            errorView.setVisibility(View.GONE);
-            contentView.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void showProgressLoading(boolean show) {
-        if (show) {
-            isLoading = true;
-            contentView.setAlpha(0.25F);
-            progressView.setVisibility(View.VISIBLE);
-        } else {
-            isLoading = false;
-            contentView.setAlpha(1.0F);
-            progressView.setVisibility(View.GONE);
-        }
-    }
 }

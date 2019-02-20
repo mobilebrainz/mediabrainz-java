@@ -29,9 +29,6 @@ public class ArtistLinksFragment extends BaseArtistFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflate(R.layout.fragment_swipe_recycler_view, container);
 
-        errorView = view.findViewById(R.id.errorView);
-        progressView = view.findViewById(R.id.progressView);
-        noresultsView = view.findViewById(R.id.noresultsView);
         recyclerView = view.findViewById(R.id.recyclerView);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
 
@@ -44,9 +41,8 @@ public class ArtistLinksFragment extends BaseArtistFragment {
         if (urls != null) {
             Collections.sort(urls);
             if (urls.isEmpty()) {
-                noresultsView.setVisibility(View.VISIBLE);
+                snackbarNotAction(swipeRefreshLayout, R.string.no_results);
             } else {
-                noresultsView.setVisibility(View.GONE);
                 configLinksRecycler();
                 LinkAdapter adapter = new LinkAdapter(urls);
                 adapter.setHolderClickListener(position ->
