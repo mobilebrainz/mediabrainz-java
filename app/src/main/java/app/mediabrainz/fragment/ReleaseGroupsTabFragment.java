@@ -141,6 +141,15 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
                         errorMessageTextView.setText(networkState.getMessage());
                     }
 
+                    /*
+                    if (networkState.getStatus() == Status.ERROR) {
+                        snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
+                                v -> retry());
+                    } else if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
+                        getErrorSnackbar().dismiss();
+                    }
+                    */
+
                     retryLoadingButton.setVisibility(networkState.getStatus() == Status.ERROR ? View.VISIBLE : View.GONE);
                     loadingProgressBar.setVisibility(networkState.getStatus() == Status.LOADING ? View.VISIBLE : View.GONE);
 

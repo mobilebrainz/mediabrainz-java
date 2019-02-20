@@ -41,7 +41,7 @@ public class ArtistFragment extends BaseArtistFragment implements
 
     @Override
     protected void show(Artist artist) {
-        //Log.i(TAG, "show: ");
+        Log.i(TAG, "show: ");
     }
 
     @Override

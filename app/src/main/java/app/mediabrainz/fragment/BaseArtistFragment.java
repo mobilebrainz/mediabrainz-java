@@ -20,7 +20,6 @@ public abstract class BaseArtistFragment extends BaseFragment {
     protected boolean isError;
 
     protected View progressView;
-    protected View noresultsView;
     protected SwipeRefreshLayout swipeRefreshLayout;
 
     protected abstract void show(Artist artist);

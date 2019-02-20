@@ -27,4 +27,5 @@
         android:textColor="@color/md_white_1000"
         android:text="@string/retry"/>
 
+
 </LinearLayout>
