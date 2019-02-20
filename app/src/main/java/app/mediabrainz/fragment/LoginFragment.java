@@ -16,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.navigation.Navigation;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import app.mediabrainz.R;
-import app.mediabrainz.api.oauth.OAuthException;
 import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.core.util.UiUtils;
 import app.mediabrainz.viewmodel.LoginVM;
@@ -82,37 +81,36 @@ public class LoginFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
 
         loginVM = getViewModel(LoginVM.class);
-        loginVM.authorized.observe(this, resource -> {
-            if (resource == null) return;
-            switch (resource.getStatus()) {
-                case LOADING:
-                    showProgress(true);
-                    break;
-                case ERROR:
-                    showProgress(false);
-                    Throwable t = resource.getThrowable();
-                    if (t != null && t.equals(OAuthException.INVALID_AUTENTICATION_ERROR)) {
-                        usernameView.setError(getString(R.string.error_invalid_username));
-                        passwordView.setError(getString(R.string.error_invalid_password));
-                    } else {
-                        snackbarNotAction(loginFormView, R.string.login_error);
-                    }
-                    break;
-                case SUCCESS:
-                    showProgress(false);
-                    //todo: navigate to startFragment ???
-                    //snackbarNotAction(loginFormView, R.string.login_success);
-                    Navigation.findNavController(loginFormView).navigate(R.id.action_loginFragment_to_startFragment);
-                    break;
+        loginVM.authEvent.observe(this, aBoolean -> {
+            if (aBoolean) {
+                Navigation.findNavController(loginFormView).navigate(R.id.action_loginFragment_to_startFragment);
             }
         });
+        loginVM.progressld.observe(this, aBoolean -> {
+            isLoading = aBoolean;
+            swipeRefreshLayout.setRefreshing(aBoolean);
+        });
+        loginVM.errorld.observe(this, aBoolean -> {
+            if (aBoolean) {
+                snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
+                        v -> attemptLogin());
+            } else if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
+                getErrorSnackbar().dismiss();
+            }
+        });
+        loginVM.throwableld.observe(this, throwable -> {
+            if (throwable != null) {
+                usernameView.setError(getString(R.string.error_invalid_username));
+                passwordView.setError(getString(R.string.error_invalid_password));
+            }
+        });
+
     }
 
     private void attemptLogin() {
         if (isLoading) {
             return;
         }
-
         usernameView.setError(null);
         passwordView.setError(null);
 
@@ -141,11 +139,6 @@ public class LoginFragment extends BaseFragment {
             }
             loginVM.authorize(username, password);
         }
-    }
-
-    private void showProgress(final boolean show) {
-        isLoading = show;
-        swipeRefreshLayout.setRefreshing(show);
     }
 
 }

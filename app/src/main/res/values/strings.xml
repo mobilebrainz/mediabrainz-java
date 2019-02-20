@@ -81,7 +81,6 @@
     <!-- Strings related to login -->
     <string name="login">Log In</string>
     <string name="login_title">Sign in</string>
-    <string name="login_error">Error</string>
     <string name="login_success">Success</string>
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
