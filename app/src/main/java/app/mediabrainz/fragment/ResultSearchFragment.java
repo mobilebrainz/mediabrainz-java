@@ -72,7 +72,7 @@ public class ResultSearchFragment extends BaseFragment {
         swipeRefreshLayout.setOnRefreshListener(() -> {
             if (!isLoading) search(true);
         });
-        
+
         return view;
     }
 

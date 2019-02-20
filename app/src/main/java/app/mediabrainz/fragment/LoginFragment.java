@@ -1,7 +1,5 @@
 package app.mediabrainz.fragment;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,6 +14,7 @@ import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.Navigation;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import app.mediabrainz.R;
 import app.mediabrainz.api.oauth.OAuthException;
 import app.mediabrainz.core.fragment.BaseFragment;
@@ -29,19 +28,20 @@ public class LoginFragment extends BaseFragment {
     private final String FORGOT_USERNAME_URI = "https://musicbrainz.org/lost-username";
     private final String FORGOT_PASSWORD_URI = "https://musicbrainz.org/lost-password";
 
+    private boolean isLoading;
+    private LoginVM loginVM;
+
     private EditText usernameView;
     private EditText passwordView;
-    private View progressView;
     private View loginFormView;
-
-    private LoginVM loginVM;
+    protected SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflate(R.layout.login_fragment, container);
 
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         loginFormView = view.findViewById(R.id.loginFormView);
-        progressView = view.findViewById(R.id.progressView);
         usernameView = view.findViewById(R.id.usernameView);
         passwordView = view.findViewById(R.id.passwordView);
 
@@ -67,6 +67,12 @@ public class LoginFragment extends BaseFragment {
         Button forgotPasswordButton = view.findViewById(R.id.forgotPasswordButton);
         forgotPasswordButton.setOnClickListener(
                 v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(FORGOT_PASSWORD_URI))));
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            if (!isLoading) {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
         return view;
     }
@@ -103,9 +109,10 @@ public class LoginFragment extends BaseFragment {
     }
 
     private void attemptLogin() {
-        if (progressView.getVisibility() == View.VISIBLE) {
+        if (isLoading) {
             return;
         }
+
         usernameView.setError(null);
         passwordView.setError(null);
 
@@ -137,25 +144,8 @@ public class LoginFragment extends BaseFragment {
     }
 
     private void showProgress(final boolean show) {
-        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-        loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        loginFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        loginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                    }
-                });
-
-        progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        progressView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0)
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                    }
-                });
+        isLoading = show;
+        swipeRefreshLayout.setRefreshing(show);
     }
 
 }
