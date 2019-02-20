@@ -33,6 +33,8 @@ import static androidx.core.content.ContextCompat.getSystemService;
 
 public abstract class BaseFragment extends Fragment {
 
+    private Snackbar errorSnackbar;
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -71,11 +73,29 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
-    // todo: remove to Util class??
     @MainThread
     protected void snackbarNotAction(@NonNull View view, @StringRes int resId) {
-        Snackbar.make(view, resId, Snackbar.LENGTH_LONG).setAction("Action", null).show();
+        Snackbar.make(view, resId, Snackbar.LENGTH_LONG).show();
     }
+
+    @MainThread
+    protected void snackbarWithAction(@NonNull View view, @StringRes int messageResId, @StringRes int actionResId, View.OnClickListener action) {
+        errorSnackbar = Snackbar.make(view, messageResId, Snackbar.LENGTH_INDEFINITE);
+        errorSnackbar.setAction(actionResId, action).show();
+    }
+
+    public Snackbar getErrorSnackbar() {
+        return errorSnackbar;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (errorSnackbar != null) {
+            errorSnackbar.dismiss();
+        }
+    }
+
 
     // todo: remove to Util class??
     protected boolean checkNetworkConnection() {

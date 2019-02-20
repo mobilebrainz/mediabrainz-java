@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -32,7 +34,6 @@ import app.mediabrainz.api.model.ReleaseGroup;
 import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.data.room.entity.Suggestion;
 import app.mediabrainz.viewmodel.ArtistVM;
-import app.mediabrainz.viewmodel.MainVM;
 import app.mediabrainz.viewmodel.ResultSearchVM;
 
 import static app.mediabrainz.MediaBrainzApp.oauth;
@@ -52,14 +53,11 @@ public class ResultSearchFragment extends BaseFragment {
     private String searchQuery;
     private int searchType = -1;
     private boolean isLoading;
-    private boolean isError;
 
     private ResultSearchVM resultSearchVM;
 
     protected SwipeRefreshLayout swipeRefreshLayout;
-    private View contentView;
     private RecyclerView searchRecyclerView;
-    private View errorView;
     private View noresultsView;
 
     @Override
@@ -67,8 +65,6 @@ public class ResultSearchFragment extends BaseFragment {
         View view = inflate(R.layout.result_search_fragment, container);
 
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
-        contentView = view.findViewById(R.id.contentView);
-        errorView = view.findViewById(R.id.errorView);
         noresultsView = view.findViewById(R.id.noresultsView);
         searchRecyclerView = view.findViewById(R.id.searchRecyclerView);
         configSearchRecycler();
@@ -76,7 +72,7 @@ public class ResultSearchFragment extends BaseFragment {
         swipeRefreshLayout.setOnRefreshListener(() -> {
             if (!isLoading) search(true);
         });
-
+        
         return view;
     }
 
@@ -102,7 +98,14 @@ public class ResultSearchFragment extends BaseFragment {
             isLoading = aBoolean;
             swipeRefreshLayout.setRefreshing(aBoolean);
         });
-        resultSearchVM.errorld.observe(this, this::showError);
+        resultSearchVM.errorld.observe(this, aBoolean -> {
+            if (aBoolean) {
+                snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
+                        v -> search(true));
+            } else if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
+                getErrorSnackbar().dismiss();
+            }
+        });
         resultSearchVM.noresultsld.observe(this, this::showNoResult);
 
         resultSearchVM.artistsld.observe(this, this::showArtists);
@@ -304,20 +307,6 @@ public class ResultSearchFragment extends BaseFragment {
 
     private void showNoResult(boolean show) {
         noresultsView.setVisibility(show ? View.VISIBLE : View.GONE);
-    }
-
-    private void showError(boolean show) {
-        if (show) {
-            searchRecyclerView.setVisibility(View.INVISIBLE);
-            contentView.setVisibility(View.INVISIBLE);
-            errorView.setVisibility(View.VISIBLE);
-            errorView.findViewById(R.id.retryButton).setOnClickListener(v -> search(true));
-        } else {
-            errorView.setVisibility(View.GONE);
-            contentView.setVisibility(View.VISIBLE);
-            searchRecyclerView.setVisibility(View.VISIBLE);
-        }
-        isError = show;
     }
 
 }
