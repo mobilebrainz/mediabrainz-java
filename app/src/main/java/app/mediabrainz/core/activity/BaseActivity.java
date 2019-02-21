@@ -1,8 +1,6 @@
 package app.mediabrainz.core.activity;
 
-import android.text.TextUtils;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -16,21 +14,8 @@ import androidx.lifecycle.ViewModelProviders;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-    protected  <T extends ViewModel> T getViewModel(@NonNull Class<T> modelClass) {
+    protected <T extends ViewModel> T getViewModel(@NonNull Class<T> modelClass) {
         return ViewModelProviders.of(this).get(modelClass);
-    }
-
-    // todo: remove to Util class??
-    @MainThread
-    protected void toast(final String msg) {
-        if (TextUtils.isEmpty(msg)) return;
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
-
-    // todo: remove to Util class??
-    @MainThread
-    protected void toast(@StringRes final int resId) {
-        Toast.makeText(this, getString(resId), Toast.LENGTH_SHORT).show();
     }
 
     // todo: remove to Util class??

@@ -1,15 +1,10 @@
 package app.mediabrainz.core.fragment;
 
 
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
 
@@ -21,14 +16,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
-import app.mediabrainz.R;
-
-import static androidx.core.content.ContextCompat.getSystemService;
 
 
 public abstract class BaseFragment extends Fragment {
@@ -57,21 +48,6 @@ public abstract class BaseFragment extends Fragment {
 
     protected View inflate(@LayoutRes int layoutRes, @Nullable ViewGroup container) {
         return LayoutInflater.from(getContext()).inflate(layoutRes, container, false);
-    }
-
-    // todo: remove to Util class??
-    @MainThread
-    protected void toast(final String msg) {
-        if (TextUtils.isEmpty(msg)) return;
-        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
-    }
-
-    // todo: remove to Util class??
-    @MainThread
-    protected void toast(@StringRes final int resId) {
-        if (getContext() != null) {
-            Toast.makeText(getContext(), getContext().getString(resId), Toast.LENGTH_SHORT).show();
-        }
     }
 
     @MainThread

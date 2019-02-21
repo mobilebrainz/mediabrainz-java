@@ -3,8 +3,11 @@ package app.mediabrainz.fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.view.View;
 
+import com.google.android.material.snackbar.Snackbar;
+
+import androidx.preference.AndroidResources;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceManager;
 import app.mediabrainz.R;
@@ -44,17 +47,20 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     private void clearSuggestionHistory() {
         //todo: make progress?
         //todo: remove to ViewModel?
-        new SuggestionRepository().deleteAll(() -> {
-            Toast.makeText(getActivity(), R.string.toast_search_cleared, Toast.LENGTH_SHORT).show();
-        });
+        new SuggestionRepository().deleteAll(() -> showSnackbar(R.string.toast_search_cleared));
     }
 
     private void clearRecommends() {
         //todo: make progress?
         //todo: remove to ViewModel?
-        new RecommendRepository().deleteAll(() -> {
-            Toast.makeText(getActivity(), R.string.toast_recommends_cleared, Toast.LENGTH_SHORT).show();
-        });
+        new RecommendRepository().deleteAll(() -> showSnackbar(R.string.toast_recommends_cleared));
+    }
+
+    private void showSnackbar(int res) {
+        if (getView() != null) {
+            View view = getView().findViewById(AndroidResources.ANDROID_R_LIST_CONTAINER);
+            Snackbar.make(view, res, Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override
