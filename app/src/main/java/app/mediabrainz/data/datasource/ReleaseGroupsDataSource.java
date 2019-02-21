@@ -22,6 +22,7 @@ import static app.mediabrainz.api.model.ReleaseGroup.PrimaryType.EP;
 import static app.mediabrainz.api.model.ReleaseGroup.PrimaryType.SINGLE;
 import static app.mediabrainz.api.model.ReleaseGroup.SecondaryType.COMPILATION;
 import static app.mediabrainz.api.model.ReleaseGroup.SecondaryType.LIVE;
+import static app.mediabrainz.api.model.ReleaseGroup.SecondaryType.NOTHING;
 
 
 public class ReleaseGroupsDataSource extends PageKeyedDataSource<Integer, ReleaseGroup> {
@@ -41,28 +42,29 @@ public class ReleaseGroupsDataSource extends PageKeyedDataSource<Integer, Releas
     private Completable retryCompletable;
 
 
-    public ReleaseGroupsDataSource(CompositeDisposable compositeDisposable, String artistMbid, ReleaseGroup.AlbumType albumType, MutableLiveData<Boolean> mutableIsOfficial) {
+    public ReleaseGroupsDataSource(@NonNull CompositeDisposable compositeDisposable, @NonNull String artistMbid,
+                                   @NonNull ReleaseGroup.AlbumType albumType, @NonNull MutableLiveData<Boolean> mutableIsOfficial) {
         this.artistMbid = artistMbid;
         this.compositeDisposable = compositeDisposable;
         this.mutableIsOfficial = mutableIsOfficial;
         this.albumType = albumType;
 
-        if (mutableIsOfficial.getValue()) {
+        if (mutableIsOfficial.getValue() != null && mutableIsOfficial.getValue()) {
             if (albumType.equals(ALBUM)) {
                 primaryType = ALBUM;
-                secondaryType = ReleaseGroup.SecondaryType.NOTHING;
+                secondaryType = NOTHING;
             } else if (albumType.equals(EP)) {
                 primaryType = EP;
-                secondaryType = ReleaseGroup.SecondaryType.NOTHING;
+                secondaryType = NOTHING;
             } else if (albumType.equals(SINGLE)) {
                 primaryType = SINGLE;
-                secondaryType = ReleaseGroup.SecondaryType.NOTHING;
+                secondaryType = NOTHING;
             } else if (albumType.equals(LIVE)) {
                 primaryType = EMPTY;
-                secondaryType = ReleaseGroup.SecondaryType.LIVE;
+                secondaryType = LIVE;
             } else if (albumType.equals(COMPILATION)) {
                 primaryType = EMPTY;
-                secondaryType = ReleaseGroup.SecondaryType.COMPILATION;
+                secondaryType = COMPILATION;
             }
         }
     }
@@ -95,7 +97,7 @@ public class ReleaseGroupsDataSource extends PageKeyedDataSource<Integer, Releas
                 releaseGroupBrowse -> {
                     List<ReleaseGroup> releaseGroups = releaseGroupBrowse.getReleaseGroups();
 
-                    if (!releaseGroups.isEmpty() && mutableIsOfficial.getValue()) {
+                    if (!releaseGroups.isEmpty() && mutableIsOfficial.getValue() != null && mutableIsOfficial.getValue()) {
                         compositeDisposable.add(api.searchOfficialReleaseGroups(
                                 artistMbid,
                                 releaseGroupSearch -> {
@@ -155,7 +157,8 @@ public class ReleaseGroupsDataSource extends PageKeyedDataSource<Integer, Releas
                     initialLoad.postValue(NetworkState.LOADED);
 
                     List<ReleaseGroup> releaseGroups = releaseGroupBrowse.getReleaseGroups();
-                    List<ReleaseGroup> rgs = mutableIsOfficial.getValue() ? selectOfficialReleaseGroups(releaseGroups) : selectReleaseGroups(releaseGroups);
+                    List<ReleaseGroup> rgs = (mutableIsOfficial.getValue() != null && mutableIsOfficial.getValue()) ? selectOfficialReleaseGroups(releaseGroups)
+                            : selectReleaseGroups(releaseGroups);
 
                     int nextOffset = releaseGroupBrowse.getOffset() + RELEASE_GROUPE_BROWSE_LIMIT;
 
@@ -220,7 +223,8 @@ public class ReleaseGroupsDataSource extends PageKeyedDataSource<Integer, Releas
         private MutableLiveData<Boolean> mutableIsOfficial;
         private MutableLiveData<ReleaseGroupsDataSource> releaseGroupsDataSourceLiveData = new MutableLiveData<>();
 
-        public Factory(CompositeDisposable compositeDisposable, String artistMbid, ReleaseGroup.AlbumType albumType, MutableLiveData<Boolean> mutableIsOfficial) {
+        public Factory(@NonNull CompositeDisposable compositeDisposable, @NonNull String artistMbid,
+                       @NonNull ReleaseGroup.AlbumType albumType, @NonNull MutableLiveData<Boolean> mutableIsOfficial) {
             this.compositeDisposable = compositeDisposable;
             this.artistMbid = artistMbid;
             this.albumType = albumType;

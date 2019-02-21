@@ -142,7 +142,7 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
                 swipeRefreshLayout.setRefreshing(isLoading);
 
                 if (adapter.getCurrentList() == null || adapter.getCurrentList().size() == 0) {
-                    //swipeRefreshLayout.setEnabled(networkState.getStatus() == Status.SUCCESS);
+                    swipeRefreshLayout.setEnabled(networkState.getStatus() == Status.SUCCESS);
                     pagedRecyclerView.scrollToPosition(0);
                 }
             }
@@ -158,7 +158,6 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
 
     @Override
     public void retry() {
-        Log.i(TAG, "retry: ");
         if (releaseGroupsVM != null) {
             releaseGroupsVM.retry();
         }
