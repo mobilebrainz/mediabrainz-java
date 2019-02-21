@@ -102,9 +102,7 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
 
     private void setEditListeners() {
         tagButton.setOnClickListener(v -> {
-            if (isLoading) {
-                return;
-            }
+            if (isLoading) return;
             if (oauth.hasAccount()) {
                 String tagString = tagInputView.getText().toString().trim();
                 if (TextUtils.isEmpty(tagString)) {

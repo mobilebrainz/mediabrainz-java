@@ -1,6 +1,8 @@
 package app.mediabrainz.apihandler;
 
 
+import android.text.TextUtils;
+
 import java.util.List;
 import java.util.Map;
 
@@ -287,15 +289,6 @@ public class Api {
                 errorHandler);
     }
 
-    public Disposable searchAlbum(String artist, String album, Consumer<ReleaseGroup.ReleaseGroupSearch> consumer, ErrorHandler errorHandler) {
-        return ApiHandler.subscribe503(
-                new ReleaseGroupSearchService()
-                        .add(ReleaseGroupSearchService.ReleaseGroupSearchField.ARTIST, artist)
-                        .add(ReleaseGroupSearchService.ReleaseGroupSearchField.RELEASE_GROUP, album)
-                        .search(),
-                consumer, errorHandler);
-    }
-
     public Disposable getReleasesByAlbum(String releaseGroupMbid, Consumer<Release.ReleaseBrowse> consumer, ErrorHandler errorHandler, int limit, int offset) {
         return ApiHandler.subscribe503(
                 new ReleaseBrowseService(RELEASE_GROUP, releaseGroupMbid)
@@ -327,16 +320,33 @@ public class Api {
                 consumer, errorHandler);
     }
 
+    private String parenthesesString(String str) {
+        if (!TextUtils.isEmpty(str)) {
+            str = "(" + str + ")";
+        }
+        return str;
+    }
+
     public Disposable searchArtist(String artist, Consumer<Artist.ArtistSearch> consumer, ErrorHandler errorHandler) {
-        return ApiHandler.subscribe503(new ArtistSearchService().search(artist), consumer, errorHandler);
+        return ApiHandler.subscribe503(
+                new ArtistSearchService().search(parenthesesString(artist)), consumer, errorHandler);
+    }
+
+    public Disposable searchAlbum(String artist, String album, Consumer<ReleaseGroup.ReleaseGroupSearch> consumer, ErrorHandler errorHandler) {
+        return ApiHandler.subscribe503(
+                new ReleaseGroupSearchService()
+                        .add(ReleaseGroupSearchService.ReleaseGroupSearchField.ARTIST, parenthesesString(artist))
+                        .add(ReleaseGroupSearchService.ReleaseGroupSearchField.RELEASE_GROUP, parenthesesString(album))
+                        .search(),
+                consumer, errorHandler);
     }
 
     public Disposable searchRecording(String artist, String album, String track, Consumer<Recording.RecordingSearch> consumer, ErrorHandler errorHandler) {
         return ApiHandler.subscribe503(
                 new RecordingSearchService()
-                        .add(RecordingSearchField.ARTIST, artist)
-                        .add(RecordingSearchField.RELEASE, album)
-                        .add(RecordingSearchField.RECORDING, track)
+                        .add(RecordingSearchField.ARTIST, parenthesesString(artist))
+                        .add(RecordingSearchField.RELEASE, parenthesesString(album))
+                        .add(RecordingSearchField.RECORDING, parenthesesString(track))
                         .search(),
                 consumer, errorHandler);
     }
@@ -344,8 +354,8 @@ public class Api {
     public Disposable searchRelease(String artist, String release, Consumer<Release.ReleaseSearch> consumer, ErrorHandler errorHandler, int limit, int offset) {
         return ApiHandler.subscribe503(
                 new ReleaseSearchService()
-                        .add(ReleaseSearchService.ReleaseSearchField.ARTIST, artist)
-                        .add(ReleaseSearchService.ReleaseSearchField.RELEASE, release)
+                        .add(ReleaseSearchService.ReleaseSearchField.ARTIST, parenthesesString(artist))
+                        .add(ReleaseSearchService.ReleaseSearchField.RELEASE, parenthesesString(release))
                         .search(limit, offset),
                 consumer, errorHandler);
     }
@@ -353,6 +363,13 @@ public class Api {
     public Disposable searchReleasesByBarcode(String barcode, Consumer<Release.ReleaseSearch> consumer, ErrorHandler errorHandler) {
         return ApiHandler.subscribe503(
                 new ReleaseSearchService().add(ReleaseSearchService.ReleaseSearchField.BARCODE, barcode).search(),
+                consumer, errorHandler);
+    }
+
+    public Disposable searchTagFromWebservice(String tag, int page, int limit, Consumer<Tag.TagSearch> consumer, ErrorHandler errorHandler) {
+        return ApiHandler.subscribe503(
+                new TagSearchService().search(parenthesesString(tag), limit, page),
+                //new TagSearchService().add(TAG, parenthesesString(tag)).search(limit, page),
                 consumer, errorHandler);
     }
 
@@ -719,13 +736,6 @@ public class Api {
     public Disposable getUserProfile(String username, Consumer<UserProfile> consumer, ErrorHandler errorHandler) {
         return ApiHandler.subscribe(
                 new UserProfileService().getUserProfile(username),
-                consumer, errorHandler);
-    }
-
-    public Disposable searchTagFromWebservice(String tag, int page, int limit, Consumer<Tag.TagSearch> consumer, ErrorHandler errorHandler) {
-        return ApiHandler.subscribe503(
-                new TagSearchService().search(tag, limit, page),
-                //new TagSearchService().add(TAG, tag).search(limit, page),
                 consumer, errorHandler);
     }
 
