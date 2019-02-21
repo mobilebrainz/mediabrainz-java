@@ -2,12 +2,10 @@
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/app_background"
-    tools:context=".fragment.ResultSearchFragment">
+    android:background="@color/app_background">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -15,22 +13,14 @@
         android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <FrameLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <FrameLayout
-                android:id="@+id/contentView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/searchRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="5dp"/>
-
-        </FrameLayout>
+            android:layout_height="wrap_content"
+            android:paddingStart="5dp"
+            android:paddingTop="5dp"
+            android:paddingEnd="5dp"
+            android:scrollbars="vertical"/>
 
     </androidx.core.widget.NestedScrollView>
 

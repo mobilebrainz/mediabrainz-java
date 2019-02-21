@@ -6,9 +6,9 @@ import androidx.lifecycle.Transformations;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 import app.mediabrainz.api.model.ReleaseGroup;
-import app.mediabrainz.data.ReleaseGroupsDataSource;
+import app.mediabrainz.data.datasource.ReleaseGroupsDataSource;
 
-import static app.mediabrainz.data.ReleaseGroupsDataSource.RELEASE_GROUPE_BROWSE_LIMIT;
+import static app.mediabrainz.data.datasource.ReleaseGroupsDataSource.RELEASE_GROUPE_BROWSE_LIMIT;
 
 
 public class ReleaseGroupsVM extends CompositeDisposableViewModel {

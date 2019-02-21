@@ -7,21 +7,21 @@
 
     <fragment
         android:id="@+id/startFragment"
-        android:name="app.mediabrainz.fragments.StartFragment"
+        android:name="app.mediabrainz.fragment.StartFragment"
         android:label="@string/start_fragment_label"
         tools:layout="@layout/start_fragment"/>
     <fragment
         android:id="@+id/aboutFragment"
-        android:name="app.mediabrainz.fragments.AboutFragment"
+        android:name="app.mediabrainz.fragment.AboutFragment"
         android:label="@string/about_fragment_label"
         tools:layout="@layout/about_fragment"/>
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="app.mediabrainz.fragments.SettingsFragment"
+        android:name="app.mediabrainz.fragment.SettingsFragment"
         android:label="@string/settings_fragment_label"/>
     <fragment
         android:id="@+id/loginFragment"
-        android:name="app.mediabrainz.fragments.LoginFragment"
+        android:name="app.mediabrainz.fragment.LoginFragment"
         android:label="@string/login_fragment_label"
         tools:layout="@layout/login_fragment">
         <action
@@ -30,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="app.mediabrainz.fragments.SearchFragment"
+        android:name="app.mediabrainz.fragment.SearchFragment"
         android:label="@string/search_fragment_label"
         tools:layout="@layout/search_fragment">
         <action
@@ -42,7 +42,7 @@
     </fragment>
     <fragment
         android:id="@+id/resultSearchFragment"
-        android:name="app.mediabrainz.fragments.ResultSearchFragment"
+        android:name="app.mediabrainz.fragment.ResultSearchFragment"
         android:label="@string/result_search_fragment_label"
         tools:layout="@layout/result_search_fragment">
         <argument
@@ -65,17 +65,41 @@
             android:name="searchType"
             app:argType="integer"
             android:defaultValue="-1"/>
+        <action
+            android:id="@+id/action_resultSearchFragment_to_artistFragment"
+            app:destination="@id/artistFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/artistFragment"
+        android:name="app.mediabrainz.fragment.ArtistFragment"
+        android:label="@string/artist_fragment_label"
+        tools:layout="@layout/artist_fragment">
+        <action
+            android:id="@+id/action_artistFragment_to_artistReleasesFragment"
+            app:destination="@id/artistReleasesFragment"/>
+        <action
+            android:id="@+id/action_artistFragment_to_artistLinksFragment"
+            app:destination="@id/artistLinksFragment"/>
+        <action
+            android:id="@+id/action_artistFragment_to_artistTagsPagerFragment"
+            app:destination="@id/artistTagsPagerFragment"/>
     </fragment>
     <fragment
         android:id="@+id/artistReleasesFragment"
-        android:name="app.mediabrainz.fragments.ArtistReleasesFragment"
+        android:name="app.mediabrainz.fragment.ArtistReleasesFragment"
         android:label="@string/artist_releases_fragment_label"
         tools:layout="@layout/fragment_pager_without_icons"/>
 
     <fragment
         android:id="@+id/artistLinksFragment"
-        android:name="app.mediabrainz.fragments.ArtistLinksFragment"
+        android:name="app.mediabrainz.fragment.ArtistLinksFragment"
         android:label="@string/artist_links_fragment_label"
-        tools:layout="@layout/fragment_recycler_view"/>
+        tools:layout="@layout/fragment_swipe_recycler_view"/>
+
+    <fragment
+        android:id="@+id/artistTagsPagerFragment"
+        android:name="app.mediabrainz.fragment.ArtistTagsPagerFragment"
+        android:label="@string/artist_tags_pager_fragment_label"
+        tools:layout="@layout/fragment_edit_tags_pager"/>
 
 </navigation>

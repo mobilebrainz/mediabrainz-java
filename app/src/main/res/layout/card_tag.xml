@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cardview="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:layout_marginBottom="2dp"
+    android:layout_marginTop="0dp"
+    android:background="@color/card_background"
+    cardview:cardCornerRadius="0dp"
+    cardview:cardElevation="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp">
+
+        <TextView
+            android:id="@+id/tagNameView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textSize="16sp"/>
+
+        <ImageView
+            android:id="@+id/voteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:src="@drawable/ic_thumbs_up_down_24"
+            android:tint="@color/colorPrimaryLight"/>
+
+        <TextView
+            android:id="@+id/votesCountView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

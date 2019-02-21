@@ -14,8 +14,10 @@
     <string name="settings_fragment_label">Settings</string>
     <string name="login_fragment_label">Log In</string>
     <string name="result_search_fragment_label">Search Result</string>
+    <string name="artist_fragment_label">Artist</string>
     <string name="artist_releases_fragment_label">Artist Releases</string>
     <string name="artist_links_fragment_label">Artist Links</string>
+    <string name="artist_tags_pager_fragment_label">Artist Tags/Genres</string>
 
     <!-- labels of menu actions -->
     <string name="scan_barcode_action_label">Scan barcode</string>
@@ -24,7 +26,7 @@
 
     <!-- menu items -->
     <string name="drawer_item_main">Main</string>
-    <string name="drawer_item_artist">Artist</string>
+    <string name="drawer_item_items">Items</string>
     <string name="drawer_item_actions">Actions</string>
 
     <!-- Release group types -->
@@ -79,7 +81,6 @@
     <!-- Strings related to login -->
     <string name="login">Log In</string>
     <string name="login_title">Sign in</string>
-    <string name="login_error">Error</string>
     <string name="login_success">Success</string>
     <string name="prompt_username">Username</string>
     <string name="prompt_password">Password</string>
@@ -187,5 +188,23 @@
     <string name="edit_login">You must log in before you can edit!</string>
     <string name="tag_hint">Tag (genre)</string>
     <string name="rating_text">%1$.2f (%2$d)</string>
+
+    <!-- Menus -->
+    <string name="releases_item">Releases</string>
+    <string name="relations_item">Relations</string>
+    <string name="tags_item">Tags</string>
+    <string name="links_item">Links</string>
+
+    <!-- Tags -->
+    <string name="tag_tab_artists">Artists</string>
+    <string name="tag_tab_releases">Releases</string>
+    <string name="tag_tab_recordings">Recordings</string>
+    <string name="tags_tab_genres">Genres</string>
+    <string name="tags_tab_tags">Tags</string>
+    <string name="tag_propagated_to_albums">Tag was propagated to official albums successfully!</string>
+    <string name="error_tag_propagation_to_albums">Error of tag propagation to official albums</string>
+    <string name="error_post_tag">Error post tag</string>
+    <string name="error_propagate_tag">Error propagate tag</string>
+    <string name="error_post_rating">Error post rating</string>
 
 </resources>

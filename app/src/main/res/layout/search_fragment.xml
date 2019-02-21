@@ -1,35 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:cardview="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".fragments.SearchFragment">
+    android:background="@color/app_background"
+    tools:context=".fragment.SearchFragment">
 
-    <FrameLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ProgressBar
-            android:id="@+id/progressView"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="64dp"
-            android:visibility="gone"/>
-
-        <include
-            android:id="@+id/errorView"
-            layout="@layout/layout_retry"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:visibility="gone"/>
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:id="@+id/contentView"
@@ -294,6 +279,6 @@
 
         </LinearLayout>
 
-    </FrameLayout>
+    </androidx.core.widget.NestedScrollView>
 
-</androidx.core.widget.NestedScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
