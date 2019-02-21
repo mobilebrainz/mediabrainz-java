@@ -99,16 +99,7 @@ public class MainActivity extends BaseActivity implements
         navMenu.findItem(R.id.loginFragment).setVisible(!oauth.hasAccount());
         navMenu.findItem(R.id.logoutAction).setVisible(oauth.hasAccount());
     }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        ArtistVM artistVM = getViewModel(ArtistVM.class);
-        if (!TextUtils.isEmpty(artistVM.getArtistMbid())) {
-            MediaBrainzApp.getPreferences().setArtistMbid(artistVM.getArtistMbid());
-        }
-    }
-
+    
     @Override
     public boolean onSupportNavigateUp() {
         return navController.navigateUp() || super.onSupportNavigateUp();

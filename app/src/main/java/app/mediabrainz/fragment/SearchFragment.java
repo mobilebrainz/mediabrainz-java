@@ -24,7 +24,7 @@ import app.mediabrainz.adapter.SuggestionListAdapter;
 import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.core.util.UiUtils;
 import app.mediabrainz.data.room.entity.Suggestion;
-import app.mediabrainz.viewmodel.TagsVM;
+import app.mediabrainz.viewmodel.GenresVM;
 
 import static app.mediabrainz.MediaBrainzApp.oauth;
 
@@ -34,7 +34,7 @@ public class SearchFragment extends BaseFragment {
     private static final String TAG = "SearchFragment";
 
     private List<String> genres = new ArrayList<>();
-    private TagsVM tagsVM;
+    private GenresVM genresVM;
     private boolean isLoading;
     private boolean isError;
 
@@ -80,28 +80,28 @@ public class SearchFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() != null) {
-            tagsVM = getActivityViewModel(TagsVM.class);
+            genresVM = getActivityViewModel(GenresVM.class);
             observe();
             setupSearchTypeSpinner();
         }
     }
 
     private void observe() {
-        tagsVM.genresld.observe(this, genres -> {
+        genresVM.genresld.observe(this, genres -> {
             this.genres = genres;
             if (SearchType.TAG.ordinal() == searchSpinner.getSelectedItemPosition() && !genres.isEmpty()) {
                 setGenreSelectedAdapter();
             }
         });
-        tagsVM.progressld.observe(this, aBoolean -> {
+        genresVM.progressld.observe(this, aBoolean -> {
             isLoading = aBoolean;
             swipeRefreshLayout.setRefreshing(aBoolean);
         });
-        tagsVM.errorld.observe(this, aBoolean -> {
+        genresVM.errorld.observe(this, aBoolean -> {
             isError = aBoolean;
             if (aBoolean) {
                 snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
-                        v -> tagsVM.getGenres());
+                        v -> genresVM.getGenres());
             } else if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
                 getErrorSnackbar().dismiss();
             }
@@ -132,7 +132,7 @@ public class SearchFragment extends BaseFragment {
         searchSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
                 //todo: неправильно - при первом селекте идёт подгрузка, но только после повторного селекта заполняется ArrayAdapter
-                if (SearchType.TAG.ordinal() == pos && tagsVM.getGenres() == null) return;
+                if (SearchType.TAG.ordinal() == pos && genresVM.getGenres() == null) return;
 
                 if (getContext() != null) {
                     //todo: не подкидывает теги, а только жанры

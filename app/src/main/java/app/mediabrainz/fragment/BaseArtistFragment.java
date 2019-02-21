@@ -1,12 +1,14 @@
 package app.mediabrainz.fragment;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import app.mediabrainz.MediaBrainzApp;
 import app.mediabrainz.R;
 import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.core.fragment.BaseFragment;
@@ -30,16 +32,20 @@ public abstract class BaseArtistFragment extends BaseFragment {
 
         if (getActivity() != null) {
             artistVM = getActivityViewModel(ArtistVM.class);
-            observeProgress();
-            observeError();
-            observeArtist();
-            observeNoResult();
-        }
+            if (!TextUtils.isEmpty(artistVM.getArtistMbid())) {
+                MediaBrainzApp.getPreferences().setArtistMbid(artistVM.getArtistMbid());
 
-        if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setOnRefreshListener(() -> {
-                if (!isLoading) artistVM.refreshArtist();
-            });
+                observeProgress();
+                observeError();
+                observeArtist();
+                observeNoResult();
+
+                if (swipeRefreshLayout != null) {
+                    swipeRefreshLayout.setOnRefreshListener(() -> {
+                        if (!isLoading) artistVM.refreshArtist();
+                    });
+                }
+            }
         }
     }
 

@@ -23,6 +23,7 @@ import app.mediabrainz.R;
 import app.mediabrainz.adapter.pager.EditTagsPagerAdapter;
 import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.xml.UserTagXML;
+import app.mediabrainz.viewmodel.GenresVM;
 import app.mediabrainz.viewmodel.TagsVM;
 
 import static app.mediabrainz.MediaBrainzApp.oauth;
@@ -38,6 +39,7 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
     private List<String> allGenres = new ArrayList<>();
     private Artist artist;
     private TagsVM tagsVM;
+    private GenresVM genresVM;
     private int tagsTab = EditTagsPagerAdapter.TagsTab.GENRES.ordinal();
 
     private TextView loginWarningView;
@@ -67,8 +69,10 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
     protected void show(Artist artist) {
         this.artist = artist;
 
+        genresVM = getActivityViewModel(GenresVM.class);
         tagsVM = getActivityViewModel(TagsVM.class);
         observe();
+
         tagsVM.setItemtags(artist.getTags());
         tagsVM.setUserItemTags(artist.getUserTags());
         tagsVM.setItemGenres(artist.getGenres());
@@ -82,16 +86,7 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
         pagerAdapter.setupTabViews(tabsView);
         pagerView.setCurrentItem(tagsTab);
 
-        tagsVM.genresld.observe(this, genres -> {
-            this.allGenres = genres;
-            adapter = new ArrayAdapter<>(
-                    getContext(),
-                    android.R.layout.simple_dropdown_item_1line,
-                    allGenres.toArray(new String[allGenres.size()]));
-            tagInputView.setThreshold(1);
-            tagInputView.setAdapter(adapter);
-        });
-        tagsVM.getGenres();
+        genresVM.getGenres();
     }
 
     @Override
@@ -124,6 +119,25 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
     }
 
     private void observe() {
+        genresVM.genresld.observe(this, genres -> {
+            this.allGenres = genres;
+            adapter = new ArrayAdapter<>(
+                    getContext(),
+                    android.R.layout.simple_dropdown_item_1line,
+                    allGenres.toArray(new String[allGenres.size()]));
+            tagInputView.setThreshold(1);
+            tagInputView.setAdapter(adapter);
+        });
+
+        genresVM.errorld.observe(this, aBoolean -> {
+            if (aBoolean) {
+                snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
+                        v -> genresVM.getGenres());
+            } else if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
+                getErrorSnackbar().dismiss();
+            }
+        });
+
         tagsVM.artistTags.observe(this, a -> {
             artist.setTags(a.getTags());
             artist.setUserTags(a.getUserTags());
@@ -133,19 +147,25 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
             show(artist);
         });
 
+        tagsVM.propagateEvent.observe(this, aBoolean -> {
+            snackbarNotAction(swipeRefreshLayout, aBoolean ?
+                    R.string.tag_propagated_to_albums : R.string.error_propagate_tag);
+        });
+
+        tagsVM.errorTagld.observe(this, aBoolean -> {
+            if (aBoolean) {
+                snackbarNotAction(swipeRefreshLayout, R.string.connection_error);
+            }
+        });
+
         tagsVM.postArtistTagEvent.observe(this, aBoolean -> {
             if (!aBoolean) {
                 snackbarNotAction(swipeRefreshLayout, R.string.error_post_tag);
             }
         });
 
-        tagsVM.propagateEvent.observe(this, aBoolean -> {
-            if (aBoolean) {
-                snackbarNotAction(swipeRefreshLayout, R.string.tag_propagated_to_albums);
-            } else {
-                snackbarNotAction(swipeRefreshLayout, R.string.error_post_tag);
-            }
-        });
+        tagsVM.progressld.observe(this, aBoolean -> swipeRefreshLayout.setRefreshing(aBoolean));
+        genresVM.progressld.observe(this, aBoolean -> swipeRefreshLayout.setRefreshing(aBoolean));
     }
 
     private void postArtistTag(String tag, UserTagXML.VoteType voteType) {

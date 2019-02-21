@@ -23,13 +23,18 @@ public class TagsVM extends CompositeDisposableViewModel {
     private List<Tag> ItemGenres = new ArrayList<>();
     private List<Tag> userItemGenres = new ArrayList<>();
 
-    public final MutableLiveData<List<String>> genresld = new MutableLiveData<>();
     public final SingleLiveEvent<Boolean> postArtistTagEvent = new SingleLiveEvent<>();
     public final SingleLiveEvent<Artist> artistTags = new SingleLiveEvent<>();
     public final SingleLiveEvent<Boolean> propagateEvent = new SingleLiveEvent<>();
+    public final SingleLiveEvent<Boolean> errorTagld = new SingleLiveEvent<>();
+
+    private void setTagError(Throwable t) {
+        progressld.setValue(false);
+        errorTagld.setValue(true);
+    }
 
     public void postArtistTag(String artistId, String tag, UserTagXML.VoteType voteType, boolean propagateTagToAlbums) {
-        initLoading();
+        progressld.setValue(true);
         dispose(api.postArtistTag(artistId, tag, voteType,
                 metadata -> {
                     progressld.setValue(false);
@@ -42,11 +47,11 @@ public class TagsVM extends CompositeDisposableViewModel {
                         propagateTagToAlbums(artistId, tag, voteType);
                     }
                 },
-                this::setError));
+                this::setTagError));
     }
 
     private void propagateTagToAlbums(String artistId, String tag, UserTagXML.VoteType voteType) {
-        initLoading();
+        progressld.setValue(true);
         dispose(api.searchOfficialReleaseGroups(artistId,
                 releaseGroupSearch -> {
                     progressld.setValue(false);
@@ -57,23 +62,22 @@ public class TagsVM extends CompositeDisposableViewModel {
                 t -> {
                     progressld.setValue(false);
                     propagateEvent.setValue(false);
-                    //setError(t);
                 },
                 100, 0, ALBUM, NOTHING));
     }
 
     private void loadArtistTags(String artistId) {
-        initLoading();
+        progressld.setValue(true);
         dispose(api.getArtistTags(artistId,
                 artist -> {
                     progressld.setValue(false);
                     artistTags.setValue(artist);
                 },
-                this::setError));
+                this::setTagError));
     }
 
     private void postTagToReleaseGroups(String tag, UserTagXML.VoteType voteType, List<ReleaseGroup> releaseGroups) {
-        initLoading();
+        progressld.setValue(true);
         dispose(api.postTagToReleaseGroups(tag, voteType, releaseGroups,
                 metadata -> {
                     progressld.setValue(false);
@@ -82,22 +86,7 @@ public class TagsVM extends CompositeDisposableViewModel {
                 t -> {
                     progressld.setValue(false);
                     propagateEvent.setValue(false);
-                    //setError(t);
                 }));
-    }
-
-    public List<String> getGenres() {
-        if (genresld.getValue() == null) {
-            initLoading();
-            dispose(api.getGenres(
-                    genres -> {
-                        genresld.setValue(genres != null ? genres : new ArrayList<>());
-                        progressld.setValue(false);
-                    },
-                    this::setError));
-            return null;
-        }
-        return genresld.getValue();
     }
 
     public List<Tag> getItemtags() {

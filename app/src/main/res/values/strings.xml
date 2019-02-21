@@ -204,6 +204,7 @@
     <string name="tag_propagated_to_albums">Tag was propagated to official albums successfully!</string>
     <string name="error_tag_propagation_to_albums">Error of tag propagation to official albums</string>
     <string name="error_post_tag">Error post tag</string>
+    <string name="error_propagate_tag">Error propagate tag</string>
     <string name="error_post_rating">Error post rating</string>
 
 </resources>
