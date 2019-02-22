@@ -3,7 +3,6 @@ package app.mediabrainz.viewmodel;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.lifecycle.MutableLiveData;
 import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.ReleaseGroup;
 import app.mediabrainz.api.model.Tag;
@@ -18,15 +17,38 @@ import static app.mediabrainz.api.model.ReleaseGroup.SecondaryType.NOTHING;
 
 public class TagsVM extends CompositeDisposableViewModel {
 
-    private List<Tag> Itemtags = new ArrayList<>();
+    private List<Tag> itemtags = new ArrayList<>();
     private List<Tag> userItemTags = new ArrayList<>();
-    private List<Tag> ItemGenres = new ArrayList<>();
+    private List<Tag> itemGenres = new ArrayList<>();
     private List<Tag> userItemGenres = new ArrayList<>();
 
     public final SingleLiveEvent<Boolean> postArtistTagEvent = new SingleLiveEvent<>();
     public final SingleLiveEvent<Artist> artistTags = new SingleLiveEvent<>();
     public final SingleLiveEvent<Boolean> propagateEvent = new SingleLiveEvent<>();
     public final SingleLiveEvent<Boolean> errorTagld = new SingleLiveEvent<>();
+
+
+    public void setTags(List<Tag> tags, List<Tag> userTags, List<Tag> genres, List<Tag> userGenres) {
+        if (tags != null && genres != null)
+        for (Tag tag : tags) {
+            if (!genres.contains(tag)) {
+                itemtags.add(tag);
+            }
+        }
+        if (userTags != null && userGenres != null) {
+            for (Tag tag : userTags) {
+                if (!userGenres.contains(tag)) {
+                    userItemTags.add(tag);
+                }
+            }
+        }
+        if (genres != null) {
+            itemGenres = genres;
+        }
+        if (userGenres != null) {
+            userItemGenres = userGenres;
+        }
+    }
 
     private void setTagError(Throwable t) {
         progressld.setValue(false);
@@ -90,11 +112,11 @@ public class TagsVM extends CompositeDisposableViewModel {
     }
 
     public List<Tag> getItemtags() {
-        return Itemtags;
+        return itemtags;
     }
 
     public void setItemtags(List<Tag> itemtags) {
-        this.Itemtags = itemtags;
+        this.itemtags = itemtags;
     }
 
     public List<Tag> getUserItemTags() {
@@ -106,11 +128,11 @@ public class TagsVM extends CompositeDisposableViewModel {
     }
 
     public List<Tag> getItemGenres() {
-        return ItemGenres;
+        return itemGenres;
     }
 
     public void setItemGenres(List<Tag> itemGenres) {
-        this.ItemGenres = itemGenres;
+        this.itemGenres = itemGenres;
     }
 
     public List<Tag> getUserItemGenres() {
