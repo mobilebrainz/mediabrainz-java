@@ -14,6 +14,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import app.mediabrainz.R;
@@ -30,7 +31,7 @@ import static app.mediabrainz.MediaBrainzApp.oauth;
 public class EditTagsTabFragment extends BaseFragment {
 
     public interface TagInterface {
-        void postTag(String tag, UserTagXML.VoteType voteType, int tagsTab);
+        void postTag(String tag, UserTagXML.VoteType voteType);
     }
 
     private static final String TAGS_TAB = "EditTagsTabFragment.TAGS_TAB";
@@ -96,38 +97,42 @@ public class EditTagsTabFragment extends BaseFragment {
             });
             recyclerView.setAdapter(adapter);
 
-            TagInterface parent = (TagInterface) getParentFragment();
-            adapter.setOnVoteTagListener((position) -> {
-                if (oauth.hasAccount()) {
-                    String tag = tags.get(position).getName();
-                    AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
-                    alertDialog.show();
-                    Window win = alertDialog.getWindow();
-                    if (win != null) {
-                        win.setContentView(R.layout.dialog_vote_tag);
-                        ImageView voteUpButton = win.findViewById(R.id.voteUpButton);
+            if (getContext() != null && getParentFragment() != null) {
+                TagInterface parent = (TagInterface) getParentFragment();
+                adapter.setOnVoteTagListener((position) -> {
+                    if (oauth.hasAccount()) {
+                        String tag = tags.get(position).getName();
+                        AlertDialog alertDialog = new AlertDialog.Builder(getContext()).create();
+                        alertDialog.show();
+                        Window win = alertDialog.getWindow();
+                        if (win != null) {
+                            win.setContentView(R.layout.dialog_vote_tag);
+                            ImageView voteUpButton = win.findViewById(R.id.voteUpButton);
 
-                        voteUpButton.setOnClickListener(v -> {
-                            alertDialog.dismiss();
-                            parent.postTag(tag, UserTagXML.VoteType.UPVOTE, tagsTab);
-                        });
+                            voteUpButton.setOnClickListener(v -> {
+                                alertDialog.dismiss();
+                                parent.postTag(tag, UserTagXML.VoteType.UPVOTE);
+                            });
 
-                        ImageView voteWithdrawButton = win.findViewById(R.id.voteWithdrawButton);
-                        voteWithdrawButton.setOnClickListener(v -> {
-                            alertDialog.dismiss();
-                            parent.postTag(tag, UserTagXML.VoteType.WITHDRAW, tagsTab);
-                        });
+                            ImageView voteWithdrawButton = win.findViewById(R.id.voteWithdrawButton);
+                            voteWithdrawButton.setOnClickListener(v -> {
+                                alertDialog.dismiss();
+                                parent.postTag(tag, UserTagXML.VoteType.WITHDRAW);
+                            });
 
-                        ImageView voteDownButton = win.findViewById(R.id.voteDownButton);
-                        voteDownButton.setOnClickListener(v -> {
-                            alertDialog.dismiss();
-                            parent.postTag(tag, UserTagXML.VoteType.DOWNVOTE, tagsTab);
-                        });
+                            ImageView voteDownButton = win.findViewById(R.id.voteDownButton);
+                            voteDownButton.setOnClickListener(v -> {
+                                alertDialog.dismiss();
+                                parent.postTag(tag, UserTagXML.VoteType.DOWNVOTE);
+                            });
+                        }
+                    } else {
+                        if (getParentFragment().getView() != null) {
+                            Navigation.findNavController(getParentFragment().getView()).navigate(R.id.action_global_loginFragment);
+                        }
                     }
-                } else {
-                    //ActivityFactory.startLoginActivity(getContext());
-                }
-            });
+                });
+            }
         }
     }
 

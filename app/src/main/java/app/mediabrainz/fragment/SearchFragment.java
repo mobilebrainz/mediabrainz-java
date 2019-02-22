@@ -66,7 +66,7 @@ public class SearchFragment extends BaseFragment {
             logInButton.setVisibility(View.VISIBLE);
             logInButton.setOnClickListener(v -> {
                 if (!isLoading && !isError) {
-                    Navigation.findNavController(v).navigate(R.id.action_searchFragment_to_loginFragment);
+                    Navigation.findNavController(v).navigate(R.id.action_global_loginFragment);
                 }
             });
         }
@@ -131,7 +131,6 @@ public class SearchFragment extends BaseFragment {
 
         searchSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
-                //todo: неправильно - при первом селекте идёт подгрузка, но только после повторного селекта заполняется ArrayAdapter
                 if (SearchType.TAG.ordinal() == pos && genresVM.getGenres() == null) return;
 
                 if (getContext() != null) {

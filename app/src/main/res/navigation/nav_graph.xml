@@ -34,9 +34,6 @@
         android:label="@string/search_fragment_label"
         tools:layout="@layout/search_fragment">
         <action
-            android:id="@+id/action_searchFragment_to_loginFragment"
-            app:destination="@id/loginFragment"/>
-        <action
             android:id="@+id/action_searchFragment_to_resultSearchFragment"
             app:destination="@id/resultSearchFragment"/>
     </fragment>
@@ -76,5 +73,6 @@
             app:argType="string"
             app:nullable="false"/>
     </action>
+    <action android:id="@+id/action_global_loginFragment" app:destination="@id/loginFragment"/>
 
 </navigation>

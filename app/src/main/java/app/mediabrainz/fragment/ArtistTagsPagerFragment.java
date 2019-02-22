@@ -71,11 +71,15 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
 
         genresVM = getActivityViewModel(GenresVM.class);
         genresVM.getGenres();
+        observeGenres();
 
         tagsVM = getActivityViewModel(TagsVM.class);
-        tagsVM.setTags(artist);
         observeTags();
-        observeGenres();
+        configTags();
+    }
+
+    private void configTags() {
+        tagsVM.setTags(artist);
 
         EditTagsPagerAdapter pagerAdapter = new EditTagsPagerAdapter(getChildFragmentManager(), getResources());
         pagerView.setAdapter(pagerAdapter);
@@ -83,6 +87,7 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
         tabsView.setupWithViewPager(pagerView);
         tabsView.setTabMode(TabLayout.MODE_FIXED);
         pagerAdapter.setupTabViews(tabsView);
+        //todo: сделать сохранение таба для вращения экрана
         pagerView.setCurrentItem(tagsTab);
     }
 
@@ -110,8 +115,7 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
     }
 
     @Override
-    public void postTag(String tag, UserTagXML.VoteType voteType, int tagsTab) {
-        this.tagsTab = tagsTab;
+    public void postTag(String tag, UserTagXML.VoteType voteType) {
         postArtistTag(tag, voteType);
     }
 
@@ -148,7 +152,8 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
             artist.setGenres(a.getGenres());
             artist.setUserGenres(a.getUserGenres());
             tagInputView.setText("");
-            show(artist);
+            this.tagsTab = pagerView.getCurrentItem();
+            configTags();
         });
         tagsVM.propagateEvent.observe(this, aBoolean -> {
             snackbarNotAction(swipeRefreshLayout, aBoolean ? R.string.tag_propagated_to_albums : R.string.error_propagate_tag);
