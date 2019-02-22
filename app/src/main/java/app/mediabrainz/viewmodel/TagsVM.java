@@ -18,10 +18,10 @@ import static app.mediabrainz.api.model.ReleaseGroup.SecondaryType.NOTHING;
 
 public class TagsVM extends CompositeDisposableViewModel {
 
-    private List<Tag> itemtags = new ArrayList<>();
-    private List<Tag> userItemTags = new ArrayList<>();
-    private List<Tag> itemGenres = new ArrayList<>();
-    private List<Tag> userItemGenres = new ArrayList<>();
+    private final List<Tag> itemTags = new ArrayList<>();
+    private final List<Tag> userItemTags = new ArrayList<>();
+    private final List<Tag> itemGenres = new ArrayList<>();
+    private final List<Tag> userItemGenres = new ArrayList<>();
 
     public final SingleLiveEvent<Boolean> postArtistTagEvent = new SingleLiveEvent<>();
     public final SingleLiveEvent<Artist> artistTags = new SingleLiveEvent<>();
@@ -37,10 +37,15 @@ public class TagsVM extends CompositeDisposableViewModel {
     }
 
     private void setTags(List<Tag> tags, List<Tag> userTags, List<Tag> genres, List<Tag> userGenres) {
+        itemTags.clear();
+        userItemTags.clear();
+        itemGenres.clear();
+        userItemGenres.clear();
+
         if (tags != null && genres != null)
         for (Tag tag : tags) {
             if (!genres.contains(tag)) {
-                itemtags.add(tag);
+                itemTags.add(tag);
             }
         }
         if (userTags != null && userGenres != null) {
@@ -51,10 +56,10 @@ public class TagsVM extends CompositeDisposableViewModel {
             }
         }
         if (genres != null) {
-            itemGenres = genres;
+            itemGenres.addAll(genres);
         }
         if (userGenres != null) {
-            userItemGenres = userGenres;
+            userItemGenres.addAll(userGenres);
         }
     }
 
@@ -119,35 +124,19 @@ public class TagsVM extends CompositeDisposableViewModel {
                 }));
     }
 
-    public List<Tag> getItemtags() {
-        return itemtags;
-    }
-
-    public void setItemtags(List<Tag> itemtags) {
-        this.itemtags = itemtags;
+    public List<Tag> getItemTags() {
+        return itemTags;
     }
 
     public List<Tag> getUserItemTags() {
         return userItemTags;
     }
 
-    public void setUserItemTags(List<Tag> userItemTags) {
-        this.userItemTags = userItemTags;
-    }
-
     public List<Tag> getItemGenres() {
         return itemGenres;
     }
 
-    public void setItemGenres(List<Tag> itemGenres) {
-        this.itemGenres = itemGenres;
-    }
-
     public List<Tag> getUserItemGenres() {
         return userItemGenres;
-    }
-
-    public void setUserItemGenres(List<Tag> userItemGenres) {
-        this.userItemGenres = userItemGenres;
     }
 }

@@ -78,7 +78,7 @@ public class EditTagsTabFragment extends BaseFragment {
         EditTagsPagerAdapter.TagsTab tagType = EditTagsPagerAdapter.TagsTab.values()[tagsTab];
         switch (tagType) {
             case TAGS:
-                tags.addAll(tagsVM.getItemtags());
+                tags.addAll(tagsVM.getItemTags());
                 userTags.addAll(tagsVM.getUserItemTags());
                 break;
             case GENRES:

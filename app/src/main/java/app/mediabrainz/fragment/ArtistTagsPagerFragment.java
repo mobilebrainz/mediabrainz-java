@@ -74,7 +74,8 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
 
         tagsVM = getActivityViewModel(TagsVM.class);
         tagsVM.setTags(artist);
-        observe();
+        observeTags();
+        observeGenres();
 
         EditTagsPagerAdapter pagerAdapter = new EditTagsPagerAdapter(getChildFragmentManager(), getResources());
         pagerView.setAdapter(pagerAdapter);
@@ -114,7 +115,12 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
         postArtistTag(tag, voteType);
     }
 
-    private void observe() {
+    private void postArtistTag(String tag, UserTagXML.VoteType voteType) {
+        tagsVM.postArtistTag(artist.getId(), tag, voteType, MediaBrainzApp.getPreferences().isPropagateArtistTags());
+    }
+
+    private void observeGenres() {
+        genresVM.progressld.observe(this, aBoolean -> swipeRefreshLayout.setRefreshing(aBoolean));
         genresVM.genresld.observe(this, genres -> {
             this.allGenres = genres;
             adapter = new ArrayAdapter<>(
@@ -124,7 +130,6 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
             tagInputView.setThreshold(1);
             tagInputView.setAdapter(adapter);
         });
-
         genresVM.errorld.observe(this, aBoolean -> {
             if (aBoolean) {
                 snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
@@ -133,7 +138,10 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
                 getErrorSnackbar().dismiss();
             }
         });
+    }
 
+    private void observeTags() {
+        tagsVM.progressld.observe(this, aBoolean -> swipeRefreshLayout.setRefreshing(aBoolean));
         tagsVM.artistTags.observe(this, a -> {
             artist.setTags(a.getTags());
             artist.setUserTags(a.getUserTags());
@@ -142,30 +150,15 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
             tagInputView.setText("");
             show(artist);
         });
-
         tagsVM.propagateEvent.observe(this, aBoolean -> {
-            snackbarNotAction(swipeRefreshLayout, aBoolean ?
-                    R.string.tag_propagated_to_albums : R.string.error_propagate_tag);
+            snackbarNotAction(swipeRefreshLayout, aBoolean ? R.string.tag_propagated_to_albums : R.string.error_propagate_tag);
         });
-
         tagsVM.errorTagld.observe(this, aBoolean -> {
-            if (aBoolean) {
-                snackbarNotAction(swipeRefreshLayout, R.string.connection_error);
-            }
+            if (aBoolean) snackbarNotAction(swipeRefreshLayout, R.string.connection_error);
         });
-
         tagsVM.postArtistTagEvent.observe(this, aBoolean -> {
-            if (!aBoolean) {
-                snackbarNotAction(swipeRefreshLayout, R.string.error_post_tag);
-            }
+            if (!aBoolean) snackbarNotAction(swipeRefreshLayout, R.string.error_post_tag);
         });
-
-        tagsVM.progressld.observe(this, aBoolean -> swipeRefreshLayout.setRefreshing(aBoolean));
-        genresVM.progressld.observe(this, aBoolean -> swipeRefreshLayout.setRefreshing(aBoolean));
-    }
-
-    private void postArtistTag(String tag, UserTagXML.VoteType voteType) {
-        tagsVM.postArtistTag(artist.getId(), tag, voteType, MediaBrainzApp.getPreferences().isPropagateArtistTags());
     }
 
 }
