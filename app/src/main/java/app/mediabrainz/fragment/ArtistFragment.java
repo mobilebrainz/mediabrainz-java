@@ -36,7 +36,10 @@ public class ArtistFragment extends BaseArtistFragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        if (getArguments() != null) {
+            ArtistFragmentArgs args = ArtistFragmentArgs.fromBundle(getArguments());
+            artistVM.getArtist(args.getMbid());
+        }
     }
 
     @Override

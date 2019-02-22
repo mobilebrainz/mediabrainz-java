@@ -3,7 +3,6 @@ package app.mediabrainz.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -22,7 +21,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
-import app.mediabrainz.MediaBrainzApp;
 import app.mediabrainz.R;
 import app.mediabrainz.apihandler.Api;
 import app.mediabrainz.core.activity.BaseActivity;
@@ -30,7 +28,6 @@ import app.mediabrainz.core.navigation.NavigationUIExtension;
 import app.mediabrainz.core.zxing.IntentIntegrator;
 import app.mediabrainz.core.zxing.IntentResult;
 import app.mediabrainz.util.MbUtils;
-import app.mediabrainz.viewmodel.ArtistVM;
 
 import static app.mediabrainz.MediaBrainzApp.SUPPORT_MAIL;
 import static app.mediabrainz.MediaBrainzApp.oauth;
@@ -62,8 +59,6 @@ public class MainActivity extends BaseActivity implements
         navigationView.setNavigationItemSelectedListener(this);
         navMenu = navigationView.getMenu();
 
-        initArtistView();
-
         final WeakReference<NavigationView> weakReference = new WeakReference<>(navigationView);
         navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
             @Override
@@ -86,20 +81,11 @@ public class MainActivity extends BaseActivity implements
         */
     }
 
-    private void initArtistView() {
-        ArtistVM artistVM = getViewModel(ArtistVM.class);
-        if (TextUtils.isEmpty(artistVM.getArtistMbid())) {
-            artistVM.setArtistMbid(MediaBrainzApp.getPreferences().getArtistMbid());
-        }
-        artistVM.hasArtist.observe(this, hasArtist -> navMenu.findItem(R.id.artistFragment).setVisible(true));
-        navMenu.findItem(R.id.artistFragment).setVisible(!TextUtils.isEmpty(artistVM.getArtistMbid()));
-    }
-
     private void hideLogNavItems() {
         navMenu.findItem(R.id.loginFragment).setVisible(!oauth.hasAccount());
         navMenu.findItem(R.id.logoutAction).setVisible(oauth.hasAccount());
     }
-    
+
     @Override
     public boolean onSupportNavigateUp() {
         return navController.navigateUp() || super.onSupportNavigateUp();

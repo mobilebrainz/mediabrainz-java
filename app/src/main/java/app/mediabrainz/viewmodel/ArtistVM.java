@@ -2,10 +2,10 @@ package app.mediabrainz.viewmodel;
 
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.core.viewmodel.CompositeDisposableViewModel;
-import app.mediabrainz.core.viewmodel.event.SingleLiveEvent;
 
 import static app.mediabrainz.MediaBrainzApp.api;
 
@@ -13,11 +13,11 @@ import static app.mediabrainz.MediaBrainzApp.api;
 public class ArtistVM extends CompositeDisposableViewModel {
 
     private String artistMbid;
-    public final SingleLiveEvent<Boolean> hasArtist = new SingleLiveEvent<>();
     public final MutableLiveData<Artist> artistld = new MutableLiveData<>();
 
-    public void loadArtist() {
-        if (artistld.getValue() == null) {
+    public void getArtist(@NonNull String mbid) {
+        if (artistld.getValue() == null || !mbid.equals(artistMbid)) {
+            artistMbid = mbid;
             refreshArtist();
         }
     }
@@ -40,16 +40,6 @@ public class ArtistVM extends CompositeDisposableViewModel {
 
     public String getArtistMbid() {
         return artistMbid;
-    }
-
-    public void setArtistMbid(String artistMbid) {
-        if (!TextUtils.isEmpty(artistMbid)) {
-            if (this.artistMbid == null) {
-                hasArtist.setValue(true);
-            }
-            this.artistMbid = artistMbid;
-            artistld.setValue(null);
-        }
     }
 
 }

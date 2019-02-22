@@ -65,41 +65,16 @@
             android:name="searchType"
             app:argType="integer"
             android:defaultValue="-1"/>
-        <action
-            android:id="@+id/action_resultSearchFragment_to_artistFragment"
-            app:destination="@id/artistFragment"/>
     </fragment>
-    <fragment
-        android:id="@+id/artistFragment"
-        android:name="app.mediabrainz.fragment.ArtistFragment"
-        android:label="@string/artist_fragment_label"
-        tools:layout="@layout/artist_fragment">
-        <action
-            android:id="@+id/action_artistFragment_to_artistReleasesFragment"
-            app:destination="@id/artistReleasesFragment"/>
-        <action
-            android:id="@+id/action_artistFragment_to_artistLinksFragment"
-            app:destination="@id/artistLinksFragment"/>
-        <action
-            android:id="@+id/action_artistFragment_to_artistTagsPagerFragment"
-            app:destination="@id/artistTagsPagerFragment"/>
-    </fragment>
-    <fragment
-        android:id="@+id/artistReleasesFragment"
-        android:name="app.mediabrainz.fragment.ArtistReleasesFragment"
-        android:label="@string/artist_releases_fragment_label"
-        tools:layout="@layout/fragment_pager_without_icons"/>
 
-    <fragment
-        android:id="@+id/artistLinksFragment"
-        android:name="app.mediabrainz.fragment.ArtistLinksFragment"
-        android:label="@string/artist_links_fragment_label"
-        tools:layout="@layout/fragment_swipe_recycler_view"/>
+    <include app:graph="@navigation/artist_graph" />
 
-    <fragment
-        android:id="@+id/artistTagsPagerFragment"
-        android:name="app.mediabrainz.fragment.ArtistTagsPagerFragment"
-        android:label="@string/artist_tags_pager_fragment_label"
-        tools:layout="@layout/fragment_edit_tags_pager"/>
+    <action android:id="@+id/action_global_to_artist_graph"
+            app:destination="@id/artist_graph">
+        <argument
+            android:name="mbid"
+            app:argType="string"
+            app:nullable="false"/>
+    </action>
 
 </navigation>

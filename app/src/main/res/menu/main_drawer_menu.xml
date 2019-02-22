@@ -35,28 +35,6 @@
         </menu>
     </item>
 
-    <item android:title="@string/drawer_item_items">
-        <menu>
-            <group android:checkableBehavior="single">
-                <item
-                    android:id="@+id/artistFragment"
-                    android:icon="@drawable/ic_artist_24"
-                    android:title="@string/artist_fragment_label"/>
-                <!--
-                <item
-                    android:id="@+id/releaseFragment"
-                    android:icon="@drawable/ic_album_24"
-                    android:title="@string/release_fragment_label"/>
-
-                <item
-                    android:id="@+id/recordingFragment"
-                    android:icon="@drawable/ic_track_24"
-                    android:title="@string/recirding_fragment_label"/>
-                -->
-            </group>
-        </menu>
-    </item>
-
     <item android:title="@string/drawer_item_actions">
         <menu>
             <group android:checkableBehavior="single">

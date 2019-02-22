@@ -2,7 +2,6 @@ package app.mediabrainz.fragment;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +18,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import app.mediabrainz.NavGraphDirections;
 import app.mediabrainz.R;
 import app.mediabrainz.adapter.recycler.ArtistSearchAdapter;
 import app.mediabrainz.adapter.recycler.ReleaseAdapter;
@@ -31,7 +31,6 @@ import app.mediabrainz.api.model.Release;
 import app.mediabrainz.api.model.ReleaseGroup;
 import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.data.room.entity.Suggestion;
-import app.mediabrainz.viewmodel.ArtistVM;
 import app.mediabrainz.viewmodel.ResultSearchVM;
 
 import static app.mediabrainz.MediaBrainzApp.oauth;
@@ -120,7 +119,6 @@ public class ResultSearchFragment extends BaseFragment {
     private void showArtists(List<Artist> artists) {
         ArtistSearchAdapter adapter = new ArtistSearchAdapter(artists);
         searchRecyclerView.setAdapter(adapter);
-        final ArtistVM artistVM = getActivityViewModel(ArtistVM.class);
         adapter.setHolderClickListener(position -> {
             if (isLoading || isError) return;
             Artist artist = artists.get(position);
@@ -128,13 +126,12 @@ public class ResultSearchFragment extends BaseFragment {
             //todo: сохранять и результат поиска, и поисковое слово?
             //insertQuerySuggestion();
             resultSearchVM.insertSuggestion(artist.getName(), ARTIST);
-
-            artistVM.setArtistMbid(artist.getId());
-            Navigation.findNavController(searchRecyclerView).navigate(R.id.action_resultSearchFragment_to_artistFragment);
+            NavGraphDirections.ActionGlobalToArtistGraph action = NavGraphDirections.actionGlobalToArtistGraph(artist.getId());
+            Navigation.findNavController(swipeRefreshLayout).navigate(action);
         });
         if (!(isLoading || isError) && artists.size() == 1) {
-            artistVM.setArtistMbid(artists.get(0).getId());
-            Navigation.findNavController(searchRecyclerView).navigate(R.id.action_resultSearchFragment_to_artistFragment);
+            NavGraphDirections.ActionGlobalToArtistGraph action = NavGraphDirections.actionGlobalToArtistGraph(artists.get(0).getId());
+            Navigation.findNavController(swipeRefreshLayout).navigate(action);
         }
     }
 

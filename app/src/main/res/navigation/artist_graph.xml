@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/artist_graph"
+            app:startDestination="@id/artistFragment">
+
+    <fragment
+        android:id="@+id/artistFragment"
+        android:name="app.mediabrainz.fragment.ArtistFragment"
+        android:label="@string/artist_fragment_label"
+        tools:layout="@layout/artist_fragment">
+        <action
+            android:id="@+id/action_artistFragment_to_artistReleasesFragment"
+            app:destination="@id/artistReleasesFragment"/>
+        <action
+            android:id="@+id/action_artistFragment_to_artistLinksFragment"
+            app:destination="@id/artistLinksFragment"/>
+        <action
+            android:id="@+id/action_artistFragment_to_artistTagsPagerFragment"
+            app:destination="@id/artistTagsPagerFragment"/>
+        <argument
+            android:name="mbid"
+            app:argType="string"
+            app:nullable="false"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/artistReleasesFragment"
+        android:name="app.mediabrainz.fragment.ArtistReleasesFragment"
+        android:label="@string/artist_releases_fragment_label"
+        tools:layout="@layout/fragment_pager_without_icons"/>
+
+    <fragment
+        android:id="@+id/artistLinksFragment"
+        android:name="app.mediabrainz.fragment.ArtistLinksFragment"
+        android:label="@string/artist_links_fragment_label"
+        tools:layout="@layout/fragment_swipe_recycler_view"/>
+
+    <fragment
+        android:id="@+id/artistTagsPagerFragment"
+        android:name="app.mediabrainz.fragment.ArtistTagsPagerFragment"
+        android:label="@string/artist_tags_pager_fragment_label"
+        tools:layout="@layout/fragment_edit_tags_pager"/>
+
+</navigation>
