@@ -4,11 +4,14 @@ import com.squareup.moshi.Json;
 
 import java.util.List;
 
+import app.mediabrainz.api.model.interfaces.GetTagsInterface;
+
 /**
  * https://musicbrainz.org/doc/Artist
  */
 
-public class Artist extends BaseLookupEntity {
+public class Artist extends BaseLookupEntity implements
+        GetTagsInterface {
 
     /**
      * The type is used to state whether an artist is a person, a group, or something else.
@@ -413,6 +416,7 @@ public class Artist extends BaseLookupEntity {
         this.userRating = userRating;
     }
 
+    @Override
     public List<Tag> getTags() {
         return tags;
     }
@@ -421,6 +425,7 @@ public class Artist extends BaseLookupEntity {
         this.tags = tags;
     }
 
+    @Override
     public List<Tag> getGenres() {
         return genres;
     }
@@ -429,6 +434,7 @@ public class Artist extends BaseLookupEntity {
         this.genres = genres;
     }
 
+    @Override
     public List<Tag> getUserGenres() {
         return userGenres;
     }
@@ -437,6 +443,7 @@ public class Artist extends BaseLookupEntity {
         this.userGenres = userGenres;
     }
 
+    @Override
     public List<Tag> getUserTags() {
         return userTags;
     }

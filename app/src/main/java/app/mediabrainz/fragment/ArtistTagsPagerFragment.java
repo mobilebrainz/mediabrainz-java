@@ -70,10 +70,11 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
         this.artist = artist;
 
         genresVM = getActivityViewModel(GenresVM.class);
-        tagsVM = getActivityViewModel(TagsVM.class);
-        observe();
+        genresVM.getGenres();
 
-        tagsVM.setTags(artist.getTags(), artist.getUserTags(), artist.getGenres(), artist.getUserGenres());
+        tagsVM = getActivityViewModel(TagsVM.class);
+        tagsVM.setTags(artist);
+        observe();
 
         EditTagsPagerAdapter pagerAdapter = new EditTagsPagerAdapter(getChildFragmentManager(), getResources());
         pagerView.setAdapter(pagerAdapter);
@@ -82,8 +83,6 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
         tabsView.setTabMode(TabLayout.MODE_FIXED);
         pagerAdapter.setupTabViews(tabsView);
         pagerView.setCurrentItem(tagsTab);
-
-        genresVM.getGenres();
     }
 
     @Override

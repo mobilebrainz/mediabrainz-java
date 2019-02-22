@@ -6,6 +6,7 @@ import java.util.List;
 import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.ReleaseGroup;
 import app.mediabrainz.api.model.Tag;
+import app.mediabrainz.api.model.interfaces.GetTagsInterface;
 import app.mediabrainz.api.model.xml.UserTagXML;
 import app.mediabrainz.core.viewmodel.CompositeDisposableViewModel;
 import app.mediabrainz.core.viewmodel.event.SingleLiveEvent;
@@ -28,7 +29,14 @@ public class TagsVM extends CompositeDisposableViewModel {
     public final SingleLiveEvent<Boolean> errorTagld = new SingleLiveEvent<>();
 
 
-    public void setTags(List<Tag> tags, List<Tag> userTags, List<Tag> genres, List<Tag> userGenres) {
+    public void setTags(GetTagsInterface getTagsInterface) {
+        setTags(getTagsInterface.getTags(),
+                getTagsInterface.getUserTags(),
+                getTagsInterface.getGenres(),
+                getTagsInterface.getUserGenres());
+    }
+
+    private void setTags(List<Tag> tags, List<Tag> userTags, List<Tag> genres, List<Tag> userGenres) {
         if (tags != null && genres != null)
         for (Tag tag : tags) {
             if (!genres.contains(tag)) {

@@ -4,11 +4,14 @@ import com.squareup.moshi.Json;
 
 import java.util.List;
 
+import app.mediabrainz.api.model.interfaces.GetTagsInterface;
+
 /**
  * https://musicbrainz.org/doc/Release
  */
 
-public class Release extends BaseLookupEntity {
+public class Release extends BaseLookupEntity implements
+        GetTagsInterface {
 
     public enum Status {
         /**
@@ -418,6 +421,7 @@ public class Release extends BaseLookupEntity {
         this.annotation = annotation;
     }
 
+    @Override
     public List<Tag> getTags() {
         return tags;
     }
@@ -426,6 +430,7 @@ public class Release extends BaseLookupEntity {
         this.tags = tags;
     }
 
+    @Override
     public List<Tag> getUserTags() {
         return userTags;
     }
@@ -466,6 +471,7 @@ public class Release extends BaseLookupEntity {
         this.collections = collections;
     }
 
+    @Override
     public List<Tag> getGenres() {
         return genres;
     }
@@ -474,6 +480,7 @@ public class Release extends BaseLookupEntity {
         this.genres = genres;
     }
 
+    @Override
     public List<Tag> getUserGenres() {
         return userGenres;
     }

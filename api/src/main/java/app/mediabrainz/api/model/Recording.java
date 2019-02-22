@@ -4,11 +4,14 @@ import com.squareup.moshi.Json;
 
 import java.util.List;
 
+import app.mediabrainz.api.model.interfaces.GetTagsInterface;
+
 /**
  * https://musicbrainz.org/doc/Recording
  */
 
-public class Recording extends BaseLookupEntity {
+public class Recording extends BaseLookupEntity implements
+        GetTagsInterface {
 
     public static class RecordingSearch extends BaseSearch {
         @Json(name = "recordings")
@@ -162,6 +165,7 @@ public class Recording extends BaseLookupEntity {
         this.disambiguation = disambiguation;
     }
 
+    @Override
     public List<Tag> getTags() {
         return tags;
     }
@@ -234,6 +238,7 @@ public class Recording extends BaseLookupEntity {
         this.userRating = userRating;
     }
 
+    @Override
     public List<Tag> getUserTags() {
         return userTags;
     }
@@ -242,6 +247,7 @@ public class Recording extends BaseLookupEntity {
         this.userTags = userTags;
     }
 
+    @Override
     public List<Tag> getGenres() {
         return genres;
     }
@@ -250,6 +256,7 @@ public class Recording extends BaseLookupEntity {
         this.genres = genres;
     }
 
+    @Override
     public List<Tag> getUserGenres() {
         return userGenres;
     }

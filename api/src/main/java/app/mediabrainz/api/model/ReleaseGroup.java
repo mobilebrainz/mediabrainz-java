@@ -4,11 +4,14 @@ import com.squareup.moshi.Json;
 
 import java.util.List;
 
+import app.mediabrainz.api.model.interfaces.GetTagsInterface;
+
 /**
  * https://musicbrainz.org/doc/Release_Group
  */
 
-public class ReleaseGroup extends BaseLookupEntity {
+public class ReleaseGroup extends BaseLookupEntity implements
+        GetTagsInterface {
 
     public static class ReleaseGroupSearch extends BaseSearch {
         @Json(name = "release-groups")
@@ -240,6 +243,7 @@ public class ReleaseGroup extends BaseLookupEntity {
         this.releases = releases;
     }
 
+    @Override
     public List<Tag> getTags() {
         return tags;
     }
@@ -304,6 +308,7 @@ public class ReleaseGroup extends BaseLookupEntity {
         this.userRating = userRating;
     }
 
+    @Override
     public List<Tag> getUserTags() {
         return userTags;
     }
@@ -328,6 +333,7 @@ public class ReleaseGroup extends BaseLookupEntity {
         this.firstReleaseDate = firstReleaseDate;
     }
 
+    @Override
     public List<Tag> getGenres() {
         return genres;
     }
@@ -336,6 +342,7 @@ public class ReleaseGroup extends BaseLookupEntity {
         this.genres = genres;
     }
 
+    @Override
     public List<Tag> getUserGenres() {
         return userGenres;
     }
