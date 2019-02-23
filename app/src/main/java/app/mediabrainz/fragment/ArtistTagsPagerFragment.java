@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.viewpager.widget.ViewPager;
 import app.mediabrainz.MediaBrainzApp;
 import app.mediabrainz.R;
@@ -34,24 +35,31 @@ import static app.mediabrainz.adapter.pager.EditTagsPagerAdapter.TagsTab.TAGS;
 public class ArtistTagsPagerFragment extends BaseArtistFragment implements
         EditTagsTabFragment.TagInterface {
 
-    private ArrayAdapter<String> adapter;
+    private static final String TAGS_TAB = "ArtistTagsPagerFragment.TAGS_TAB";
+    private final int defaultTagsTab = EditTagsPagerAdapter.TagsTab.GENRES.ordinal();
 
     private List<String> allGenres = new ArrayList<>();
     private Artist artist;
     private TagsVM tagsVM;
     private GenresVM genresVM;
-    private int tagsTab = EditTagsPagerAdapter.TagsTab.GENRES.ordinal();
+    private int tagsTab;
+    private ArrayAdapter<String> adapter;
 
     private TextView loginWarningView;
     private AutoCompleteTextView tagInputView;
     private ImageButton tagButton;
-
     private ViewPager pagerView;
     private TabLayout tabsView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflate(R.layout.fragment_edit_tags_pager, container);
+
+        if (savedInstanceState != null) {
+            tagsTab = savedInstanceState.getInt(TAGS_TAB, defaultTagsTab);
+        } else {
+            tagsTab = defaultTagsTab;
+        }
 
         swipeRefreshLayout = layout.findViewById(R.id.swipeRefreshLayout);
         loginWarningView = layout.findViewById(R.id.loginWarningView);
@@ -63,6 +71,12 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
 
         setEditListeners();
         return layout;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(TAGS_TAB, pagerView.getCurrentItem());
     }
 
     @Override
@@ -87,7 +101,6 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
         tabsView.setupWithViewPager(pagerView);
         tabsView.setTabMode(TabLayout.MODE_FIXED);
         pagerAdapter.setupTabViews(tabsView);
-        //todo: сделать сохранение таба для вращения экрана
         pagerView.setCurrentItem(tagsTab);
     }
 
@@ -109,7 +122,7 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
                     postArtistTag(tagString, UserTagXML.VoteType.UPVOTE);
                 }
             } else {
-                //ActivityFactory.startLoginActivity(getContext());
+                Navigation.findNavController(v).navigate(R.id.action_global_loginFragment);
             }
         });
     }
@@ -127,12 +140,15 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
         genresVM.progressld.observe(this, aBoolean -> swipeRefreshLayout.setRefreshing(aBoolean));
         genresVM.genresld.observe(this, genres -> {
             this.allGenres = genres;
-            adapter = new ArrayAdapter<>(
-                    getContext(),
-                    android.R.layout.simple_dropdown_item_1line,
-                    allGenres.toArray(new String[allGenres.size()]));
-            tagInputView.setThreshold(1);
-            tagInputView.setAdapter(adapter);
+            if (getContext() != null) {
+                int size = allGenres.size();
+                adapter = new ArrayAdapter<>(
+                        getContext(),
+                        android.R.layout.simple_dropdown_item_1line,
+                        allGenres.toArray(new String[size]));
+                tagInputView.setThreshold(1);
+                tagInputView.setAdapter(adapter);
+            }
         });
         genresVM.errorld.observe(this, aBoolean -> {
             if (aBoolean) {

@@ -204,11 +204,9 @@ public class ReleaseGroupsAdapter extends BasePagedListAdapter<ReleaseGroup> {
 
     @Override
     public int getItemViewType(int position) {
-        if (hasExtraRow() && position == getItemCount() - 1) {
-            return NetworkStateViewHolder.VIEW_HOLDER_LAYOUT;
-        } else {
-            return ReleaseGroupsViewHolder.VIEW_HOLDER_LAYOUT;
-        }
+        return hasExtraRow() && position == getItemCount() - 1 ?
+                NetworkStateViewHolder.VIEW_HOLDER_LAYOUT :
+                ReleaseGroupsViewHolder.VIEW_HOLDER_LAYOUT;
     }
 
     @NonNull

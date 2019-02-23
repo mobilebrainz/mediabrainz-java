@@ -17,12 +17,19 @@ import app.mediabrainz.api.model.Artist;
 
 public class ArtistReleasesFragment extends BaseArtistFragment {
 
+    private static final String RELESES_TAB = "ArtistReleasesFragment.RELESES_TAB";
+
+    private int releaseTab = 0;
     private ViewPager pagerView;
     private TabLayout tabsView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflate(R.layout.fragment_pager_without_icons, container);
+
+        if (savedInstanceState != null) {
+            releaseTab = savedInstanceState.getInt(RELESES_TAB, 0);
+        }
 
         pagerView = view.findViewById(R.id.pagerView);
         tabsView = view.findViewById(R.id.tabsView);
@@ -32,11 +39,18 @@ public class ArtistReleasesFragment extends BaseArtistFragment {
     }
 
     @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(RELESES_TAB, pagerView.getCurrentItem());
+    }
+
+    @Override
     protected void show(Artist artist) {
         if (artist.getReleaseGroups() != null && !artist.getReleaseGroups().isEmpty()) {
             ReleaseGroupsPagerAdapter pagerAdapter = new ReleaseGroupsPagerAdapter(getChildFragmentManager(), getResources());
             pagerView.setAdapter(pagerAdapter);
             pagerView.setOffscreenPageLimit(pagerAdapter.getCount());
+            pagerView.setCurrentItem(releaseTab);
             tabsView.setupWithViewPager(pagerView);
             pagerAdapter.setupTabViews(tabsView);
         } else {
