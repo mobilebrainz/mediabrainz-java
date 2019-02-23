@@ -16,6 +16,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -100,6 +101,9 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
             //if (getContext() instanceof OnReleaseGroupCommunicator) {
             //((OnReleaseGroupCommunicator) getContext()).onReleaseGroup(releaseGroup.getId());
             //}
+            if (getParentFragment() != null && getParentFragment().getView() != null) {
+                //Navigation.findNavController(getParentFragment().getView()).navigate(R.id.action_global_loginFragment);
+            }
         });
 
         releaseGroupsVM = ViewModelProviders.of(this).get(ReleaseGroupsVM.class);

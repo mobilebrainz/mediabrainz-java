@@ -76,7 +76,13 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(TAGS_TAB, pagerView.getCurrentItem());
+        outState.putInt(TAGS_TAB, tagsTab);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        tagsTab = pagerView.getCurrentItem();
     }
 
     @Override

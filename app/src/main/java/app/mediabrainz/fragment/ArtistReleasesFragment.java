@@ -1,6 +1,7 @@
 package app.mediabrainz.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import app.mediabrainz.api.model.Artist;
 
 public class ArtistReleasesFragment extends BaseArtistFragment {
 
+    private static final String TAG = "ArtistReleasesF";
     private static final String RELESES_TAB = "ArtistReleasesFragment.RELESES_TAB";
 
     private int releaseTab = 0;
@@ -41,7 +43,14 @@ public class ArtistReleasesFragment extends BaseArtistFragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(RELESES_TAB, pagerView.getCurrentItem());
+        outState.putInt(RELESES_TAB, releaseTab);
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        releaseTab = pagerView.getCurrentItem();
     }
 
     @Override
