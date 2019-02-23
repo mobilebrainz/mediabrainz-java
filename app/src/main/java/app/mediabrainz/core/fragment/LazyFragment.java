@@ -32,4 +32,10 @@ public abstract class LazyFragment extends BaseFragment {
     public void setLoaded(boolean loaded) {
         isLoaded = loaded;
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        isLoaded = false;
+    }
 }

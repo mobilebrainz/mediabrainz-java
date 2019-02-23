@@ -102,7 +102,7 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
             //((OnReleaseGroupCommunicator) getContext()).onReleaseGroup(releaseGroup.getId());
             //}
             if (getParentFragment() != null && getParentFragment().getView() != null) {
-                //Navigation.findNavController(getParentFragment().getView()).navigate(R.id.action_global_loginFragment);
+                Navigation.findNavController(getParentFragment().getView()).navigate(R.id.action_global_loginFragment);
             }
         });
 
@@ -122,7 +122,7 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
 
         initSwipeToRefresh();
     }
-
+    
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
