@@ -41,7 +41,7 @@ public class ArtistLinksFragment extends BaseArtistFragment {
         if (urls != null) {
             Collections.sort(urls);
             if (urls.isEmpty()) {
-                snackbarNotAction(swipeRefreshLayout, R.string.no_results);
+                showInfoSnackbar(swipeRefreshLayout, R.string.no_results);
             } else {
                 configLinksRecycler();
                 LinkAdapter adapter = new LinkAdapter(urls);

@@ -88,10 +88,10 @@ public class LoginFragment extends BaseFragment {
         });
         loginVM.errorld.observe(this, aBoolean -> {
             if (aBoolean) {
-                snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
+                showErrorSnackbar(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
                         v -> attemptLogin());
-            } else if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
-                getErrorSnackbar().dismiss();
+            } else {
+                dismissErrorSnackbar();
             }
         });
         loginVM.throwableld.observe(this, throwable -> {

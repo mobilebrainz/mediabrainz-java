@@ -202,6 +202,7 @@ public class ReleaseGroupsAdapter extends BasePagedListAdapter<ReleaseGroup> {
                 ReleaseGroupsViewHolder.VIEW_HOLDER_LAYOUT;
     }
 
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

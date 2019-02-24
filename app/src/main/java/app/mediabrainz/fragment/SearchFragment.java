@@ -100,10 +100,10 @@ public class SearchFragment extends BaseFragment {
         genresVM.errorld.observe(this, aBoolean -> {
             isError = aBoolean;
             if (aBoolean) {
-                snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
+                showErrorSnackbar(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
                         v -> genresVM.getGenres());
-            } else if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
-                getErrorSnackbar().dismiss();
+            } else {
+                dismissErrorSnackbar();
             }
         });
     }

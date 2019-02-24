@@ -64,7 +64,37 @@
             android:defaultValue="-1"/>
     </fragment>
 
-    <include app:graph="@navigation/artist_graph" />
+    <fragment
+        android:id="@+id/releasesFragment"
+        android:name="app.mediabrainz.fragment.ReleasesFragment"
+        android:label="@string/releases_fragment_label"
+        tools:layout="@layout/fragment_paged_recycler">
+        <argument
+            android:name="type"
+            app:argType="integer"
+            app:nullable="false"/>
+        <argument
+            android:name="mbid"
+            app:argType="string"
+            app:nullable="false"/>
+        <argument
+            android:name="releaseMbid"
+            app:argType="string"
+            app:nullable="true"/>
+    </fragment>
+
+    <include app:graph="@navigation/artist_graph">
+        <!--
+        <action
+            android:id="@+id/action_artist_graph_to_releasesFragment"
+            app:destination="@id/releasesFragment">
+            <argument
+                android:name="type"
+                app:argType="integer"
+                android:defaultValue="0"/>
+        </action>
+        -->
+    </include>
 
     <action android:id="@+id/action_global_to_artist_graph"
             app:destination="@id/artist_graph">
@@ -73,6 +103,7 @@
             app:argType="string"
             app:nullable="false"/>
     </action>
+
     <action android:id="@+id/action_global_loginFragment" app:destination="@id/loginFragment"/>
 
 </navigation>

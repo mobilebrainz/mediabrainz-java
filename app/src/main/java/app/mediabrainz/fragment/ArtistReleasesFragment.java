@@ -1,7 +1,6 @@
 package app.mediabrainz.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -63,7 +62,7 @@ public class ArtistReleasesFragment extends BaseArtistFragment {
             tabsView.setupWithViewPager(pagerView);
             pagerAdapter.setupTabViews(tabsView);
         } else {
-            snackbarNotAction(pagerView, R.string.no_results);
+            showInfoSnackbar(pagerView, R.string.no_results);
         }
     }
 

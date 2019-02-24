@@ -1,4 +1,4 @@
-package app.mediabrainz.core.viewmodel;
+package app.mediabrainz.viewmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -6,6 +6,8 @@ import androidx.lifecycle.Transformations;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 import app.mediabrainz.api.model.ReleaseGroup;
+import app.mediabrainz.core.viewmodel.CompositeDisposableViewModel;
+import app.mediabrainz.core.viewmodel.NetworkState;
 import app.mediabrainz.data.datasource.ReleaseGroupsDataSource;
 
 import static app.mediabrainz.data.datasource.ReleaseGroupsDataSource.RELEASE_GROUPE_BROWSE_LIMIT;

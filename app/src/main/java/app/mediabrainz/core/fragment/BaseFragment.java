@@ -51,19 +51,25 @@ public abstract class BaseFragment extends Fragment {
     }
 
     @MainThread
-    protected void snackbarNotAction(@NonNull View view, @StringRes int resId) {
+    protected void showInfoSnackbar(@NonNull View view, @StringRes int resId) {
         infoSnackbar = Snackbar.make(view, resId, Snackbar.LENGTH_LONG);
         infoSnackbar.show();
     }
 
     @MainThread
-    protected void snackbarWithAction(@NonNull View view, @StringRes int messageResId, @StringRes int actionResId, View.OnClickListener action) {
+    protected void showErrorSnackbar(@NonNull View view, @StringRes int messageResId, @StringRes int actionResId, View.OnClickListener action) {
         errorSnackbar = Snackbar.make(view, messageResId, Snackbar.LENGTH_INDEFINITE);
         errorSnackbar.setAction(actionResId, action).show();
     }
 
     public Snackbar getErrorSnackbar() {
         return errorSnackbar;
+    }
+
+    public void dismissErrorSnackbar() {
+        if (errorSnackbar != null && errorSnackbar.isShown()) {
+            errorSnackbar.dismiss();
+        }
     }
 
     public Snackbar getInfoSnackbar() {

@@ -29,7 +29,24 @@
         android:id="@+id/artistReleasesFragment"
         android:name="app.mediabrainz.fragment.ArtistReleasesFragment"
         android:label="@string/artist_releases_fragment_label"
-        tools:layout="@layout/fragment_pager_without_icons"/>
+        tools:layout="@layout/fragment_pager_without_icons">
+        <action
+            android:id="@+id/action_artistReleasesFragment_to_releasesFragment"
+            app:destination="@id/releasesFragment">
+            <argument
+                android:name="type"
+                app:argType="integer"
+                android:defaultValue="1"/>
+            <argument
+                android:name="mbid"
+                app:argType="string"
+                app:nullable="false"/>
+            <argument
+                android:name="releaseMbid"
+                app:argType="string"
+                app:nullable="true"/>
+        </action>
+    </fragment>
 
     <fragment
         android:id="@+id/artistLinksFragment"

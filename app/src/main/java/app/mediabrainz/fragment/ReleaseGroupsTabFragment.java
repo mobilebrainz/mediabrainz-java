@@ -4,18 +4,15 @@ package app.mediabrainz.fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,7 +23,7 @@ import app.mediabrainz.adapter.pager.ReleaseGroupsPagerAdapter;
 import app.mediabrainz.adapter.recycler.ReleaseGroupsAdapter;
 import app.mediabrainz.core.adapter.RetryCallback;
 import app.mediabrainz.core.fragment.LazyFragment;
-import app.mediabrainz.core.viewmodel.ReleaseGroupsVM;
+import app.mediabrainz.viewmodel.ReleaseGroupsVM;
 import app.mediabrainz.core.viewmodel.event.Status;
 import app.mediabrainz.viewmodel.ArtistVM;
 
@@ -37,9 +34,8 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
         RetryCallback,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final String RELEASES_TAB = "RELEASES_TAB";
-
     public static final String TAG = "ReleaseGroupsTabF";
+    private static final String RELEASES_TAB = "ReleaseGroupsTabFragment.RELEASES_TAB";
 
     private boolean isError;
     private boolean isLoading;
@@ -101,12 +97,16 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
             //if (getContext() instanceof OnReleaseGroupCommunicator) {
             //((OnReleaseGroupCommunicator) getContext()).onReleaseGroup(releaseGroup.getId());
             //}
+
             if (getParentFragment() != null && getParentFragment().getView() != null) {
-                Navigation.findNavController(getParentFragment().getView()).navigate(R.id.action_global_loginFragment);
+                //Navigation.findNavController(getParentFragment().getView()).navigate(R.id.action_global_loginFragment);
+                ArtistReleasesFragmentDirections.ActionArtistReleasesFragmentToReleasesFragment action =
+                        ArtistReleasesFragmentDirections.actionArtistReleasesFragmentToReleasesFragment(releaseGroup.getId(), null);
+                Navigation.findNavController(getParentFragment().getView()).navigate(action);
             }
         });
 
-        releaseGroupsVM = ViewModelProviders.of(this).get(ReleaseGroupsVM.class);
+        releaseGroupsVM = getViewModel(ReleaseGroupsVM.class);
         mutableIsOfficial.setValue(MediaBrainzApp.getPreferences().isReleaseGroupOfficial());
         releaseGroupsVM.load(artistMbid, releaseGroupType.getAlbumType(), mutableIsOfficial);
         releaseGroupsVM.realeseGroupLiveData.observe(this, adapter::submitList);
@@ -131,9 +131,9 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
 
     private void showError(boolean isVisibleToUser) {
         if (isVisibleToUser && isError) {
-            snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry, v -> retry());
-        } else if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
-            getErrorSnackbar().dismiss();
+            showErrorSnackbar(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry, v -> retry());
+        } else {
+            dismissErrorSnackbar();
         }
     }
 

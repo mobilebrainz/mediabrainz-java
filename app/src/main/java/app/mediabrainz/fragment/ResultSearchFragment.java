@@ -97,15 +97,15 @@ public class ResultSearchFragment extends BaseFragment {
         resultSearchVM.errorld.observe(this, aBoolean -> {
             isError = aBoolean;
             if (aBoolean) {
-                snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
+                showErrorSnackbar(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
                         v -> search(true));
-            } else if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
-                getErrorSnackbar().dismiss();
+            } else {
+                dismissErrorSnackbar();
             }
         });
         resultSearchVM.noresultsld.observe(this, aBoolean -> {
             if (aBoolean && swipeRefreshLayout != null) {
-                snackbarNotAction(swipeRefreshLayout, R.string.no_results);
+                showInfoSnackbar(swipeRefreshLayout, R.string.no_results);
             }
         });
         resultSearchVM.artistsld.observe(this, this::showArtists);

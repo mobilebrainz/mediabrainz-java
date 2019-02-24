@@ -57,10 +57,10 @@ public abstract class BaseArtistFragment extends BaseFragment {
         artistVM.errorld.observe(this, aBoolean -> {
             isError = aBoolean;
             if (aBoolean && swipeRefreshLayout != null) {
-                snackbarWithAction(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
+                showErrorSnackbar(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
                         v -> artistVM.refreshArtist());
-            } else if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
-                getErrorSnackbar().dismiss();
+            } else {
+                dismissErrorSnackbar();
             }
         });
     }
@@ -80,7 +80,7 @@ public abstract class BaseArtistFragment extends BaseFragment {
     private void observeNoResult() {
         artistVM.noresultsld.observe(this, aBoolean -> {
             if (aBoolean && swipeRefreshLayout != null) {
-                snackbarNotAction(swipeRefreshLayout, R.string.no_results);
+                showInfoSnackbar(swipeRefreshLayout, R.string.no_results);
             }
         });
     }
