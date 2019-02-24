@@ -122,7 +122,7 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
 
         initSwipeToRefresh();
     }
-    
+
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);

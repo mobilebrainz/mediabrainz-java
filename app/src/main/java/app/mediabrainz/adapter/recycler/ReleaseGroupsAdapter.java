@@ -11,8 +11,8 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.Objects;
 
@@ -28,6 +28,7 @@ import app.mediabrainz.api.model.ReleaseGroup;
 import app.mediabrainz.apihandler.StringMapper;
 import app.mediabrainz.core.adapter.BasePagedListAdapter;
 import app.mediabrainz.core.adapter.RetryCallback;
+import app.mediabrainz.core.ui.RequestListenerCallback;
 
 import static app.mediabrainz.MediaBrainzApp.api;
 import static app.mediabrainz.MediaBrainzApp.oauth;
@@ -104,6 +105,7 @@ public class ReleaseGroupsAdapter extends BasePagedListAdapter<ReleaseGroup> {
                         if (oauth.hasAccount() && progressView.getVisibility() == View.INVISIBLE && fromUser) {
                             progressView.setVisibility(View.VISIBLE);
                             rb.setAlpha(0.3F);
+                            //todo: надо вынести отсюда
                             api.postAlbumRating(
                                     releaseGroup.getId(), rating,
                                     metadata -> {
@@ -111,6 +113,7 @@ public class ReleaseGroupsAdapter extends BasePagedListAdapter<ReleaseGroup> {
                                         rb.setAlpha(1.0F);
                                         if (metadata.getMessage().getText().equals("OK")) {
                                             userRatingView.setRating(rating);
+                                            //todo: надо вынести отсюда
                                             api.getAlbumRatings(
                                                     releaseGroup.getId(),
                                                     this::setAllRating,
@@ -127,52 +130,42 @@ public class ReleaseGroupsAdapter extends BasePagedListAdapter<ReleaseGroup> {
                                         alertDialog.dismiss();
                                     });
                         } else {
-                            //todo: login
+                            //todo: login?
                             //ActivityFactory.startLoginActivity(itemView.getContext());
                         }
                     });
                 }
             } else {
-                //todo: login
+                //todo: login?
                 //ActivityFactory.startLoginActivity(itemView.getContext());
             }
         }
 
         private void loadImage(String albumMbid) {
-            showImageProgressLoading(true);
+            showImageProgress(true);
+            //todo: загрузку надо вынести отсюда
             api.getReleaseGroupCoverArt(
                     albumMbid,
                     coverArt -> {
                         CoverArtImage.Thumbnails thumbnails = coverArt.getFrontThumbnails();
                         if (thumbnails != null && !TextUtils.isEmpty(thumbnails.getSmall())) {
-                            Picasso.get().load(thumbnails.getSmall())
-                                    .resize(SMALL_SIZE, SMALL_SIZE)
-                                    .into(releaseImageView, new Callback() {
-                                        @Override
-                                        public void onSuccess() {
-                                            showImageProgressLoading(false);
-                                        }
-
-                                        @Override
-                                        public void onError(Exception e) {
-                                            showImageProgressLoading(false);
-                                        }
-                                    });
+                            Glide.with(itemView.getContext())
+                                    .load(thumbnails.getSmall())
+                                    .override(SMALL_SIZE, SMALL_SIZE)
+                                    .fitCenter()
+                                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .listener(new RequestListenerCallback(() -> showImageProgress(false)))
+                                    .into(releaseImageView);
                         } else {
-                            showImageProgressLoading(false);
+                            showImageProgress(false);
                         }
                     },
-                    t -> showImageProgressLoading(false));
+                    t -> showImageProgress(false));
         }
 
-        private void showImageProgressLoading(boolean show) {
-            if (show) {
-                releaseImageView.setVisibility(View.INVISIBLE);
-                progressView.setVisibility(View.VISIBLE);
-            } else {
-                progressView.setVisibility(View.GONE);
-                releaseImageView.setVisibility(View.VISIBLE);
-            }
+        private void showImageProgress(boolean show) {
+            releaseImageView.setVisibility(show ? View.INVISIBLE : View.VISIBLE);
+            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
         }
 
         private void setAllRating(ReleaseGroup releaseGroup) {
