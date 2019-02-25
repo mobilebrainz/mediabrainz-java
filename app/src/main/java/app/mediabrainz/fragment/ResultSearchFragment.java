@@ -21,13 +21,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import app.mediabrainz.NavGraphDirections;
 import app.mediabrainz.R;
 import app.mediabrainz.adapter.recycler.ArtistSearchAdapter;
-import app.mediabrainz.adapter.recycler.ReleaseAdapter;
 import app.mediabrainz.adapter.recycler.ReleaseGroupSearchAdapter;
 import app.mediabrainz.adapter.recycler.SearchListAdapter;
 import app.mediabrainz.adapter.recycler.TrackSearchAdapter;
 import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.Recording;
-import app.mediabrainz.api.model.Release;
 import app.mediabrainz.api.model.ReleaseGroup;
 import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.data.room.entity.Suggestion;
@@ -97,14 +95,13 @@ public class ResultSearchFragment extends BaseFragment {
         resultSearchVM.errorld.observe(this, aBoolean -> {
             isError = aBoolean;
             if (aBoolean) {
-                showErrorSnackbar(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
-                        v -> search(true));
+                showErrorSnackbar(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry, v -> search(true));
             } else {
                 dismissErrorSnackbar();
             }
         });
         resultSearchVM.noresultsld.observe(this, aBoolean -> {
-            if (aBoolean && swipeRefreshLayout != null) {
+            if (aBoolean) {
                 showInfoSnackbar(swipeRefreshLayout, R.string.no_results);
             }
         });
@@ -113,24 +110,23 @@ public class ResultSearchFragment extends BaseFragment {
         resultSearchVM.recordingsld.observe(this, this::showRecordings);
         resultSearchVM.tagsld.observe(this, this::showTags);
         resultSearchVM.usersld.observe(this, this::showUsers);
-        resultSearchVM.releasesld.observe(this, this::showReleases);
+        //resultSearchVM.releasesld.observe(this, this::showReleases);
     }
 
     private void showArtists(List<Artist> artists) {
         ArtistSearchAdapter adapter = new ArtistSearchAdapter(artists);
         searchRecyclerView.setAdapter(adapter);
-        adapter.setHolderClickListener(position -> {
-            if (isLoading || isError) return;
-            Artist artist = artists.get(position);
+        if (artists.size() == 1) {
+            navigateToArtist(artists.get(0));
+        } else {
+            adapter.setHolderClickListener(position -> navigateToArtist(artists.get(position)));
+        }
+    }
 
-            //todo: сохранять и результат поиска, и поисковое слово?
-            //insertQuerySuggestion();
+    private void navigateToArtist(Artist artist) {
+        if (!isLoading && !isError) {
             resultSearchVM.insertSuggestion(artist.getName(), ARTIST);
             NavGraphDirections.ActionGlobalToArtistGraph action = NavGraphDirections.actionGlobalToArtistGraph(artist.getId());
-            Navigation.findNavController(swipeRefreshLayout).navigate(action);
-        });
-        if (!(isLoading || isError) && artists.size() == 1) {
-            NavGraphDirections.ActionGlobalToArtistGraph action = NavGraphDirections.actionGlobalToArtistGraph(artists.get(0).getId());
             Navigation.findNavController(swipeRefreshLayout).navigate(action);
         }
     }
@@ -138,75 +134,86 @@ public class ResultSearchFragment extends BaseFragment {
     private void showReleaseGroups(List<ReleaseGroup> releaseGroups) {
         ReleaseGroupSearchAdapter adapter = new ReleaseGroupSearchAdapter(releaseGroups);
         searchRecyclerView.setAdapter(adapter);
-        adapter.setHolderClickListener(position -> {
-            if (isLoading || isError) return;
-            ReleaseGroup releaseGroup = releaseGroups.get(position);
+        if (releaseGroups.size() == 1) {
+            navigateToReleases(releaseGroups.get(0));
+        } else {
+            adapter.setHolderClickListener(position -> navigateToReleases(releaseGroups.get(position)));
+        }
+    }
 
-            //todo: сохранять и результат поиска, и поисковое слово?
-            //insertQuerySuggestion();
+    private void navigateToReleases(ReleaseGroup releaseGroup) {
+        if (!isLoading && !isError) {
             resultSearchVM.insertSuggestion(releaseGroup.getTitle(), ALBUM);
             List<Artist.ArtistCredit> artists = releaseGroup.getArtistCredits();
             if (artists != null && !artists.isEmpty()) {
                 resultSearchVM.insertSuggestion(artists.get(0).getArtist().getName(), ARTIST);
             }
-            //showReleases(releaseGroups.get(position).getId());
-        });
-        if (!(isLoading || isError) && releaseGroups.size() == 1) {
-            //showReleases(releaseGroups.get(0).getId());
+            ResultSearchFragmentDirections.ActionResultSearchFragmentToReleasesFragment action
+                    = ResultSearchFragmentDirections.actionResultSearchFragmentToReleasesFragment(releaseGroup.getId(), null);
+            Navigation.findNavController(swipeRefreshLayout).navigate(action);
         }
     }
 
     private void showRecordings(List<Recording> recordings) {
         TrackSearchAdapter adapter = new TrackSearchAdapter(recordings);
         searchRecyclerView.setAdapter(adapter);
-        adapter.setHolderClickListener(position -> {
-            if (isLoading || isError) return;
-            Recording recording = recordings.get(position);
+        if (recordings.size() == 1) {
+            navigateToRecording(recordings.get(0));
+        } else {
+            adapter.setHolderClickListener(position -> navigateToRecording(recordings.get(position)));
+        }
+    }
 
-            //todo: сохранять и результат поиска, и поисковое слово?
-            //insertQuerySuggestion();
+    private void navigateToRecording(Recording recording) {
+        if (!isLoading && !isError) {
             resultSearchVM.insertSuggestion(recording.getTitle(), TRACK);
             List<Artist.ArtistCredit> artists = recording.getArtistCredits();
             if (artists != null && !artists.isEmpty()) {
                 resultSearchVM.insertSuggestion(artists.get(0).getArtist().getName(), ARTIST);
             }
-            //ActivityFactory.startRecordingActivity(this, recordings.get(position).getId());
-        });
-        if (!(isLoading || isError) && recordings.size() == 1) {
-            //ActivityFactory.startRecordingActivity(this, recordings.get(0).getId());
+
+            //Navigation.findNavController(swipeRefreshLayout).navigate(action);
         }
     }
 
     private void showTags(List<String> tags) {
         SearchListAdapter adapter = new SearchListAdapter(tags);
         searchRecyclerView.setAdapter(adapter);
-        adapter.setHolderClickListener(position -> {
-            if (isLoading || isError) return;
-            //todo: сохранять и результат поиска, и поисковое слово?
-            //resultSearchVM.insertSuggestion(searchQuery, Suggestion.SuggestionField.TAG);
-            resultSearchVM.insertSuggestion(tags.get(position), Suggestion.SuggestionField.TAG);
+        if (tags.size() == 1) {
+            navigateToTag(tags.get(0));
+        } else {
+            adapter.setHolderClickListener(position -> navigateToTag(tags.get(position)));
+        }
+    }
+
+    private void navigateToTag(String tag) {
+        if (!isLoading && !isError) {
+            resultSearchVM.insertSuggestion(tag, Suggestion.SuggestionField.TAG);
+
             //ActivityFactory.startTagActivity(this, strings.get(position), false);
-        });
-        if (!(isLoading || isError) && tags.size() == 1) {
-            //ActivityFactory.startTagActivity(this, strings.get(0), false);
+            //Navigation.findNavController(swipeRefreshLayout).navigate(action);
         }
     }
 
     private void showUsers(List<String> users) {
         SearchListAdapter adapter = new SearchListAdapter(users);
         searchRecyclerView.setAdapter(adapter);
-        adapter.setHolderClickListener(position -> {
-            if (isLoading || isError) return;
-            //todo: сохранять и результат поиска, и поисковое слово?
-            //resultSearchVM.insertSuggestion(searchQuery, USER);
-            resultSearchVM.insertSuggestion(users.get(position), USER);
-            //ActivityFactory.startUserActivity(this, strings.get(position));
-        });
-        if (!(isLoading || isError) && users.size() == 1) {
-            //ActivityFactory.startUserActivity(this, strings.get(0));
+        if (users.size() == 1) {
+            navigateToUser(users.get(0));
+        } else {
+            adapter.setHolderClickListener(position -> navigateToUser(users.get(position)));
         }
     }
 
+    private void navigateToUser(String user) {
+        if (!isLoading && !isError) {
+            resultSearchVM.insertSuggestion(user, USER);
+
+            //Navigation.findNavController(swipeRefreshLayout).navigate(action);
+        }
+    }
+
+    /*
     private void showReleases(List<Release> releases) {
         if (releases.isEmpty()) {
             showAddBarcodeDialog();
@@ -222,6 +229,7 @@ public class ResultSearchFragment extends BaseFragment {
             }
         }
     }
+    */
 
     private void showAddBarcodeDialog() {
         if (getContext() == null) return;
@@ -249,12 +257,6 @@ public class ResultSearchFragment extends BaseFragment {
                         //ResultSearchActivity.this.finish();
                     });
         }
-    }
-
-    private void insertQuerySuggestion() {
-        resultSearchVM.insertSuggestion(artistQuery, ARTIST);
-        resultSearchVM.insertSuggestion(albumQuery, ALBUM);
-        resultSearchVM.insertSuggestion(trackQuery, TRACK);
     }
 
     private void configSearchRecycler() {

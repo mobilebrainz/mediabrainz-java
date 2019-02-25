@@ -26,19 +26,15 @@ public class ReleasesFragment extends BaseFragment implements
     public static final int RECORDING_TYPE = 2;
 
     private boolean isLoading;
-    private ReleasesVM releasesVM;
-    private PagedReleaseAdapter adapter;
-
     private int type = 0;
     private String mbid;
     private String releaseMbid;
 
+    private ReleasesVM releasesVM;
+    private PagedReleaseAdapter adapter;
+
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView pagedRecyclerView;
-
-    public static ReleasesFragment newInstance() {
-        return new ReleasesFragment();
-    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -91,7 +87,6 @@ public class ReleasesFragment extends BaseFragment implements
         pagedRecyclerView.setAdapter(adapter);
 
         initSwipeToRefresh();
-
     }
 
     private void initSwipeToRefresh() {

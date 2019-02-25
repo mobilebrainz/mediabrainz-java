@@ -94,12 +94,7 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
     protected void lazyLoad() {
         adapter = new ReleaseGroupsAdapter(this);
         adapter.setHolderClickListener(releaseGroup -> {
-            //if (getContext() instanceof OnReleaseGroupCommunicator) {
-            //((OnReleaseGroupCommunicator) getContext()).onReleaseGroup(releaseGroup.getId());
-            //}
-
-            if (getParentFragment() != null && getParentFragment().getView() != null) {
-                //Navigation.findNavController(getParentFragment().getView()).navigate(R.id.action_global_loginFragment);
+            if (!isLoading && getParentFragment() != null && getParentFragment().getView() != null) {
                 ArtistReleasesFragmentDirections.ActionArtistReleasesFragmentToReleasesFragment action =
                         ArtistReleasesFragmentDirections.actionArtistReleasesFragmentToReleasesFragment(releaseGroup.getId(), null);
                 Navigation.findNavController(getParentFragment().getView()).navigate(action);
