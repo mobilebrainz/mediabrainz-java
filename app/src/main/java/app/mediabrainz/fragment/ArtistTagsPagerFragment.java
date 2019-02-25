@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.navigation.Navigation;
 import androidx.viewpager.widget.ViewPager;
 import app.mediabrainz.MediaBrainzApp;
 import app.mediabrainz.R;
@@ -128,7 +127,7 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
                     postArtistTag(tagString, UserTagXML.VoteType.UPVOTE);
                 }
             } else {
-                Navigation.findNavController(v).navigate(R.id.action_global_loginFragment);
+                navigate(R.id.action_global_loginFragment);
             }
         });
     }
@@ -158,10 +157,9 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
         });
         genresVM.errorld.observe(this, aBoolean -> {
             if (aBoolean) {
-                showErrorSnackbar(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
-                        v -> genresVM.getGenres());
-            } else if (getErrorSnackbar() != null && getErrorSnackbar().isShown()) {
-                getErrorSnackbar().dismiss();
+                showErrorSnackbar(R.string.connection_error, R.string.connection_error_retry, v -> genresVM.getGenres());
+            } else {
+                dismissErrorSnackbar();
             }
         });
     }
@@ -178,13 +176,13 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
             configTags();
         });
         tagsVM.propagateEvent.observe(this, aBoolean -> {
-            showInfoSnackbar(swipeRefreshLayout, aBoolean ? R.string.tag_propagated_to_albums : R.string.error_propagate_tag);
+            showInfoSnackbar(aBoolean ? R.string.tag_propagated_to_albums : R.string.error_propagate_tag);
         });
         tagsVM.errorTagld.observe(this, aBoolean -> {
-            if (aBoolean) showInfoSnackbar(swipeRefreshLayout, R.string.connection_error);
+            if (aBoolean) showInfoSnackbar(R.string.connection_error);
         });
         tagsVM.postArtistTagEvent.observe(this, aBoolean -> {
-            if (!aBoolean) showInfoSnackbar(swipeRefreshLayout, R.string.error_post_tag);
+            if (!aBoolean) showInfoSnackbar(R.string.error_post_tag);
         });
     }
 

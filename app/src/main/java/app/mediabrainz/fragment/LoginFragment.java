@@ -13,7 +13,6 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.navigation.Navigation;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import app.mediabrainz.R;
 import app.mediabrainz.core.fragment.BaseFragment;
@@ -32,7 +31,6 @@ public class LoginFragment extends BaseFragment {
 
     private EditText usernameView;
     private EditText passwordView;
-    private View loginFormView;
     protected SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
@@ -40,7 +38,6 @@ public class LoginFragment extends BaseFragment {
         View view = inflate(R.layout.login_fragment, container);
 
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
-        loginFormView = view.findViewById(R.id.loginFormView);
         usernameView = view.findViewById(R.id.usernameView);
         passwordView = view.findViewById(R.id.passwordView);
 
@@ -78,9 +75,7 @@ public class LoginFragment extends BaseFragment {
 
         loginVM = getViewModel(LoginVM.class);
         loginVM.authEvent.observe(this, aBoolean -> {
-            if (aBoolean) {
-                Navigation.findNavController(loginFormView).navigate(R.id.action_loginFragment_to_startFragment);
-            }
+            if (aBoolean) navigate(R.id.action_loginFragment_to_startFragment);
         });
         loginVM.progressld.observe(this, aBoolean -> {
             isLoading = aBoolean;
@@ -88,8 +83,7 @@ public class LoginFragment extends BaseFragment {
         });
         loginVM.errorld.observe(this, aBoolean -> {
             if (aBoolean) {
-                showErrorSnackbar(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
-                        v -> attemptLogin());
+                showErrorSnackbar(R.string.connection_error, R.string.connection_error_retry, v -> attemptLogin());
             } else {
                 dismissErrorSnackbar();
             }
@@ -100,7 +94,6 @@ public class LoginFragment extends BaseFragment {
                 passwordView.setError(getString(R.string.error_invalid_password));
             }
         });
-
     }
 
     private void attemptLogin() {

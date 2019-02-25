@@ -14,7 +14,6 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import app.mediabrainz.R;
@@ -127,9 +126,7 @@ public class EditTagsTabFragment extends BaseFragment {
                             });
                         }
                     } else {
-                        if (getParentFragment().getView() != null) {
-                            Navigation.findNavController(getParentFragment().getView()).navigate(R.id.action_global_loginFragment);
-                        }
+                        navigate(R.id.action_global_loginFragment);
                     }
                 });
             }

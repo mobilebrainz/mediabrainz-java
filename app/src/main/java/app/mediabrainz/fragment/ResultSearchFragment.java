@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -95,15 +94,13 @@ public class ResultSearchFragment extends BaseFragment {
         resultSearchVM.errorld.observe(this, aBoolean -> {
             isError = aBoolean;
             if (aBoolean) {
-                showErrorSnackbar(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry, v -> search(true));
+                showErrorSnackbar(R.string.connection_error, R.string.connection_error_retry, v -> search(true));
             } else {
                 dismissErrorSnackbar();
             }
         });
         resultSearchVM.noresultsld.observe(this, aBoolean -> {
-            if (aBoolean) {
-                showInfoSnackbar(swipeRefreshLayout, R.string.no_results);
-            }
+            if (aBoolean) showInfoSnackbar(R.string.no_results);
         });
         resultSearchVM.artistsld.observe(this, this::showArtists);
         resultSearchVM.releaseGroupsld.observe(this, this::showReleaseGroups);
@@ -127,7 +124,7 @@ public class ResultSearchFragment extends BaseFragment {
         if (!isLoading && !isError) {
             resultSearchVM.insertSuggestion(artist.getName(), ARTIST);
             NavGraphDirections.ActionGlobalToArtistGraph action = NavGraphDirections.actionGlobalToArtistGraph(artist.getId());
-            Navigation.findNavController(swipeRefreshLayout).navigate(action);
+            navigate(action);
         }
     }
 
@@ -150,7 +147,7 @@ public class ResultSearchFragment extends BaseFragment {
             }
             ResultSearchFragmentDirections.ActionResultSearchFragmentToReleasesFragment action
                     = ResultSearchFragmentDirections.actionResultSearchFragmentToReleasesFragment(releaseGroup.getId(), null);
-            Navigation.findNavController(swipeRefreshLayout).navigate(action);
+            navigate(action);
         }
     }
 
@@ -172,7 +169,7 @@ public class ResultSearchFragment extends BaseFragment {
                 resultSearchVM.insertSuggestion(artists.get(0).getArtist().getName(), ARTIST);
             }
 
-            //Navigation.findNavController(swipeRefreshLayout).navigate(action);
+            //navigate(action);
         }
     }
 
@@ -191,7 +188,7 @@ public class ResultSearchFragment extends BaseFragment {
             resultSearchVM.insertSuggestion(tag, Suggestion.SuggestionField.TAG);
 
             //ActivityFactory.startTagActivity(this, strings.get(position), false);
-            //Navigation.findNavController(swipeRefreshLayout).navigate(action);
+            //navigate(action);
         }
     }
 
@@ -209,7 +206,7 @@ public class ResultSearchFragment extends BaseFragment {
         if (!isLoading && !isError) {
             resultSearchVM.insertSuggestion(user, USER);
 
-            //Navigation.findNavController(swipeRefreshLayout).navigate(action);
+            //navigate(action);
         }
     }
 

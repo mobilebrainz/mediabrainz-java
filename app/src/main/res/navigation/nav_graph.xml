@@ -60,8 +60,8 @@
             app:nullable="true"/>
         <argument
             android:name="searchType"
-            app:argType="integer"
-            android:defaultValue="-1"/>
+            android:defaultValue="-1"
+            app:argType="integer"/>
         <action
             android:id="@+id/action_resultSearchFragment_to_releasesFragment"
             app:destination="@id/releasesFragment">
@@ -90,27 +90,19 @@
             app:nullable="true"/>
     </fragment>
 
-    <include app:graph="@navigation/artist_graph">
-        <!--
-        <action
-            android:id="@+id/action_artist_graph_to_releasesFragment"
-            app:destination="@id/releasesFragment">
-            <argument
-                android:name="type"
-                app:argType="integer"
-                android:defaultValue="0"/>
-        </action>
-        -->
-    </include>
+    <include app:graph="@navigation/artist_graph"/>
 
-    <action android:id="@+id/action_global_to_artist_graph"
-            app:destination="@id/artist_graph">
+    <action
+        android:id="@+id/action_global_to_artist_graph"
+        app:destination="@id/artist_graph">
         <argument
             android:name="mbid"
             app:argType="string"
             app:nullable="false"/>
     </action>
 
-    <action android:id="@+id/action_global_loginFragment" app:destination="@id/loginFragment"/>
+    <action
+        android:id="@+id/action_global_loginFragment"
+        app:destination="@id/loginFragment"/>
 
 </navigation>

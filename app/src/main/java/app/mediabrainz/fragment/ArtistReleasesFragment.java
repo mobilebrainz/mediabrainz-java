@@ -62,7 +62,7 @@ public class ArtistReleasesFragment extends BaseArtistFragment {
             tabsView.setupWithViewPager(pagerView);
             pagerAdapter.setupTabViews(tabsView);
         } else {
-            showInfoSnackbar(pagerView, R.string.no_results);
+            showInfoSnackbar(R.string.no_results);
         }
     }
 

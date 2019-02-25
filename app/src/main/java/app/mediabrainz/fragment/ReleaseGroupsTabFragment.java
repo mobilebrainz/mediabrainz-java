@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -23,9 +22,9 @@ import app.mediabrainz.adapter.pager.ReleaseGroupsPagerAdapter;
 import app.mediabrainz.adapter.recycler.ReleaseGroupsAdapter;
 import app.mediabrainz.core.adapter.RetryCallback;
 import app.mediabrainz.core.fragment.LazyFragment;
-import app.mediabrainz.viewmodel.ReleaseGroupsVM;
 import app.mediabrainz.core.viewmodel.event.Status;
 import app.mediabrainz.viewmodel.ArtistVM;
+import app.mediabrainz.viewmodel.ReleaseGroupsVM;
 
 import static app.mediabrainz.account.Preferences.PreferenceName.RELEASE_GROUP_OFFICIAL;
 
@@ -39,7 +38,6 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
 
     private boolean isError;
     private boolean isLoading;
-    private ArtistVM artistVM;
     private String artistMbid;
     private ReleaseGroupsPagerAdapter.ReleaseTab releaseGroupType;
     private ReleaseGroupsVM releaseGroupsVM;
@@ -74,7 +72,7 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() != null) {
-            artistVM = getActivityViewModel(ArtistVM.class);
+            ArtistVM artistVM = getActivityViewModel(ArtistVM.class);
             artistMbid = artistVM.getArtistMbid();
             if (!TextUtils.isEmpty(artistMbid)) {
                 loadView();
@@ -94,10 +92,10 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
     protected void lazyLoad() {
         adapter = new ReleaseGroupsAdapter(this);
         adapter.setHolderClickListener(releaseGroup -> {
-            if (!isLoading && getParentFragment() != null && getParentFragment().getView() != null) {
+            if (!isLoading) {
                 ArtistReleasesFragmentDirections.ActionArtistReleasesFragmentToReleasesFragment action =
                         ArtistReleasesFragmentDirections.actionArtistReleasesFragmentToReleasesFragment(releaseGroup.getId(), null);
-                Navigation.findNavController(getParentFragment().getView()).navigate(action);
+                navigate(action);
             }
         });
 
@@ -126,7 +124,7 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
 
     private void showError(boolean isVisibleToUser) {
         if (isVisibleToUser && isError) {
-            showErrorSnackbar(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry, v -> retry());
+            showErrorSnackbar(R.string.connection_error, R.string.connection_error_retry, v -> retry());
         } else {
             dismissErrorSnackbar();
         }

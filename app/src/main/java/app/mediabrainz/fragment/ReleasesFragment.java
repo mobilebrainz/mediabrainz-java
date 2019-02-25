@@ -112,7 +112,7 @@ public class ReleasesFragment extends BaseFragment implements
 
     private void showError(boolean show) {
         if (show) {
-            showErrorSnackbar(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry, v -> retry());
+            showErrorSnackbar(R.string.connection_error, R.string.connection_error_retry, v -> retry());
         } else {
             dismissErrorSnackbar();
         }

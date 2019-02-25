@@ -100,8 +100,7 @@ public class SearchFragment extends BaseFragment {
         genresVM.errorld.observe(this, aBoolean -> {
             isError = aBoolean;
             if (aBoolean) {
-                showErrorSnackbar(swipeRefreshLayout, R.string.connection_error, R.string.connection_error_retry,
-                        v -> genresVM.getGenres());
+                showErrorSnackbar(R.string.connection_error, R.string.connection_error_retry, v -> genresVM.getGenres());
             } else {
                 dismissErrorSnackbar();
             }
@@ -166,7 +165,7 @@ public class SearchFragment extends BaseFragment {
                 SearchFragmentDirections.ActionSearchFragmentToResultSearchFragment action = SearchFragmentDirections.actionSearchFragmentToResultSearchFragment(
                         null, null, null, query);
                 action.setSearchType(SearchType.values()[searchSpinner.getSelectedItemPosition()].ordinal());
-                Navigation.findNavController(queryInputView).navigate(action);
+                navigate(action);
             }
         }
         return false;
@@ -185,7 +184,7 @@ public class SearchFragment extends BaseFragment {
             }
             SearchFragmentDirections.ActionSearchFragmentToResultSearchFragment action = SearchFragmentDirections.actionSearchFragmentToResultSearchFragment(
                     artist, album, track, null);
-            Navigation.findNavController(artistFieldView).navigate(action);
+            navigate(action);
         }
     }
 

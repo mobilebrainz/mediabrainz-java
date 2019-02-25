@@ -10,6 +10,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Objects;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
@@ -20,6 +21,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.navigation.NavDirections;
+import androidx.navigation.Navigation;
 
 
 public abstract class BaseFragment extends Fragment {
@@ -38,6 +41,18 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
+    protected void navigate(@NonNull NavDirections directions) {
+        if (getView() != null) {
+            Navigation.findNavController(getView()).navigate(directions);
+        }
+    }
+
+    protected void navigate(@IdRes int resId) {
+        if (getView() != null) {
+            Navigation.findNavController(getView()).navigate(resId);
+        }
+    }
+
     protected <T extends ViewModel> T getViewModel(@NonNull Class<T> modelClass) {
         return ViewModelProviders.of(this).get(modelClass);
     }
@@ -51,28 +66,32 @@ public abstract class BaseFragment extends Fragment {
     }
 
     @MainThread
-    protected void showInfoSnackbar(@NonNull View view, @StringRes int resId) {
-        infoSnackbar = Snackbar.make(view, resId, Snackbar.LENGTH_LONG);
-        infoSnackbar.show();
+    protected void showInfoSnackbar(@StringRes int resId) {
+        if (getView() != null) {
+            infoSnackbar = Snackbar.make(getView(), resId, Snackbar.LENGTH_LONG);
+            infoSnackbar.show();
+        }
     }
 
     @MainThread
-    protected void showErrorSnackbar(@NonNull View view, @StringRes int messageResId, @StringRes int actionResId, View.OnClickListener action) {
-        errorSnackbar = Snackbar.make(view, messageResId, Snackbar.LENGTH_INDEFINITE);
-        errorSnackbar.setAction(actionResId, action).show();
+    protected void showErrorSnackbar(@StringRes int messageResId, @StringRes int actionResId, View.OnClickListener action) {
+        if (getView() != null) {
+            errorSnackbar = Snackbar.make(getView(), messageResId, Snackbar.LENGTH_INDEFINITE);
+            errorSnackbar.setAction(actionResId, action).show();
+        }
     }
 
-    public Snackbar getErrorSnackbar() {
+    protected Snackbar getErrorSnackbar() {
         return errorSnackbar;
     }
 
-    public void dismissErrorSnackbar() {
+    protected void dismissErrorSnackbar() {
         if (errorSnackbar != null && errorSnackbar.isShown()) {
             errorSnackbar.dismiss();
         }
     }
 
-    public Snackbar getInfoSnackbar() {
+    protected Snackbar getInfoSnackbar() {
         return infoSnackbar;
     }
 

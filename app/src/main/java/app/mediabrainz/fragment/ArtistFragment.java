@@ -1,14 +1,12 @@
 package app.mediabrainz.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.navigation.Navigation;
 import app.mediabrainz.R;
 import app.mediabrainz.api.model.Artist;
 
@@ -26,7 +24,7 @@ public class ArtistFragment extends BaseArtistFragment implements
         return view;
     }
 
-    public void initTopMenu(View view) {
+    private void initTopMenu(View view) {
         view.findViewById(R.id.releasesItem).setOnClickListener(this);
         view.findViewById(R.id.relationsItem).setOnClickListener(this);
         view.findViewById(R.id.tagsItem).setOnClickListener(this);
@@ -44,7 +42,7 @@ public class ArtistFragment extends BaseArtistFragment implements
 
     @Override
     protected void show(Artist artist) {
-        Log.i(TAG, "show: ");
+        //Log.i(TAG, "show: ");
     }
 
     @Override
@@ -52,16 +50,16 @@ public class ArtistFragment extends BaseArtistFragment implements
         if (!isLoading && !isError) {
             switch (v.getId()) {
                 case R.id.releasesItem:
-                    Navigation.findNavController(v).navigate(R.id.action_artistFragment_to_artistReleasesFragment);
+                    navigate(R.id.action_artistFragment_to_artistReleasesFragment);
                     break;
                 case R.id.relationsItem:
 
                     break;
                 case R.id.tagsItem:
-                    Navigation.findNavController(v).navigate(R.id.action_artistFragment_to_artistTagsPagerFragment);
+                    navigate(R.id.action_artistFragment_to_artistTagsPagerFragment);
                     break;
                 case R.id.linksItem:
-                    Navigation.findNavController(v).navigate(R.id.action_artistFragment_to_artistLinksFragment);
+                    navigate(R.id.action_artistFragment_to_artistLinksFragment);
                     break;
             }
         }
