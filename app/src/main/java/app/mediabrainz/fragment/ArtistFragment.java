@@ -53,7 +53,7 @@ public class ArtistFragment extends BaseArtistFragment implements
                     navigate(R.id.action_artistFragment_to_artistReleasesFragment);
                     break;
                 case R.id.relationsItem:
-
+                    navigate(R.id.action_artistFragment_to_artistRelationsFragment);
                     break;
                 case R.id.tagsItem:
                     navigate(R.id.action_artistFragment_to_artistTagsPagerFragment);

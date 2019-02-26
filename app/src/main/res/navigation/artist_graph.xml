@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_artistFragment_to_artistTagsPagerFragment"
             app:destination="@id/artistTagsPagerFragment"/>
+        <action
+            android:id="@+id/action_artistFragment_to_artistRelationsFragment"
+            app:destination="@id/artistRelationsFragment"/>
         <argument
             android:name="mbid"
             app:argType="string"
@@ -53,6 +56,16 @@
         android:name="app.mediabrainz.fragment.ArtistLinksFragment"
         android:label="@string/artist_links_fragment_label"
         tools:layout="@layout/fragment_swipe_recycler_view"/>
+
+    <fragment
+        android:id="@+id/artistRelationsFragment"
+        android:name="app.mediabrainz.fragment.ArtistRelationsFragment"
+        android:label="@string/artist_relations_fragment_label"
+        tools:layout="@layout/fragment_artist_relations">
+        <action
+            android:id="@+id/action_artistRelationsFragment_to_artistFragment"
+            app:destination="@id/artistFragment"/>
+    </fragment>
 
     <fragment
         android:id="@+id/artistTagsPagerFragment"

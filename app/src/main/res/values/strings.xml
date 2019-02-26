@@ -6,6 +6,8 @@
 
     <string name="retry">Retry</string>
     <string name="no_ratings">0 ratings</string>
+    <string name="expand_all">Expand all</string>
+    <string name="unknown">Unknown</string>
 
     <!-- labels of destinations -->
     <string name="start_fragment_label">Start</string>
@@ -18,6 +20,7 @@
     <string name="artist_releases_fragment_label">Artist Releases</string>
     <string name="artist_links_fragment_label">Artist Links</string>
     <string name="artist_tags_pager_fragment_label">Artist Tags/Genres</string>
+    <string name="artist_relations_fragment_label">Artist Relations</string>
     <string name="releases_fragment_label">Releases</string>
 
     <!-- labels of menu actions -->
@@ -207,5 +210,41 @@
     <string name="error_post_tag">Error post tag</string>
     <string name="error_propagate_tag">Error propagate tag</string>
     <string name="error_post_rating">Error post rating</string>
+
+    <string name="select_items">Select items</string>
+    <string name="select_item">Select item</string>
+    <string name="select_all">Select all</string>
+
+    <!-- ArtistRelations -->
+    <string name="rel_cuttent_member_of_band">Current Member Of Band</string>
+    <string name="rel_past_member_of_band">Past Member Of Band</string>
+    <string name="rel_subgroup">Subgroup</string>
+    <string name="rel_conductor_position">Conductor Position</string>
+    <string name="rel_founder">Founder</string>
+    <string name="rel_supporting_musician">Supporting Musician</string>
+    <string name="rel_vocal_supporting_musician">Vocal Supporting Musician</string>
+    <string name="rel_instrumental_supporting_musician">Instrumental Supporting Musician</string>
+    <string name="rel_tribute">Tribute</string>
+    <string name="rel_voice_actor">Voice Actor</string>
+    <string name="rel_collaboration">Collaboration</string>
+    <string name="rel_is_person">Is Person</string>
+    <string name="rel_teacher">Teacher</string>
+    <string name="rel_composer_in_residence">Composer In Residence</string>
+
+    <string name="rel_current_member_of_band_description">This indicates a person is a member of a group.</string>
+    <string name="rel_past_member_of_band_description">This indicates a person was a member of a group.</string>
+    <string name="rel_subgroup_description">This links a subgroup to the group from which it was created. This relationship type is the functional equivalent of the member of band type for group-group relationships.</string>
+    <string name="rel_conductor_position_description">This indicates that a person is, or was, a conductor for a group.</string>
+    <string name="rel_founder_description">This indicates an artist (generally a person) was the founder of a group.</string>
+    <string name="rel_supporting_musician_description">Indicates an artist doing long-time instrumental or vocal support for another one on albums and/or at concerts. This is a person-to-artist relationship that normally applies to well-known solo artists, although it can sometimes apply to groups.</string>
+    <string name="rel_vocal_supporting_musician_description">Indicates a musician doing long-time vocal support for another one on albums and/or at concerts. This is a person-to-artist relationship that normally applies to well-known solo artists, although it can sometimes apply to groups.</string>
+    <string name="rel_instrumental_supporting_musician_description">Indicates a musician doing long-time instrumental support for another one on albums and/or at concerts. This is a person-to-artist relationship that normally applies to well-known solo artists, although it can sometimes apply to groups.</string>
+    <string name="rel_tribute_description">This relationship specifies that an artist is a tribute to another specific artist/band; that is, it primarily performs covers of that artist. They may also be referred to as cover bands. Some tribute artists may name themselves, dress, and/or act similarly to the artists they pay tribute to.</string>
+    <string name="rel_voice_actor_description">This links an (fictional) artist to the person that voice acted it.</string>
+    <string name="rel_collaboration_description">This is used to specify that an artist collaborated on a short-term project, for cases where artist credits can\'t be used.</string>
+    <string name="rel_is_person_description">This links an artist\'s performance name (a stage name or alias) with their legal name.</string>
+    <string name="rel_teacher_description">This relationship indicates that a person was another\'s teacher/student.</string>
+    <string name="rel_composer_in_residence_description">This links a group (often an orchestra) to a composer who has a composer-in-residence position with the group.</string>
+
 
 </resources>
