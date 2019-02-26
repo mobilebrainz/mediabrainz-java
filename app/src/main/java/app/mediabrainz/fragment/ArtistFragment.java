@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,6 +30,9 @@ public class ArtistFragment extends BaseArtistFragment implements
         view.findViewById(R.id.relationsItem).setOnClickListener(this);
         view.findViewById(R.id.tagsItem).setOnClickListener(this);
         view.findViewById(R.id.linksItem).setOnClickListener(this);
+        view.findViewById(R.id.wikiItem).setOnClickListener(this);
+        view.findViewById(R.id.addToCollectionItem).setOnClickListener(this);
+        view.findViewById(R.id.shareItem).setOnClickListener(this);
     }
 
     @Override
@@ -42,7 +46,10 @@ public class ArtistFragment extends BaseArtistFragment implements
 
     @Override
     protected void show(Artist artist) {
-        //Log.i(TAG, "show: ");
+        if (getView() != null) {
+            TextView artistNameView = getView().findViewById(R.id.artistNameView);
+            artistNameView.setText(artist.getName());
+        }
     }
 
     @Override
@@ -60,6 +67,15 @@ public class ArtistFragment extends BaseArtistFragment implements
                     break;
                 case R.id.linksItem:
                     navigate(R.id.action_artistFragment_to_artistLinksFragment);
+                    break;
+                case R.id.wikiItem:
+                    navigate(R.id.action_artistFragment_to_artistWikiFragment);
+                    break;
+                case R.id.addToCollectionItem:
+
+                    break;
+                case R.id.shareItem:
+
                     break;
             }
         }

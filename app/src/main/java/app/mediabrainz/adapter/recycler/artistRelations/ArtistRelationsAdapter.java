@@ -25,11 +25,11 @@ public class ArtistRelationsAdapter extends BaseExpandedRecyclerAdapter<Relation
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         switch (viewType) {
             case ITEM_INVISIBLE:
-                return new ItemViewHolder(inflater.inflate(R.layout.item_artist_relations, viewGroup, false), false);
+                return new ItemViewHolder(inflater.inflate(R.layout.artist_relations_item, viewGroup, false), false);
             case ITEM_VISIBLE:
-                return new ItemViewHolder(inflater.inflate(R.layout.item_artist_relations, viewGroup, false), true);
+                return new ItemViewHolder(inflater.inflate(R.layout.artist_relations_item, viewGroup, false), true);
             case HEADER:
-                return new HeaderViewHolder(inflater.inflate(R.layout.header_artist_relations, viewGroup, false));
+                return new HeaderViewHolder(inflater.inflate(R.layout.artist_relations_header, viewGroup, false));
             default:
                 return new EmptyFooterViewHolder(inflater.inflate(R.layout.footer_recycler_empty, viewGroup, false));
         }

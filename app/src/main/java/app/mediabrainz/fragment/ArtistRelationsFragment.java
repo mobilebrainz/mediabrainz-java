@@ -105,7 +105,7 @@ public class ArtistRelationsFragment extends BaseComplexRecyclerFragment<Relatio
         View layout = super.onCreateView(inflater, container, savedInstanceState);
 
         recyclerContainerView.setVisibility(View.INVISIBLE);
-        View frame = inflater.inflate(R.layout.fragment_artist_relations, null);
+        View frame = inflater.inflate(R.layout.artist_relations_fragment, null);
         noresultsView = frame.findViewById(R.id.noresultsView);
         addFrameView(frame);
 

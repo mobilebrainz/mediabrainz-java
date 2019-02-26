@@ -26,6 +26,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="64dp"/>
 
+            <include
+                android:id="@+id/artistInfo"
+                layout="@layout/artist_info_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"/>
+
+            <include
+                android:id="@+id/artistCenterMenu"
+                layout="@layout/artist_center_menu"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"/>
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

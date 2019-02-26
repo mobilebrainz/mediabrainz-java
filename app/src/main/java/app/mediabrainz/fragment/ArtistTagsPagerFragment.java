@@ -52,7 +52,7 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View layout = inflate(R.layout.fragment_edit_tags_pager, container);
+        View layout = inflate(R.layout.edit_tags_pager_fragment, container);
 
         if (savedInstanceState != null) {
             tagsTab = savedInstanceState.getInt(TAGS_TAB, defaultTagsTab);
