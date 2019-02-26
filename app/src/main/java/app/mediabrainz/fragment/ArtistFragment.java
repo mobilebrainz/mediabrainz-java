@@ -16,6 +16,7 @@ import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.RelationExtractor;
 import app.mediabrainz.api.model.Url;
 import app.mediabrainz.viewmodel.LinksVM;
+import app.mediabrainz.viewmodel.WikiVM;
 
 
 public class ArtistFragment extends BaseArtistFragment implements
@@ -72,15 +73,16 @@ public class ArtistFragment extends BaseArtistFragment implements
                     navigate(R.id.action_artistFragment_to_artistTagsPagerFragment);
                     break;
                 case R.id.linksItem:
-                    //navigate(R.id.action_artistFragment_to_artistLinksFragment);
-                    List<Url> urls = new RelationExtractor(artist).getUrls();
-                    getActivityViewModel(LinksVM.class).urlsld.setValue(urls);
-                    NavGraphDirections.ActionGlobalLinksFragment action =
+                    getActivityViewModel(LinksVM.class).urlsld.setValue(new RelationExtractor(artist).getUrls());
+                    NavGraphDirections.ActionGlobalLinksFragment linksAction =
                             NavGraphDirections.actionGlobalLinksFragment(artist.getName());
-                    navigate(action);
+                    navigate(linksAction);
                     break;
                 case R.id.wikiItem:
-                    navigate(R.id.action_artistFragment_to_artistWikiFragment);
+                    getActivityViewModel(WikiVM.class).urlsld.setValue(new RelationExtractor(artist).getUrls());
+                    NavGraphDirections.ActionGlobalWikiFragment wikiAction =
+                            NavGraphDirections.actionGlobalWikiFragment(artist.getName());
+                    navigate(wikiAction);
                     break;
                 case R.id.addToCollectionItem:
 

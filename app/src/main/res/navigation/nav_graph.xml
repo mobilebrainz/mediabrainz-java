@@ -119,4 +119,18 @@
         android:id="@+id/action_global_linksFragment"
         app:destination="@id/linksFragment"/>
 
+    <fragment
+        android:id="@+id/wikiFragment"
+        android:name="app.mediabrainz.fragment.WikiFragment"
+        android:label="@string/wiki_fragment_label">
+        <argument
+            android:name="subTitle"
+            app:argType="string"
+            app:nullable="true"/>
+    </fragment>
+
+    <action
+        android:id="@+id/action_global_wikiFragment"
+        app:destination="@id/wikiFragment"/>
+
 </navigation>

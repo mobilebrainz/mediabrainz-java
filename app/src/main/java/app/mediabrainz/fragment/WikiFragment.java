@@ -21,24 +21,26 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.os.ConfigurationCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import app.mediabrainz.R;
-import app.mediabrainz.api.model.Artist;
-import app.mediabrainz.api.model.RelationExtractor;
 import app.mediabrainz.api.model.Url;
+import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.viewmodel.WikiVM;
 
 
-public class ArtistWikiFragment extends BaseArtistFragment {
+public class WikiFragment extends BaseFragment {
 
-    public static final String TAG = "ArtistWikiF";
+    public static final String TAG = "WikiF";
 
     private WikiVM wikiVM;
     private String lang;
     private String buttonLang;
     private Map<String, String> urlMap;
+    private String url;
 
     private WebView webView;
     private Button langButton;
+    protected SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,6 +52,7 @@ public class ArtistWikiFragment extends BaseArtistFragment {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                WikiFragment.this.url = url;
                 view.loadUrl(url);
                 return true;
             }
@@ -64,6 +67,7 @@ public class ArtistWikiFragment extends BaseArtistFragment {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 swipeRefreshLayout.setRefreshing(true);
+                dismissErrorSnackbar();
             }
 
             @Override
@@ -81,7 +85,8 @@ public class ArtistWikiFragment extends BaseArtistFragment {
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
-                showInfoSnackbar(R.string.wiki_error);
+                langButton.setVisibility(View.GONE);
+                showErrorSnackbar(R.string.connection_error, R.string.connection_error_retry, v -> view.loadUrl(url));
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -110,58 +115,69 @@ public class ArtistWikiFragment extends BaseArtistFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        if (getActivity() != null && getArguments() != null) {
+            WikiFragmentArgs args = WikiFragmentArgs.fromBundle(getArguments());
+            setSubtitle(args.getSubTitle());
 
-        wikiVM = getViewModel(WikiVM.class);
-        wikiVM.noresultsld.observe(this, aBoolean -> {
-            if (aBoolean) showInfoSnackbar(R.string.no_results);
-        });
-        wikiVM.progressld.observe(this, aBoolean -> swipeRefreshLayout.setRefreshing(aBoolean));
-        wikiVM.urlMap.observe(this, map -> {
-            urlMap = map;
-            String url = null;
-            if (urlMap.containsKey(lang)) {
-                if (buttonLang == null) {
-                    buttonLang = lang;
+            wikiVM = getActivityViewModel(WikiVM.class);
+            wikiVM.urlsld.observe(this, this::show);
+
+            wikiVM.noresultsld.observe(this, aBoolean -> {
+                if (aBoolean) showInfoSnackbar(R.string.no_results);
+            });
+
+            wikiVM.progressld.observe(this, aBoolean -> swipeRefreshLayout.setRefreshing(aBoolean));
+
+            wikiVM.urlMap.observe(this, map -> {
+                urlMap = map;
+                String url = null;
+                if (urlMap.containsKey(lang)) {
+                    if (buttonLang == null) {
+                        buttonLang = lang;
+                    }
+                    url = urlMap.get(lang);
+                } else if (urlMap.containsKey("en")) {
+                    url = urlMap.get("en");
                 }
-                url = urlMap.get(lang);
-            } else if (urlMap.containsKey("en")) {
-                url = urlMap.get("en");
-            }
-            if (url != null) {
-                webView.loadUrl(url);
-            }
-        });
+                if (url != null) {
+                    webView.loadUrl(url);
+                }
+            });
 
-        wikiVM.errorld.observe(this, aBoolean -> {
-            isError = aBoolean;
-            if (aBoolean) {
-                showErrorSnackbar(R.string.connection_error, R.string.connection_error_retry, v -> artistVM.refreshArtist());
-            } else {
-                dismissErrorSnackbar();
-            }
-        });
+            wikiVM.errorld.observe(this, aBoolean -> {
+                if (aBoolean) {
+                    showErrorSnackbar(R.string.connection_error, R.string.connection_error_retry, v -> show(wikiVM.urlsld.getValue()));
+                } else {
+                    dismissErrorSnackbar();
+                }
+            });
+
+            swipeRefreshLayout.setOnRefreshListener(() -> {
+                if (url != null) webView.loadUrl(url);
+            });
+        }
     }
 
-    @Override
-    protected void show(Artist artist) {
-        boolean isEmpty = true;
-        List<Url> urls = new RelationExtractor(artist).getUrls();
-        if (urls != null && !urls.isEmpty()) {
-            for (Url link : urls) {
-                String resource = link.getResource();
-                if (link.getType().equalsIgnoreCase("wikidata")) {
-                    int pageSplit = resource.lastIndexOf("/") + 1;
-                    String wikidataQ = resource.substring(pageSplit);
-                    if (!TextUtils.isEmpty(wikidataQ)) {
-                        wikiVM.getUrlMap(wikidataQ, lang);
-                        isEmpty = false;
+    private void show(List<Url> urls) {
+        if (urls != null) {
+            boolean isEmpty = true;
+            if (!urls.isEmpty()) {
+                for (Url link : urls) {
+                    String resource = link.getResource();
+                    if (link.getType().equalsIgnoreCase("wikidata")) {
+                        int pageSplit = resource.lastIndexOf("/") + 1;
+                        String wikidataQ = resource.substring(pageSplit);
+                        if (!TextUtils.isEmpty(wikidataQ)) {
+                            wikiVM.getUrlMap(wikidataQ, lang);
+                            isEmpty = false;
+                        }
+                        break;
                     }
-                    break;
                 }
             }
-        }
-        if (isEmpty) {
-            showInfoSnackbar(R.string.no_results);
+            if (isEmpty) {
+                showInfoSnackbar(R.string.no_results);
+            }
         }
     }
 

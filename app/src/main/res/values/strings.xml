@@ -8,7 +8,6 @@
     <string name="no_ratings">0 ratings</string>
     <string name="expand_all">Expand all</string>
     <string name="unknown">Unknown</string>
-    <string name="wiki_error">Cannot getWikidata page</string>
 
     <!-- labels of destinations -->
     <string name="start_fragment_label">Start</string>
@@ -19,12 +18,11 @@
     <string name="result_search_fragment_label">Search Result</string>
     <string name="artist_fragment_label">Artist</string>
     <string name="artist_releases_fragment_label">Artist Releases</string>
-    <string name="artist_links_fragment_label">Artist Links</string>
     <string name="artist_tags_pager_fragment_label">Artist Tags/Genres</string>
     <string name="artist_relations_fragment_label">Artist Relations</string>
-    <string name="artist_wiki_fragment_label">Wikipedia</string>
     <string name="releases_fragment_label">Releases</string>
     <string name="links_fragment_label">Links</string>
+    <string name="wiki_fragment_label">Wikipedia</string>
 
     <!-- labels of menu actions -->
     <string name="scan_barcode_action_label">Scan barcode</string>
