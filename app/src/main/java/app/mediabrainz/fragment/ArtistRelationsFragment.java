@@ -125,10 +125,7 @@ public class ArtistRelationsFragment extends BaseComplexRecyclerFragment<Relatio
     private void observeArtist() {
         artistVM.artistld.observe(this, artist -> {
             if (artist != null && getActivity() != null && getActivity() instanceof AppCompatActivity) {
-                ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-                if (actionBar != null) {
-                    actionBar.setSubtitle(artist.getName());
-                }
+                setSubtitle(artist.getName());
                 show(artist);
             }
         });

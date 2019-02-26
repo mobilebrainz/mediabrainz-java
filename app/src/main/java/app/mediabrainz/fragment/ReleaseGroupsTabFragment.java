@@ -79,10 +79,7 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
             }
             artistVM.artistld.observe(this, artist -> {
                 if (artist != null) {
-                    ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-                    if (actionBar != null) {
-                        actionBar.setSubtitle(artist.getName());
-                    }
+                    setSubtitle(artist.getName());
                 }
             });
         }

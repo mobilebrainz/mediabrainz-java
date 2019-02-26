@@ -69,10 +69,7 @@ public abstract class BaseArtistFragment extends BaseFragment {
         artistVM.artistld.observe(this, artist -> {
             if (artist != null && getActivity() != null && getActivity() instanceof AppCompatActivity) {
                 this.artist = artist;
-                ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
-                if (actionBar != null) {
-                    actionBar.setSubtitle(artist.getName());
-                }
+                setSubtitle(artist.getName());
                 show(artist);
             }
         });
