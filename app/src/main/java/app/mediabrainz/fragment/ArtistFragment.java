@@ -6,10 +6,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import app.mediabrainz.NavGraphDirections;
 import app.mediabrainz.R;
 import app.mediabrainz.api.model.Artist;
+import app.mediabrainz.api.model.RelationExtractor;
+import app.mediabrainz.api.model.Url;
+import app.mediabrainz.viewmodel.LinksVM;
 
 
 public class ArtistFragment extends BaseArtistFragment implements
@@ -66,7 +72,12 @@ public class ArtistFragment extends BaseArtistFragment implements
                     navigate(R.id.action_artistFragment_to_artistTagsPagerFragment);
                     break;
                 case R.id.linksItem:
-                    navigate(R.id.action_artistFragment_to_artistLinksFragment);
+                    //navigate(R.id.action_artistFragment_to_artistLinksFragment);
+                    List<Url> urls = new RelationExtractor(artist).getUrls();
+                    getActivityViewModel(LinksVM.class).urlsld.setValue(urls);
+                    NavGraphDirections.ActionGlobalLinksFragment action =
+                            NavGraphDirections.actionGlobalLinksFragment(artist.getName());
+                    navigate(action);
                     break;
                 case R.id.wikiItem:
                     navigate(R.id.action_artistFragment_to_artistWikiFragment);

@@ -33,10 +33,14 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setSubtitle(null);
+    }
+
+    protected void setSubtitle(String subtitle) {
         if (getActivity() != null) {
             ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
             if (actionBar != null) {
-                actionBar.setSubtitle(null);
+                actionBar.setSubtitle(subtitle);
             }
         }
     }

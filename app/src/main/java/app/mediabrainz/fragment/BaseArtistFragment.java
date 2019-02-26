@@ -15,6 +15,7 @@ import app.mediabrainz.viewmodel.ArtistVM;
 
 public abstract class BaseArtistFragment extends BaseFragment {
 
+    protected Artist artist;
     protected ArtistVM artistVM;
     protected boolean isLoading;
     protected boolean isError;
@@ -67,6 +68,7 @@ public abstract class BaseArtistFragment extends BaseFragment {
     private void observeArtist() {
         artistVM.artistld.observe(this, artist -> {
             if (artist != null && getActivity() != null && getActivity() instanceof AppCompatActivity) {
+                this.artist = artist;
                 ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
                 if (actionBar != null) {
                     actionBar.setSubtitle(artist.getName());

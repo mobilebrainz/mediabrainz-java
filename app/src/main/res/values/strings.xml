@@ -24,6 +24,7 @@
     <string name="artist_relations_fragment_label">Artist Relations</string>
     <string name="artist_wiki_fragment_label">Wikipedia</string>
     <string name="releases_fragment_label">Releases</string>
+    <string name="links_fragment_label">Links</string>
 
     <!-- labels of menu actions -->
     <string name="scan_barcode_action_label">Scan barcode</string>
