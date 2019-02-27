@@ -45,15 +45,19 @@ public class ReleaseGroupsPagerAdapter extends UpdatableFragmentPagerAdapter {
             return title;
         }
 
-        public Fragment createFragment() {
-            return ReleaseGroupsTabFragment.newInstance(ordinal());
+        public Fragment createFragment(String artistMbid, String artistName) {
+            return ReleaseGroupsTabFragment.newInstance(ordinal(), artistMbid, artistName);
         }
     }
 
     private ReleaseTab[] releaseTabs = ReleaseTab.values();
+    private String artistMbid;
+    private String artistName;
 
-    public ReleaseGroupsPagerAdapter(FragmentManager fm, Resources resources) {
+    public ReleaseGroupsPagerAdapter(FragmentManager fm, Resources resources, String artistMbid, String artistName) {
         super(ReleaseTab.values().length, fm, resources);
+        this.artistMbid = artistMbid;
+        this.artistName = artistName;
         for (int i = 0; i < releaseTabs.length; ++i) {
             tabTitles[i] = releaseTabs[i].getTitle();
         }
@@ -61,7 +65,7 @@ public class ReleaseGroupsPagerAdapter extends UpdatableFragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return releaseTabs.length > position ? releaseTabs[position].createFragment() : null;
+        return releaseTabs.length > position ? releaseTabs[position].createFragment(artistMbid, artistName) : null;
     }
 
 }

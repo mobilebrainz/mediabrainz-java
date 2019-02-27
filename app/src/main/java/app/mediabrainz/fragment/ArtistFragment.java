@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.NavDirections;
@@ -13,6 +15,8 @@ import app.mediabrainz.NavGraphDirections;
 import app.mediabrainz.R;
 import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.RelationExtractor;
+import app.mediabrainz.api.model.Url;
+import app.mediabrainz.api.model.relations.Relation;
 import app.mediabrainz.viewmodel.LinksVM;
 import app.mediabrainz.viewmodel.WikiVM;
 import app.mediabrainz.viewmodel.event.ArtistEvent;
@@ -65,28 +69,42 @@ public class ArtistFragment extends BaseArtistFragment implements
         if (!isLoading && !isError) {
             switch (v.getId()) {
                 case R.id.releasesItem:
-                    navigate(R.id.action_artistFragment_to_artistReleasesFragment);
+                    if (artist.getReleaseGroups() != null && !artist.getReleaseGroups().isEmpty()) {
+                        ArtistFragmentDirections.ActionArtistFragmentToArtistReleasesFragment releasesAction =
+                                ArtistFragmentDirections.actionArtistFragmentToArtistReleasesFragment(artist.getId(), artist.getName());
+                        navigate(releasesAction);
+                    } else {
+                        showInfoSnackbar(R.string.no_results);
+                    }
                     break;
 
                 case R.id.relationsItem:
-                    getActivityViewModel(ArtistRelationsEvent.class).relations
-                            .setValue(new RelationExtractor(artist).getArtistRelations());
-                    ArtistFragmentDirections.ActionArtistFragmentToArtistRelationsFragment relActin =
-                            ArtistFragmentDirections.actionArtistFragmentToArtistRelationsFragment(artist.getName());
-                    navigate(relActin);
+                    List<Relation> relations = new RelationExtractor(artist).getArtistRelations();
+                    if (!relations.isEmpty()) {
+                        getActivityViewModel(ArtistRelationsEvent.class).relations.setValue(relations);
+                        ArtistFragmentDirections.ActionArtistFragmentToArtistRelationsFragment relActin =
+                                ArtistFragmentDirections.actionArtistFragmentToArtistRelationsFragment(artist.getName());
+                        navigate(relActin);
+                    } else {
+                        showInfoSnackbar(R.string.no_results);
+                    }
                     break;
 
                 case R.id.tagsItem:
                     getActivityViewModel(ArtistEvent.class).artist.setValue(artist);
-                    NavDirections tagAction = ArtistFragmentDirections.actionArtistFragmentToArtistTagsPagerFragment();
-                    navigate(tagAction);
+                    navigate(R.id.action_artistFragment_to_artistTagsPagerFragment);
                     break;
 
                 case R.id.linksItem:
-                    getActivityViewModel(LinksEvent.class).urls.setValue(new RelationExtractor(artist).getUrls());
-                    NavGraphDirections.ActionGlobalLinksFragment linksAction =
-                            NavGraphDirections.actionGlobalLinksFragment(artist.getName());
-                    navigate(linksAction);
+                    List<Url> urls = new RelationExtractor(artist).getUrls();
+                    if (!urls.isEmpty()) {
+                        getActivityViewModel(LinksEvent.class).urls.setValue(urls);
+                        NavGraphDirections.ActionGlobalLinksFragment linksAction =
+                                NavGraphDirections.actionGlobalLinksFragment(artist.getName());
+                        navigate(linksAction);
+                    } else {
+                        showInfoSnackbar(R.string.no_results);
+                    }
                     break;
 
                 case R.id.wikiItem:

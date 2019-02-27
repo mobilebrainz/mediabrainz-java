@@ -122,21 +122,6 @@
         android:id="@+id/action_global_wikiFragment"
         app:destination="@id/wikiFragment"/>
 
-
-    <!-- //////////////////////////////////// -->
-    <!--
-    <include app:graph="@navigation/artist_graph"/>
-
-    <action
-        android:id="@+id/action_global_to_artist_graph"
-        app:destination="@id/artist_graph">
-        <argument
-            android:name="mbid"
-            app:argType="string"
-            app:nullable="false"/>
-    </action>
-    -->
-
     <action
         android:id="@+id/action_global_artistFragment"
         app:destination="@id/artistFragment">
@@ -153,7 +138,16 @@
         tools:layout="@layout/artist_fragment">
         <action
             android:id="@+id/action_artistFragment_to_artistReleasesFragment"
-            app:destination="@id/artistReleasesFragment"/>
+            app:destination="@id/artistReleasesFragment">
+            <argument
+                android:name="artistMbid"
+                app:argType="string"
+                app:nullable="false"/>
+            <argument
+                android:name="artistName"
+                app:argType="string"
+                app:nullable="false"/>
+        </action>
         <action
             android:id="@+id/action_artistFragment_to_artistRelationsFragment"
             app:destination="@id/artistRelationsFragment"/>
@@ -171,6 +165,14 @@
         android:name="app.mediabrainz.fragment.ArtistReleasesFragment"
         android:label="@string/artist_releases_fragment_label"
         tools:layout="@layout/fragment_pager_without_icons">
+        <argument
+            android:name="artistMbid"
+            app:argType="string"
+            app:nullable="false"/>
+        <argument
+            android:name="artistName"
+            app:argType="string"
+            app:nullable="false"/>
         <action
             android:id="@+id/action_artistReleasesFragment_to_releasesFragment"
             app:destination="@id/releasesFragment">

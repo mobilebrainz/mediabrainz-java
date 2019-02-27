@@ -13,9 +13,10 @@ import androidx.viewpager.widget.ViewPager;
 import app.mediabrainz.R;
 import app.mediabrainz.adapter.pager.ReleaseGroupsPagerAdapter;
 import app.mediabrainz.api.model.Artist;
+import app.mediabrainz.core.fragment.BaseFragment;
 
 
-public class ArtistReleasesFragment extends BaseArtistFragment {
+public class ArtistReleasesFragment extends BaseFragment {
 
     private static final String TAG = "ArtistReleasesF";
     private static final String RELESES_TAB = "ArtistReleasesFragment.RELESES_TAB";
@@ -27,15 +28,11 @@ public class ArtistReleasesFragment extends BaseArtistFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflate(R.layout.fragment_pager_without_icons, container);
-
         if (savedInstanceState != null) {
             releaseTab = savedInstanceState.getInt(RELESES_TAB, 0);
         }
-
         pagerView = view.findViewById(R.id.pagerView);
         tabsView = view.findViewById(R.id.tabsView);
-        progressView = view.findViewById(R.id.progressView);
-
         return view;
     }
 
@@ -45,6 +42,14 @@ public class ArtistReleasesFragment extends BaseArtistFragment {
         outState.putInt(RELESES_TAB, releaseTab);
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (getActivity() != null && getArguments() != null) {
+            ArtistReleasesFragmentArgs args = ArtistReleasesFragmentArgs.fromBundle(getArguments());
+            show(args.getArtistMbid(), args.getArtistName());
+        }
+    }
 
     @Override
     public void onPause() {
@@ -52,18 +57,14 @@ public class ArtistReleasesFragment extends BaseArtistFragment {
         releaseTab = pagerView.getCurrentItem();
     }
 
-    @Override
-    protected void show(Artist artist) {
-        if (artist.getReleaseGroups() != null && !artist.getReleaseGroups().isEmpty()) {
-            ReleaseGroupsPagerAdapter pagerAdapter = new ReleaseGroupsPagerAdapter(getChildFragmentManager(), getResources());
-            pagerView.setAdapter(pagerAdapter);
-            pagerView.setOffscreenPageLimit(pagerAdapter.getCount());
-            pagerView.setCurrentItem(releaseTab);
-            tabsView.setupWithViewPager(pagerView);
-            pagerAdapter.setupTabViews(tabsView);
-        } else {
-            showInfoSnackbar(R.string.no_results);
-        }
+    protected void show(String artistMbid, String artistName) {
+        ReleaseGroupsPagerAdapter pagerAdapter =
+                new ReleaseGroupsPagerAdapter(getChildFragmentManager(), getResources(), artistMbid, artistName);
+        pagerView.setAdapter(pagerAdapter);
+        pagerView.setOffscreenPageLimit(pagerAdapter.getCount());
+        pagerView.setCurrentItem(releaseTab);
+        tabsView.setupWithViewPager(pagerView);
+        pagerAdapter.setupTabViews(tabsView);
     }
 
 }

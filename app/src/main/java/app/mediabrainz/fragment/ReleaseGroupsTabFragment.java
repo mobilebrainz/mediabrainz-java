@@ -3,15 +3,12 @@ package app.mediabrainz.fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,7 +20,6 @@ import app.mediabrainz.adapter.recycler.ReleaseGroupsAdapter;
 import app.mediabrainz.core.adapter.RetryCallback;
 import app.mediabrainz.core.fragment.LazyFragment;
 import app.mediabrainz.core.viewmodel.event.Status;
-import app.mediabrainz.viewmodel.ArtistVM;
 import app.mediabrainz.viewmodel.ReleaseGroupsVM;
 
 import static app.mediabrainz.account.Preferences.PreferenceName.RELEASE_GROUP_OFFICIAL;
@@ -35,6 +31,8 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
 
     public static final String TAG = "ReleaseGroupsTabF";
     private static final String RELEASES_TAB = "ReleaseGroupsTabFragment.RELEASES_TAB";
+    private static final String ARTIST_MBID = "ReleaseGroupsTabFragment.ARTIST_MBID";
+    private static final String ARTIST_NAME = "ReleaseGroupsTabFragment.ARTIST_NAME";
 
     private boolean isError;
     private boolean isLoading;
@@ -48,9 +46,11 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
 
     private MutableLiveData<Boolean> mutableIsOfficial = new MutableLiveData<>();
 
-    public static ReleaseGroupsTabFragment newInstance(int releasesTab) {
+    public static ReleaseGroupsTabFragment newInstance(int releasesTab, String artistMbid, String artistName) {
         Bundle args = new Bundle();
         args.putInt(RELEASES_TAB, releasesTab);
+        args.putString(ARTIST_MBID, artistMbid);
+        args.putString(ARTIST_NAME, artistName);
         ReleaseGroupsTabFragment fragment = new ReleaseGroupsTabFragment();
         fragment.setArguments(args);
         return fragment;
@@ -59,8 +59,6 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View layout = inflate(R.layout.fragment_paged_recycler, container);
-
-        releaseGroupType = ReleaseGroupsPagerAdapter.ReleaseTab.values()[getArguments().getInt(RELEASES_TAB)];
 
         pagedRecyclerView = layout.findViewById(R.id.pagedRecyclerView);
         swipeRefreshLayout = layout.findViewById(R.id.swipeRefreshLayout);
@@ -71,17 +69,11 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (getActivity() != null) {
-            ArtistVM artistVM = getActivityViewModel(ArtistVM.class);
-            artistMbid = artistVM.getArtistMbid();
-            if (!TextUtils.isEmpty(artistMbid)) {
-                loadView();
-            }
-            artistVM.artistld.observe(this, artist -> {
-                if (artist != null) {
-                    setSubtitle(artist.getName());
-                }
-            });
+        if (getActivity() != null && getArguments() != null) {
+            artistMbid = getArguments().getString(ARTIST_MBID);
+            setSubtitle(getArguments().getString(ARTIST_NAME));
+            releaseGroupType = ReleaseGroupsPagerAdapter.ReleaseTab.values()[getArguments().getInt(RELEASES_TAB)];
+            loadView();
         }
     }
 
