@@ -56,6 +56,10 @@
         <action
             android:id="@+id/action_artistRelationsFragment_to_artistFragment"
             app:destination="@id/artistFragment"/>
+        <argument
+            android:name="subTitle"
+            app:argType="string"
+            app:nullable="true"/>
     </fragment>
 
     <fragment

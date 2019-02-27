@@ -13,18 +13,15 @@ import java.util.Comparator;
 import java.util.List;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import app.mediabrainz.R;
 import app.mediabrainz.adapter.recycler.artistRelations.ArtistRelationsAdapter;
 import app.mediabrainz.adapter.recycler.artistRelations.Header;
 import app.mediabrainz.adapter.recycler.expandedRecycler.Section;
-import app.mediabrainz.api.model.Artist;
-import app.mediabrainz.api.model.RelationExtractor;
 import app.mediabrainz.api.model.relations.ArtistArtistRelationType;
 import app.mediabrainz.api.model.relations.Relation;
-import app.mediabrainz.viewmodel.ArtistVM;
+import app.mediabrainz.viewmodel.ArtistRelationsVM;
+import app.mediabrainz.viewmodel.event.ArtistRelationsEvent;
 
 import static app.mediabrainz.api.model.relations.ArtistArtistRelationType.COLLABORATION;
 import static app.mediabrainz.api.model.relations.ArtistArtistRelationType.COMPOSER_IN_RESIDENCE;
@@ -96,8 +93,6 @@ public class ArtistRelationsFragment extends BaseComplexRecyclerFragment<Relatio
         }
     }
 
-
-    protected ArtistVM artistVM;
     private View noresultsView;
 
     @Override
@@ -116,19 +111,16 @@ public class ArtistRelationsFragment extends BaseComplexRecyclerFragment<Relatio
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (getActivity() != null) {
-            artistVM = getActivityViewModel(ArtistVM.class);
-            observeArtist();
-        }
-    }
+        if (getActivity() != null && getArguments() != null) {
+            ArtistRelationsFragmentArgs args = ArtistRelationsFragmentArgs.fromBundle(getArguments());
+            setSubtitle(args.getSubTitle());
 
-    private void observeArtist() {
-        artistVM.artistld.observe(this, artist -> {
-            if (artist != null && getActivity() != null && getActivity() instanceof AppCompatActivity) {
-                setSubtitle(artist.getName());
-                show(artist);
-            }
-        });
+            ArtistRelationsVM artistRelationsVM = getViewModel(ArtistRelationsVM.class);
+            getActivityViewModel(ArtistRelationsEvent.class).relations.observe(this, relations -> {
+                if (relations != null) artistRelationsVM.relationsld.setValue(relations);
+            });
+            artistRelationsVM.relationsld.observe(this, this::show);
+        }
     }
 
     private void initSections() {
@@ -141,65 +133,62 @@ public class ArtistRelationsFragment extends BaseComplexRecyclerFragment<Relatio
         }
     }
 
-    protected void show(Artist artist) {
+    protected void show(List<Relation> relations) {
         recyclerView.removeAllViewsInLayout();
 
-        if (artist != null) {
-            List<Relation> artistRelations = new RelationExtractor(artist).getArtistRelations();
-            Comparator<Relation> sortDate = (r1, r2) -> (r1.getArtist().getName()).compareTo(r2.getArtist().getName());
-            Collections.sort(artistRelations, sortDate);
-            clearSections();
-            for (Relation relation : artistRelations) {
-                String type = !TextUtils.isEmpty(relation.getType()) ? relation.getType() : "";
-                if (type.equalsIgnoreCase(CURRENT_MEMBER_OF_BANDS.getType())) {
-                    if (TextUtils.isEmpty(relation.getEnd())) {
-                        allSections.get(CURRENT_MEMBER_OF_BANDS.ordinal()).getItems().add(relation);
-                    } else {
-                        allSections.get(PAST_MEMBER_OF_BANDS.ordinal()).getItems().add(relation);
-                    }
-                } else if (type.equalsIgnoreCase(SUBGROUPS.getType())) {
-                    allSections.get(SUBGROUPS.ordinal()).getItems().add(relation);
-                } else if (type.equalsIgnoreCase(CONDUCTOR_POSITIONS.getType())) {
-                    allSections.get(CONDUCTOR_POSITIONS.ordinal()).getItems().add(relation);
-                } else if (type.equalsIgnoreCase(FOUNDERS.getType())) {
-                    allSections.get(FOUNDERS.ordinal()).getItems().add(relation);
-                } else if (type.equalsIgnoreCase(SUPPORTING_MUSICIANS.getType())) {
-                    allSections.get(SUPPORTING_MUSICIANS.ordinal()).getItems().add(relation);
-                } else if (type.equalsIgnoreCase(VOCAL_SUPPORTING_MUSICIANS.getType())) {
-                    allSections.get(VOCAL_SUPPORTING_MUSICIANS.ordinal()).getItems().add(relation);
-                } else if (type.equalsIgnoreCase(INSTRUMENTAL_SUPPORTING_MUSICIANS.getType())) {
-                    allSections.get(INSTRUMENTAL_SUPPORTING_MUSICIANS.ordinal()).getItems().add(relation);
-                } else if (type.equalsIgnoreCase(TRIBUTES.getType())) {
-                    allSections.get(TRIBUTES.ordinal()).getItems().add(relation);
-                } else if (type.equalsIgnoreCase(VOICE_ACTORS.getType())) {
-                    allSections.get(VOICE_ACTORS.ordinal()).getItems().add(relation);
-                } else if (type.equalsIgnoreCase(COLLABORATIONS.getType())) {
-                    allSections.get(COLLABORATIONS.ordinal()).getItems().add(relation);
-                } else if (type.equalsIgnoreCase(IS_PERSONS.getType())) {
-                    allSections.get(IS_PERSONS.ordinal()).getItems().add(relation);
-                } else if (type.equalsIgnoreCase(TEACHERS.getType())) {
-                    allSections.get(TEACHERS.ordinal()).getItems().add(relation);
-                } else if (type.equalsIgnoreCase(COMPOSER_IN_RESIDENCES.getType())) {
-                    allSections.get(COMPOSER_IN_RESIDENCES.ordinal()).getItems().add(relation);
+        Comparator<Relation> sortDate = (r1, r2) -> (r1.getArtist().getName()).compareTo(r2.getArtist().getName());
+        Collections.sort(relations, sortDate);
+        clearSections();
+        for (Relation relation : relations) {
+            String type = !TextUtils.isEmpty(relation.getType()) ? relation.getType() : "";
+            if (type.equalsIgnoreCase(CURRENT_MEMBER_OF_BANDS.getType())) {
+                if (TextUtils.isEmpty(relation.getEnd())) {
+                    allSections.get(CURRENT_MEMBER_OF_BANDS.ordinal()).getItems().add(relation);
+                } else {
+                    allSections.get(PAST_MEMBER_OF_BANDS.ordinal()).getItems().add(relation);
                 }
+            } else if (type.equalsIgnoreCase(SUBGROUPS.getType())) {
+                allSections.get(SUBGROUPS.ordinal()).getItems().add(relation);
+            } else if (type.equalsIgnoreCase(CONDUCTOR_POSITIONS.getType())) {
+                allSections.get(CONDUCTOR_POSITIONS.ordinal()).getItems().add(relation);
+            } else if (type.equalsIgnoreCase(FOUNDERS.getType())) {
+                allSections.get(FOUNDERS.ordinal()).getItems().add(relation);
+            } else if (type.equalsIgnoreCase(SUPPORTING_MUSICIANS.getType())) {
+                allSections.get(SUPPORTING_MUSICIANS.ordinal()).getItems().add(relation);
+            } else if (type.equalsIgnoreCase(VOCAL_SUPPORTING_MUSICIANS.getType())) {
+                allSections.get(VOCAL_SUPPORTING_MUSICIANS.ordinal()).getItems().add(relation);
+            } else if (type.equalsIgnoreCase(INSTRUMENTAL_SUPPORTING_MUSICIANS.getType())) {
+                allSections.get(INSTRUMENTAL_SUPPORTING_MUSICIANS.ordinal()).getItems().add(relation);
+            } else if (type.equalsIgnoreCase(TRIBUTES.getType())) {
+                allSections.get(TRIBUTES.ordinal()).getItems().add(relation);
+            } else if (type.equalsIgnoreCase(VOICE_ACTORS.getType())) {
+                allSections.get(VOICE_ACTORS.ordinal()).getItems().add(relation);
+            } else if (type.equalsIgnoreCase(COLLABORATIONS.getType())) {
+                allSections.get(COLLABORATIONS.ordinal()).getItems().add(relation);
+            } else if (type.equalsIgnoreCase(IS_PERSONS.getType())) {
+                allSections.get(IS_PERSONS.ordinal()).getItems().add(relation);
+            } else if (type.equalsIgnoreCase(TEACHERS.getType())) {
+                allSections.get(TEACHERS.ordinal()).getItems().add(relation);
+            } else if (type.equalsIgnoreCase(COMPOSER_IN_RESIDENCES.getType())) {
+                allSections.get(COMPOSER_IN_RESIDENCES.ordinal()).getItems().add(relation);
             }
+        }
             /*
             if (!allSections.get(CURRENT_MEMBER_OF_BANDS.ordinal()).getItems().isEmpty()) {
                 allSections.get(CURRENT_MEMBER_OF_BANDS.ordinal()).getHeader().setExpand(true);
             }
             */
-            viewSections = new ArrayList<>();
-            for (Section<Relation> section : allSections) {
-                if (!section.getItems().isEmpty()) {
-                    viewSections.add(section);
-                }
+        viewSections = new ArrayList<>();
+        for (Section<Relation> section : allSections) {
+            if (!section.getItems().isEmpty()) {
+                viewSections.add(section);
             }
-
-            if (!viewSections.isEmpty()) {
-                configRecycler(viewSections);
-            }
-            showNoResult(viewSections.isEmpty());
         }
+
+        if (!viewSections.isEmpty()) {
+            configRecycler(viewSections);
+        }
+        showNoResult(viewSections.isEmpty());
     }
 
     private void configRecycler(List<Section<Relation>> items) {

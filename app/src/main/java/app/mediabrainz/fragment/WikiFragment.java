@@ -26,6 +26,7 @@ import app.mediabrainz.R;
 import app.mediabrainz.api.model.Url;
 import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.viewmodel.WikiVM;
+import app.mediabrainz.viewmodel.event.LinksEvent;
 
 
 public class WikiFragment extends BaseFragment {
@@ -119,7 +120,11 @@ public class WikiFragment extends BaseFragment {
             WikiFragmentArgs args = WikiFragmentArgs.fromBundle(getArguments());
             setSubtitle(args.getSubTitle());
 
-            wikiVM = getActivityViewModel(WikiVM.class);
+            wikiVM = getViewModel(WikiVM.class);
+            getActivityViewModel(LinksEvent.class).urls.observe(this, urls -> {
+                if (urls != null) wikiVM.urlsld.setValue(urls);
+            });
+
             wikiVM.urlsld.observe(this, this::show);
 
             wikiVM.noresultsld.observe(this, aBoolean -> {

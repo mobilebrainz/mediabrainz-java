@@ -20,6 +20,7 @@ import app.mediabrainz.R;
 import app.mediabrainz.adapter.recycler.LinkAdapter;
 import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.viewmodel.LinksVM;
+import app.mediabrainz.viewmodel.event.LinksEvent;
 
 
 public class LinksFragment extends BaseFragment {
@@ -40,7 +41,11 @@ public class LinksFragment extends BaseFragment {
             LinksFragmentArgs args = LinksFragmentArgs.fromBundle(getArguments());
             setSubtitle(args.getSubTitle());
 
-            getActivityViewModel(LinksVM.class).urlsld.observe(this, urls -> {
+            LinksVM linksVM = getViewModel(LinksVM.class);
+            getActivityViewModel(LinksEvent.class).urls.observe(this, urls -> {
+                if (urls != null) linksVM.urlsld.setValue(urls);
+            });
+            linksVM.urlsld.observe(this, urls -> {
                 if (urls != null) {
                     if (urls.isEmpty()) {
                         showInfoSnackbar(R.string.no_results);
