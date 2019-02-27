@@ -30,11 +30,11 @@ public class ArtistFragment extends BaseFragment implements
 
     public static final String TAG = "ArtistFragment";
 
-    protected Artist artist;
-    protected ArtistVM artistVM;
-    protected boolean isError;
+    private Artist artist;
+    private ArtistVM artistVM;
+    private boolean isError;
 
-    protected SwipeRefreshLayout swipeRefreshLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -59,7 +59,7 @@ public class ArtistFragment extends BaseFragment implements
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getArguments() != null) {
-            artistVM = getActivityViewModel(ArtistVM.class);
+            artistVM = getViewModel(ArtistVM.class);
             observeArtistVM();
 
             if (swipeRefreshLayout != null) {

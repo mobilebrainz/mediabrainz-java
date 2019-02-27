@@ -16,11 +16,11 @@ public class ArtistVM extends CompositeDisposableViewModel {
     public final MutableLiveData<Artist> artistld = new MutableLiveData<>();
 
     public void getArtist(@NonNull String mbid) {
-        //убрать проверку, чтобы рефрешился артист после логгирования, изменения данных и т.д.
-        //if (artistld.getValue() == null || !mbid.equals(artistMbid)) {
+        //??? убрать проверку, чтобы рефрешился артист после логгирования, изменения данных и т.д.
+        if (artistld.getValue() == null || !mbid.equals(artistMbid)) {
             artistMbid = mbid;
             refreshArtist();
-        //}
+        }
     }
 
     public void refreshArtist() {
