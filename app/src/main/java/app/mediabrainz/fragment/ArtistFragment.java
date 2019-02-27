@@ -10,63 +10,98 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.navigation.NavDirections;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import app.mediabrainz.NavGraphDirections;
 import app.mediabrainz.R;
 import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.RelationExtractor;
 import app.mediabrainz.api.model.Url;
 import app.mediabrainz.api.model.relations.Relation;
-import app.mediabrainz.viewmodel.LinksVM;
-import app.mediabrainz.viewmodel.WikiVM;
+import app.mediabrainz.core.fragment.BaseFragment;
+import app.mediabrainz.viewmodel.ArtistVM;
 import app.mediabrainz.viewmodel.event.ArtistEvent;
 import app.mediabrainz.viewmodel.event.ArtistRelationsEvent;
 import app.mediabrainz.viewmodel.event.LinksEvent;
 
 
-public class ArtistFragment extends BaseArtistFragment implements
+public class ArtistFragment extends BaseFragment implements
         View.OnClickListener {
 
     public static final String TAG = "ArtistFragment";
+
+    protected Artist artist;
+    protected ArtistVM artistVM;
+    protected boolean isError;
+
+    protected SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflate(R.layout.artist_fragment, container);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
-        initTopMenu(view);
         return view;
     }
 
-    private void initTopMenu(View view) {
-        view.findViewById(R.id.releasesItem).setOnClickListener(this);
-        view.findViewById(R.id.relationsItem).setOnClickListener(this);
-        view.findViewById(R.id.tagsItem).setOnClickListener(this);
-        view.findViewById(R.id.linksItem).setOnClickListener(this);
-        view.findViewById(R.id.wikiItem).setOnClickListener(this);
-        view.findViewById(R.id.addToCollectionItem).setOnClickListener(this);
-        view.findViewById(R.id.shareItem).setOnClickListener(this);
+    private void initMenu() {
+        if (getView() != null) {
+            getView().findViewById(R.id.releasesItem).setOnClickListener(this);
+            getView().findViewById(R.id.relationsItem).setOnClickListener(this);
+            getView().findViewById(R.id.tagsItem).setOnClickListener(this);
+            getView().findViewById(R.id.linksItem).setOnClickListener(this);
+            getView().findViewById(R.id.wikiItem).setOnClickListener(this);
+            getView().findViewById(R.id.addToCollectionItem).setOnClickListener(this);
+            getView().findViewById(R.id.shareItem).setOnClickListener(this);
+        }
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getArguments() != null) {
+            artistVM = getActivityViewModel(ArtistVM.class);
+            observeArtistVM();
+
+            if (swipeRefreshLayout != null) {
+                swipeRefreshLayout.setOnRefreshListener(() -> artistVM.refreshArtist());
+            }
+
             ArtistFragmentArgs args = ArtistFragmentArgs.fromBundle(getArguments());
             artistVM.getArtist(args.getMbid());
+            initMenu();
         }
     }
 
-    @Override
-    protected void show(Artist artist) {
+    private void show(Artist artist) {
         if (getView() != null) {
             TextView artistNameView = getView().findViewById(R.id.artistNameView);
             artistNameView.setText(artist.getName());
         }
     }
 
+    private void observeArtistVM() {
+        artistVM.progressld.observe(this, swipeRefreshLayout::setRefreshing);
+
+        artistVM.errorld.observe(this, aBoolean -> {
+            isError = aBoolean;
+            if (aBoolean) {
+                showErrorSnackbar(R.string.connection_error, R.string.connection_error_retry, v -> artistVM.refreshArtist());
+            } else {
+                dismissErrorSnackbar();
+            }
+        });
+        artistVM.artistld.observe(this, artist -> {
+            if (artist != null && getActivity() != null && getActivity() instanceof AppCompatActivity) {
+                this.artist = artist;
+                setSubtitle(artist.getName());
+                show(artist);
+            }
+        });
+    }
+
     @Override
     public void onClick(View v) {
-        if (!isLoading && !isError) {
+        if (!swipeRefreshLayout.isRefreshing() && !isError) {
             switch (v.getId()) {
                 case R.id.releasesItem:
                     if (artist.getReleaseGroups() != null && !artist.getReleaseGroups().isEmpty()) {
