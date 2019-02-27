@@ -17,33 +17,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 import app.mediabrainz.MediaBrainzApp;
 import app.mediabrainz.R;
 import app.mediabrainz.adapter.pager.EditTagsPagerAdapter;
 import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.xml.UserTagXML;
+import app.mediabrainz.core.fragment.BaseFragment;
+import app.mediabrainz.viewmodel.ArtistTagsVM;
 import app.mediabrainz.viewmodel.GenresVM;
 import app.mediabrainz.viewmodel.TagsVM;
+import app.mediabrainz.viewmodel.event.ArtistEvent;
 
 import static app.mediabrainz.MediaBrainzApp.oauth;
 import static app.mediabrainz.adapter.pager.EditTagsPagerAdapter.TagsTab.GENRES;
 import static app.mediabrainz.adapter.pager.EditTagsPagerAdapter.TagsTab.TAGS;
 
 
-public class ArtistTagsPagerFragment extends BaseArtistFragment implements
-        EditTagsTabFragment.TagInterface {
+public class ArtistTagsPagerFragment extends BaseFragment {
 
     private static final String TAGS_TAB = "ArtistTagsPagerFragment.TAGS_TAB";
     private final int defaultTagsTab = EditTagsPagerAdapter.TagsTab.GENRES.ordinal();
 
     private List<String> allGenres = new ArrayList<>();
     private Artist artist;
+    private ArtistTagsVM artistTagsVM;
     private TagsVM tagsVM;
     private GenresVM genresVM;
     private int tagsTab;
     private ArrayAdapter<String> adapter;
 
+    private SwipeRefreshLayout swipeRefreshLayout;
     private TextView loginWarningView;
     private AutoCompleteTextView tagInputView;
     private ImageButton tagButton;
@@ -69,6 +75,7 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
         tabsView = layout.findViewById(R.id.tabsView);
 
         setEditListeners();
+        swipeRefreshLayout.setEnabled(false);
         return layout;
     }
 
@@ -79,27 +86,39 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (getActivity() != null) {
+            genresVM = getActivityViewModel(GenresVM.class);
+            genresVM.getGenres();
+            observeGenres();
+
+            tagsVM = getActivityViewModel(TagsVM.class);
+            artistTagsVM = getViewModel(ArtistTagsVM.class);
+            getActivityViewModel(ArtistEvent.class).artist.observe(this, a -> {
+                if (a != null) artistTagsVM.artistld.setValue(a);
+            });
+            artistTagsVM.artistld.observe(this, a -> {
+                this.artist = a;
+                tagsVM.setSubTitle(artist.getName());
+                tagsVM.setTags(artist);
+                configTags();
+            });
+            observeArtistTags();
+
+            tagsVM.postTag.observe(this, tagVote -> {
+                if (tagVote != null) postArtistTag(tagVote.getTag(), tagVote.getVoteType());
+            });
+        }
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         tagsTab = pagerView.getCurrentItem();
     }
 
-    @Override
-    protected void show(Artist artist) {
-        this.artist = artist;
-
-        genresVM = getActivityViewModel(GenresVM.class);
-        genresVM.getGenres();
-        observeGenres();
-
-        tagsVM = getActivityViewModel(TagsVM.class);
-        observeTags();
-        configTags();
-    }
-
     private void configTags() {
-        tagsVM.setTags(artist);
-
         EditTagsPagerAdapter pagerAdapter = new EditTagsPagerAdapter(getChildFragmentManager(), getResources());
         pagerView.setAdapter(pagerAdapter);
         pagerView.setOffscreenPageLimit(pagerAdapter.getCount());
@@ -117,7 +136,7 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
 
     private void setEditListeners() {
         tagButton.setOnClickListener(v -> {
-            if (isLoading) return;
+            if (swipeRefreshLayout.isRefreshing()) return;
             if (oauth.hasAccount()) {
                 String tagString = tagInputView.getText().toString().trim();
                 if (TextUtils.isEmpty(tagString)) {
@@ -132,17 +151,13 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
         });
     }
 
-    @Override
-    public void postTag(String tag, UserTagXML.VoteType voteType) {
-        postArtistTag(tag, voteType);
-    }
-
     private void postArtistTag(String tag, UserTagXML.VoteType voteType) {
-        tagsVM.postArtistTag(artist.getId(), tag, voteType, MediaBrainzApp.getPreferences().isPropagateArtistTags());
+        artistTagsVM.postArtistTag(tag, voteType, MediaBrainzApp.getPreferences().isPropagateArtistTags());
     }
 
     private void observeGenres() {
         genresVM.progressld.observe(this, aBoolean -> swipeRefreshLayout.setRefreshing(aBoolean));
+
         genresVM.genresld.observe(this, genres -> {
             this.allGenres = genres;
             if (getContext() != null) {
@@ -155,6 +170,7 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
                 tagInputView.setAdapter(adapter);
             }
         });
+
         genresVM.errorld.observe(this, aBoolean -> {
             if (aBoolean) {
                 showErrorSnackbar(R.string.connection_error, R.string.connection_error_retry, v -> genresVM.getGenres());
@@ -164,24 +180,22 @@ public class ArtistTagsPagerFragment extends BaseArtistFragment implements
         });
     }
 
-    private void observeTags() {
-        tagsVM.progressld.observe(this, aBoolean -> swipeRefreshLayout.setRefreshing(aBoolean));
-        tagsVM.artistTags.observe(this, a -> {
-            artist.setTags(a.getTags());
-            artist.setUserTags(a.getUserTags());
-            artist.setGenres(a.getGenres());
-            artist.setUserGenres(a.getUserGenres());
+    private void observeArtistTags() {
+        artistTagsVM.progressld.observe(this, aBoolean -> swipeRefreshLayout.setRefreshing(aBoolean));
+
+        artistTagsVM.artistTags.observe(this, a -> {
+            tagsVM.setTags(a);
             tagInputView.setText("");
             this.tagsTab = pagerView.getCurrentItem();
             configTags();
         });
-        tagsVM.propagateEvent.observe(this, aBoolean -> {
-            showInfoSnackbar(aBoolean ? R.string.tag_propagated_to_albums : R.string.error_propagate_tag);
-        });
-        tagsVM.errorTagld.observe(this, aBoolean -> {
+        artistTagsVM.propagateEvent.observe(this, aBoolean ->
+            showInfoSnackbar(aBoolean ? R.string.tag_propagated_to_albums : R.string.error_propagate_tag));
+
+        artistTagsVM.errorTagld.observe(this, aBoolean -> {
             if (aBoolean) showInfoSnackbar(R.string.connection_error);
         });
-        tagsVM.postArtistTagEvent.observe(this, aBoolean -> {
+        artistTagsVM.postArtistTagEvent.observe(this, aBoolean -> {
             if (!aBoolean) showInfoSnackbar(R.string.error_post_tag);
         });
     }

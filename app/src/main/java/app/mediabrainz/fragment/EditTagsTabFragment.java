@@ -29,10 +29,6 @@ import static app.mediabrainz.MediaBrainzApp.oauth;
 
 public class EditTagsTabFragment extends BaseFragment {
 
-    public interface TagInterface {
-        void postTag(String tag, UserTagXML.VoteType voteType);
-    }
-
     private static final String TAGS_TAB = "EditTagsTabFragment.TAGS_TAB";
 
     private TagsVM tagsVM;
@@ -61,6 +57,7 @@ public class EditTagsTabFragment extends BaseFragment {
         if (getActivity() != null && getArguments() != null) {
             tagsTab = getArguments().getInt(TAGS_TAB);
             tagsVM = getActivityViewModel(TagsVM.class);
+            setSubtitle(tagsVM.getSubTitle());
             load();
         }
     }
@@ -97,7 +94,6 @@ public class EditTagsTabFragment extends BaseFragment {
             recyclerView.setAdapter(adapter);
 
             if (getContext() != null && getParentFragment() != null) {
-                TagInterface parent = (TagInterface) getParentFragment();
                 adapter.setOnVoteTagListener((position) -> {
                     if (oauth.hasAccount()) {
                         String tag = tags.get(position).getName();
@@ -110,19 +106,19 @@ public class EditTagsTabFragment extends BaseFragment {
 
                             voteUpButton.setOnClickListener(v -> {
                                 alertDialog.dismiss();
-                                parent.postTag(tag, UserTagXML.VoteType.UPVOTE);
+                                tagsVM.postTag.setValue(new TagsVM.TagVote(tag, UserTagXML.VoteType.UPVOTE));
                             });
 
                             ImageView voteWithdrawButton = win.findViewById(R.id.voteWithdrawButton);
                             voteWithdrawButton.setOnClickListener(v -> {
                                 alertDialog.dismiss();
-                                parent.postTag(tag, UserTagXML.VoteType.WITHDRAW);
+                                tagsVM.postTag.setValue(new TagsVM.TagVote(tag, UserTagXML.VoteType.WITHDRAW));
                             });
 
                             ImageView voteDownButton = win.findViewById(R.id.voteDownButton);
                             voteDownButton.setOnClickListener(v -> {
                                 alertDialog.dismiss();
-                                parent.postTag(tag, UserTagXML.VoteType.DOWNVOTE);
+                                tagsVM.postTag.setValue(new TagsVM.TagVote(tag, UserTagXML.VoteType.DOWNVOTE));
                             });
                         }
                     } else {

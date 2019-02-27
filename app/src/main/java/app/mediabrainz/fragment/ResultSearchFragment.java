@@ -123,7 +123,8 @@ public class ResultSearchFragment extends BaseFragment {
     private void navigateToArtist(Artist artist) {
         if (!isLoading && !isError) {
             resultSearchVM.insertSuggestion(artist.getName(), ARTIST);
-            NavGraphDirections.ActionGlobalToArtistGraph action = NavGraphDirections.actionGlobalToArtistGraph(artist.getId());
+            NavGraphDirections.ActionGlobalArtistFragment action
+                    = NavGraphDirections.actionGlobalArtistFragment(artist.getId());
             navigate(action);
         }
     }

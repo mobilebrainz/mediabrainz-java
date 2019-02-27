@@ -90,17 +90,6 @@
             app:nullable="true"/>
     </fragment>
 
-    <include app:graph="@navigation/artist_graph"/>
-
-    <action
-        android:id="@+id/action_global_to_artist_graph"
-        app:destination="@id/artist_graph">
-        <argument
-            android:name="mbid"
-            app:argType="string"
-            app:nullable="false"/>
-    </action>
-
     <action
         android:id="@+id/action_global_loginFragment"
         app:destination="@id/loginFragment"/>
@@ -132,5 +121,92 @@
     <action
         android:id="@+id/action_global_wikiFragment"
         app:destination="@id/wikiFragment"/>
+
+
+    <!-- //////////////////////////////////// -->
+    <!--
+    <include app:graph="@navigation/artist_graph"/>
+
+    <action
+        android:id="@+id/action_global_to_artist_graph"
+        app:destination="@id/artist_graph">
+        <argument
+            android:name="mbid"
+            app:argType="string"
+            app:nullable="false"/>
+    </action>
+    -->
+
+    <action
+        android:id="@+id/action_global_artistFragment"
+        app:destination="@id/artistFragment">
+        <argument
+            android:name="mbid"
+            app:argType="string"
+            app:nullable="false"/>
+    </action>
+
+    <fragment
+        android:id="@+id/artistFragment"
+        android:name="app.mediabrainz.fragment.ArtistFragment"
+        android:label="@string/artist_fragment_label"
+        tools:layout="@layout/artist_fragment">
+        <action
+            android:id="@+id/action_artistFragment_to_artistReleasesFragment"
+            app:destination="@id/artistReleasesFragment"/>
+        <action
+            android:id="@+id/action_artistFragment_to_artistRelationsFragment"
+            app:destination="@id/artistRelationsFragment"/>
+        <action
+            android:id="@+id/action_artistFragment_to_artistTagsPagerFragment"
+            app:destination="@id/artistTagsPagerFragment"/>
+        <argument
+            android:name="mbid"
+            app:argType="string"
+            app:nullable="false"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/artistReleasesFragment"
+        android:name="app.mediabrainz.fragment.ArtistReleasesFragment"
+        android:label="@string/artist_releases_fragment_label"
+        tools:layout="@layout/fragment_pager_without_icons">
+        <action
+            android:id="@+id/action_artistReleasesFragment_to_releasesFragment"
+            app:destination="@id/releasesFragment">
+            <argument
+                android:name="type"
+                app:argType="integer"
+                android:defaultValue="1"/>
+            <argument
+                android:name="mbid"
+                app:argType="string"
+                app:nullable="false"/>
+            <argument
+                android:name="releaseMbid"
+                app:argType="string"
+                app:nullable="true"/>
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/artistRelationsFragment"
+        android:name="app.mediabrainz.fragment.ArtistRelationsFragment"
+        android:label="@string/artist_relations_fragment_label"
+        tools:layout="@layout/artist_relations_fragment">
+        <action
+            android:id="@+id/action_artistRelationsFragment_to_artistFragment"
+            app:destination="@id/artistFragment"/>
+        <argument
+            android:name="subTitle"
+            app:argType="string"
+            app:nullable="true"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/artistTagsPagerFragment"
+        android:name="app.mediabrainz.fragment.ArtistTagsPagerFragment"
+        android:label="@string/artist_tags_pager_fragment_label"
+        tools:layout="@layout/edit_tags_pager_fragment"/>
 
 </navigation>

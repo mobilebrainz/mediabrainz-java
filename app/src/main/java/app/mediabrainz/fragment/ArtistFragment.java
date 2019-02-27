@@ -8,12 +8,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.navigation.NavDirections;
 import app.mediabrainz.NavGraphDirections;
 import app.mediabrainz.R;
 import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.RelationExtractor;
 import app.mediabrainz.viewmodel.LinksVM;
 import app.mediabrainz.viewmodel.WikiVM;
+import app.mediabrainz.viewmodel.event.ArtistEvent;
 import app.mediabrainz.viewmodel.event.ArtistRelationsEvent;
 import app.mediabrainz.viewmodel.event.LinksEvent;
 
@@ -65,6 +67,7 @@ public class ArtistFragment extends BaseArtistFragment implements
                 case R.id.releasesItem:
                     navigate(R.id.action_artistFragment_to_artistReleasesFragment);
                     break;
+
                 case R.id.relationsItem:
                     getActivityViewModel(ArtistRelationsEvent.class).relations
                             .setValue(new RelationExtractor(artist).getArtistRelations());
@@ -72,21 +75,27 @@ public class ArtistFragment extends BaseArtistFragment implements
                             ArtistFragmentDirections.actionArtistFragmentToArtistRelationsFragment(artist.getName());
                     navigate(relActin);
                     break;
+
                 case R.id.tagsItem:
-                    navigate(R.id.action_artistFragment_to_artistTagsPagerFragment);
+                    getActivityViewModel(ArtistEvent.class).artist.setValue(artist);
+                    NavDirections tagAction = ArtistFragmentDirections.actionArtistFragmentToArtistTagsPagerFragment();
+                    navigate(tagAction);
                     break;
+
                 case R.id.linksItem:
                     getActivityViewModel(LinksEvent.class).urls.setValue(new RelationExtractor(artist).getUrls());
                     NavGraphDirections.ActionGlobalLinksFragment linksAction =
                             NavGraphDirections.actionGlobalLinksFragment(artist.getName());
                     navigate(linksAction);
                     break;
+
                 case R.id.wikiItem:
                     getActivityViewModel(LinksEvent.class).urls.setValue(new RelationExtractor(artist).getUrls());
                     NavGraphDirections.ActionGlobalWikiFragment wikiAction =
                             NavGraphDirections.actionGlobalWikiFragment(artist.getName());
                     navigate(wikiAction);
                     break;
+
                 case R.id.addToCollectionItem:
 
                     break;
