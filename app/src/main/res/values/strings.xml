@@ -123,6 +123,7 @@
     <string name="search_barcode_title">Search Barcode</string>
     <string name="no_results">No results found</string>
     <string name="connection_error">Could not connect to server…</string>
+    <string name="lastfm_connection_error">Could not connect to last.fm server…</string>
     <string name="connection_error_retry">Retry</string>
     <string name="search_track_artist_name">Artist: %1$s</string>
     <string name="search_track_album_name">Album: %1$s</string>

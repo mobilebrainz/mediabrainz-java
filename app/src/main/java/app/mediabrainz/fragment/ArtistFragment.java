@@ -20,6 +20,7 @@ import app.mediabrainz.api.model.RelationExtractor;
 import app.mediabrainz.api.model.Url;
 import app.mediabrainz.api.model.relations.Relation;
 import app.mediabrainz.core.fragment.BaseFragment;
+import app.mediabrainz.viewmodel.ArtistRatingsVM;
 import app.mediabrainz.viewmodel.ArtistVM;
 import app.mediabrainz.viewmodel.event.ArtistEvent;
 import app.mediabrainz.viewmodel.event.ArtistRelationsEvent;
@@ -71,17 +72,17 @@ public class ArtistFragment extends BaseFragment implements
             ArtistFragmentArgs args = ArtistFragmentArgs.fromBundle(getArguments());
             artistVM.getArtist(args.getMbid());
             initMenu();
-            insertNestedFragments();
         }
     }
 
     private void insertNestedFragments() {
+        getActivityViewModel(ArtistRatingsVM.class).artist.setValue(artist);
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
         transaction.replace(R.id.artistRatingsFragment, ArtistRatingsFragment.newInstance())
                 .commit();
     }
 
-    private void show(Artist artist) {
+    private void show() {
         if (getView() != null) {
             TextView artistNameView = getView().findViewById(R.id.artistNameView);
             artistNameView.setText(artist.getName());
@@ -103,7 +104,8 @@ public class ArtistFragment extends BaseFragment implements
             if (artist != null && getActivity() != null && getActivity() instanceof AppCompatActivity) {
                 this.artist = artist;
                 setSubtitle(artist.getName());
-                show(artist);
+                show();
+                insertNestedFragments();
             }
         });
     }
