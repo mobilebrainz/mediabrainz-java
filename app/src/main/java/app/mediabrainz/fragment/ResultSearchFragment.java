@@ -73,6 +73,7 @@ public class ResultSearchFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getArguments() != null) {
+            setSubtitle(null);
             ResultSearchFragmentArgs args = ResultSearchFragmentArgs.fromBundle(getArguments());
             artistQuery = args.getArtistQuery();
             albumQuery = args.getAlbumQuery();

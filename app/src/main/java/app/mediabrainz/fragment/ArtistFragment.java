@@ -11,6 +11,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import app.mediabrainz.NavGraphDirections;
 import app.mediabrainz.R;
@@ -58,7 +59,8 @@ public class ArtistFragment extends BaseFragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (getArguments() != null) {
+        if (getActivity() != null && getArguments() != null) {
+            setSubtitle(null);
             artistVM = getViewModel(ArtistVM.class);
             observeArtistVM();
 
@@ -69,7 +71,14 @@ public class ArtistFragment extends BaseFragment implements
             ArtistFragmentArgs args = ArtistFragmentArgs.fromBundle(getArguments());
             artistVM.getArtist(args.getMbid());
             initMenu();
+            insertNestedFragments();
         }
+    }
+
+    private void insertNestedFragments() {
+        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+        transaction.replace(R.id.artistRatingsFragment, ArtistRatingsFragment.newInstance())
+                .commit();
     }
 
     private void show(Artist artist) {

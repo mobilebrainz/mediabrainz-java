@@ -32,12 +32,10 @@ public class TagsVM extends CompositeDisposableViewModel {
 
     public SingleLiveEvent<TagVote> postTag = new SingleLiveEvent<>();
 
-    private String subTitle;
     private final List<Tag> itemTags = new ArrayList<>();
     private final List<Tag> userItemTags = new ArrayList<>();
     private final List<Tag> itemGenres = new ArrayList<>();
     private final List<Tag> userItemGenres = new ArrayList<>();
-
 
     public void setTags(GetTagsInterface getTagsInterface) {
         setTags(getTagsInterface.getTags(),
@@ -89,11 +87,4 @@ public class TagsVM extends CompositeDisposableViewModel {
         return userItemGenres;
     }
 
-    public String getSubTitle() {
-        return subTitle;
-    }
-
-    public void setSubTitle(String subTitle) {
-        this.subTitle = subTitle;
-    }
 }

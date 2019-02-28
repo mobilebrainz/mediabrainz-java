@@ -89,6 +89,7 @@ public class ArtistTagsPagerFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() != null) {
+            setSubtitle(null);
             genresVM = getActivityViewModel(GenresVM.class);
             genresVM.getGenres();
             observeGenres();
@@ -99,8 +100,8 @@ public class ArtistTagsPagerFragment extends BaseFragment {
                 if (a != null) artistTagsVM.artistld.setValue(a);
             });
             artistTagsVM.artistld.observe(this, a -> {
-                this.artist = a;
-                tagsVM.setSubTitle(artist.getName());
+                artist = a;
+                setSubtitle(artist.getName());
                 tagsVM.setTags(artist);
                 configTags();
             });

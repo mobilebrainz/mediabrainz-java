@@ -57,7 +57,6 @@ public class EditTagsTabFragment extends BaseFragment {
         if (getActivity() != null && getArguments() != null) {
             tagsTab = getArguments().getInt(TAGS_TAB);
             tagsVM = getActivityViewModel(TagsVM.class);
-            setSubtitle(tagsVM.getSubTitle());
             load();
         }
     }

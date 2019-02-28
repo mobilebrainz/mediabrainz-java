@@ -32,7 +32,6 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
     public static final String TAG = "ReleaseGroupsTabF";
     private static final String RELEASES_TAB = "ReleaseGroupsTabFragment.RELEASES_TAB";
     private static final String ARTIST_MBID = "ReleaseGroupsTabFragment.ARTIST_MBID";
-    private static final String ARTIST_NAME = "ReleaseGroupsTabFragment.ARTIST_NAME";
 
     private boolean isError;
     private boolean isLoading;
@@ -46,11 +45,10 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
 
     private MutableLiveData<Boolean> mutableIsOfficial = new MutableLiveData<>();
 
-    public static ReleaseGroupsTabFragment newInstance(int releasesTab, String artistMbid, String artistName) {
+    public static ReleaseGroupsTabFragment newInstance(int releasesTab, String artistMbid) {
         Bundle args = new Bundle();
         args.putInt(RELEASES_TAB, releasesTab);
         args.putString(ARTIST_MBID, artistMbid);
-        args.putString(ARTIST_NAME, artistName);
         ReleaseGroupsTabFragment fragment = new ReleaseGroupsTabFragment();
         fragment.setArguments(args);
         return fragment;
@@ -71,7 +69,6 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
         super.onActivityCreated(savedInstanceState);
         if (getActivity() != null && getArguments() != null) {
             artistMbid = getArguments().getString(ARTIST_MBID);
-            setSubtitle(getArguments().getString(ARTIST_NAME));
             releaseGroupType = ReleaseGroupsPagerAdapter.ReleaseTab.values()[getArguments().getInt(RELEASES_TAB)];
             loadView();
         }

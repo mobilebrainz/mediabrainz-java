@@ -250,5 +250,10 @@
     <string name="rel_teacher_description">This relationship indicates that a person was another\'s teacher/student.</string>
     <string name="rel_composer_in_residence_description">This links a group (often an orchestra) to a composer who has a composer-in-residence position with the group.</string>
 
+    <!-- Ratings -->
+    <string name="lastfm_listeners">last.fm listeners:</string>
+    <string name="lastfm_playcount">last.fm play count:</string>
+    <string name="rateyourmusic">rateyourmusic.com:</string>
+    <string name="progarchives">progarchives.com:</string>
 
 </resources>

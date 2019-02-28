@@ -46,8 +46,10 @@ public class ArtistReleasesFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() != null && getArguments() != null) {
+            setSubtitle(null);
             ArtistReleasesFragmentArgs args = ArtistReleasesFragmentArgs.fromBundle(getArguments());
-            show(args.getArtistMbid(), args.getArtistName());
+            setSubtitle(args.getArtistName());
+            show(args.getArtistMbid());
         }
     }
 
@@ -57,9 +59,9 @@ public class ArtistReleasesFragment extends BaseFragment {
         releaseTab = pagerView.getCurrentItem();
     }
 
-    protected void show(String artistMbid, String artistName) {
+    protected void show(String artistMbid) {
         ReleaseGroupsPagerAdapter pagerAdapter =
-                new ReleaseGroupsPagerAdapter(getChildFragmentManager(), getResources(), artistMbid, artistName);
+                new ReleaseGroupsPagerAdapter(getChildFragmentManager(), getResources(), artistMbid);
         pagerView.setAdapter(pagerAdapter);
         pagerView.setOffscreenPageLimit(pagerAdapter.getCount());
         pagerView.setCurrentItem(releaseTab);

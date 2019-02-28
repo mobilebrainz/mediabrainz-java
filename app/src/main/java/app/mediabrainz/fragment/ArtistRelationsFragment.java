@@ -112,6 +112,7 @@ public class ArtistRelationsFragment extends BaseComplexRecyclerFragment<Relatio
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() != null && getArguments() != null) {
+            setSubtitle(null);
             ArtistRelationsFragmentArgs args = ArtistRelationsFragmentArgs.fromBundle(getArguments());
             setSubtitle(args.getSubTitle());
 

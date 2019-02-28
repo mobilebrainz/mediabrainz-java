@@ -72,6 +72,7 @@ public class LoginFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        setSubtitle(null);
 
         loginVM = getViewModel(LoginVM.class);
         loginVM.authEvent.observe(this, aBoolean -> {

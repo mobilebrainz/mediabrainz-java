@@ -1,7 +1,6 @@
 package app.mediabrainz.core.fragment;
 
 
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,12 +28,6 @@ public abstract class BaseFragment extends Fragment {
 
     private Snackbar errorSnackbar;
     private Snackbar infoSnackbar;
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setSubtitle(null);
-    }
 
     protected void setSubtitle(String subtitle) {
         if (getActivity() != null) {

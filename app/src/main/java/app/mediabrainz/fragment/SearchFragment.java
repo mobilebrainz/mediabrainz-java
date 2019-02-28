@@ -80,6 +80,7 @@ public class SearchFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() != null) {
+            setSubtitle(null);
             genresVM = getActivityViewModel(GenresVM.class);
             observe();
             setupSearchTypeSpinner();

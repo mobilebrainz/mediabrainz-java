@@ -39,6 +39,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="64dp"/>
 
+            <FrameLayout
+                android:id="@+id/artistRatingsFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"/>
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

@@ -50,6 +50,7 @@ public class ReleasesFragment extends BaseFragment implements
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getActivity() != null && getArguments() != null) {
+            setSubtitle(null);
             ReleasesFragmentArgs args = ReleasesFragmentArgs.fromBundle(getArguments());
             mbid = args.getMbid();
             type = args.getType();

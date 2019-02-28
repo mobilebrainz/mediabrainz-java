@@ -12,17 +12,17 @@ import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.viewmodel.StartVM;
 
 
-public class StartFragment extends BaseFragment {
+public class ArtistRatingsFragment extends BaseFragment {
 
     private StartVM startVM;
 
-    public static StartFragment newInstance() {
-        return new StartFragment();
+    public static ArtistRatingsFragment newInstance() {
+        return new ArtistRatingsFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflate(R.layout.start_fragment, container);
+        View view = inflate(R.layout.artist_ratings_fragment, container);
 
         return view;
     }
@@ -30,7 +30,6 @@ public class StartFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setSubtitle(null);
         startVM = getViewModel(StartVM.class);
     }
 
