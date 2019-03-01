@@ -8,11 +8,13 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import app.mediabrainz.R;
 import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.Release;
 import app.mediabrainz.core.fragment.BaseFragment;
+import app.mediabrainz.viewmodel.ReleaseGroupRatingsVM;
 import app.mediabrainz.viewmodel.ReleaseGroupVM;
 
 
@@ -102,12 +104,11 @@ public class ReleaseGroupFragment extends BaseFragment implements
     }
 
     private void insertNestedFragments() {
-        /*
-        getActivityViewModel(ReleaseGroupRatingsVM.class).artist.setValue(artist);
+        getActivityViewModel(ReleaseGroupRatingsVM.class)
+                .releaseGroupld.setValue(release.getReleaseGroup());
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.replace(R.id.artistRatingsFragment, ArtistRatingsFragment.newInstance())
+        transaction.replace(R.id.rgRatingsFragment, ReleaseGroupRatingsFragment.newInstance())
                 .commit();
-        */
     }
 
     @Override
