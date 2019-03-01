@@ -10,15 +10,18 @@
         android:name="app.mediabrainz.fragment.StartFragment"
         android:label="@string/start_fragment_label"
         tools:layout="@layout/start_fragment"/>
+
     <fragment
         android:id="@+id/aboutFragment"
         android:name="app.mediabrainz.fragment.AboutFragment"
         android:label="@string/about_fragment_label"
         tools:layout="@layout/about_fragment"/>
+
     <fragment
         android:id="@+id/settingsFragment"
         android:name="app.mediabrainz.fragment.SettingsFragment"
         android:label="@string/settings_fragment_label"/>
+
     <fragment
         android:id="@+id/loginFragment"
         android:name="app.mediabrainz.fragment.LoginFragment"
@@ -28,6 +31,7 @@
             android:id="@+id/action_loginFragment_to_startFragment"
             app:destination="@id/startFragment"/>
     </fragment>
+
     <fragment
         android:id="@+id/searchFragment"
         android:name="app.mediabrainz.fragment.SearchFragment"
@@ -37,6 +41,7 @@
             android:id="@+id/action_searchFragment_to_resultSearchFragment"
             app:destination="@id/resultSearchFragment"/>
     </fragment>
+
     <fragment
         android:id="@+id/resultSearchFragment"
         android:name="app.mediabrainz.fragment.ResultSearchFragment"
@@ -62,13 +67,6 @@
             android:name="searchType"
             android:defaultValue="-1"
             app:argType="integer"/>
-        <action
-            android:id="@+id/action_resultSearchFragment_to_releasesFragment"
-            app:destination="@id/releasesFragment">
-            <argument
-                android:name="type"
-                android:defaultValue="1"/>
-        </action>
     </fragment>
 
     <fragment
@@ -88,7 +86,28 @@
             android:name="releaseMbid"
             app:argType="string"
             app:nullable="true"/>
+        <action
+            android:id="@+id/action_releasesFragmentt_to_releaseGroupFragment"
+            app:destination="@id/releaseGroupFragment">
+            <argument
+                android:name="mbid"
+                app:argType="string"
+                app:nullable="false"/>
+        </action>
     </fragment>
+
+    <action
+        android:id="@+id/action_global_releasesFragment"
+        app:destination="@id/releasesFragment">
+        <argument
+            android:name="type"
+            app:argType="integer"
+            app:nullable="false"/>
+        <argument
+            android:name="mbid"
+            app:argType="string"
+            app:nullable="false"/>
+    </action>
 
     <action
         android:id="@+id/action_global_loginFragment"
@@ -173,22 +192,6 @@
             android:name="artistName"
             app:argType="string"
             app:nullable="false"/>
-        <action
-            android:id="@+id/action_artistReleasesFragment_to_releasesFragment"
-            app:destination="@id/releasesFragment">
-            <argument
-                android:name="type"
-                app:argType="integer"
-                android:defaultValue="1"/>
-            <argument
-                android:name="mbid"
-                app:argType="string"
-                app:nullable="false"/>
-            <argument
-                android:name="releaseMbid"
-                app:argType="string"
-                app:nullable="true"/>
-        </action>
     </fragment>
 
     <fragment
@@ -210,5 +213,16 @@
         android:name="app.mediabrainz.fragment.ArtistTagsPagerFragment"
         android:label="@string/artist_tags_pager_fragment_label"
         tools:layout="@layout/edit_tags_pager_fragment"/>
+
+    <fragment
+        android:id="@+id/releaseGroupFragment"
+        android:name="app.mediabrainz.fragment.ReleaseGroupFragment"
+        android:label="@string/release_group_fragment_label"
+        tools:layout="@layout/release_group_fragment">
+        <argument
+            android:name="mbid"
+            app:argType="string"
+            app:nullable="false"/>
+    </fragment>
 
 </navigation>

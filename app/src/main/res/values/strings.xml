@@ -23,6 +23,7 @@
     <string name="releases_fragment_label">Releases</string>
     <string name="links_fragment_label">Links</string>
     <string name="wiki_fragment_label">Wikipedia</string>
+    <string name="release_group_fragment_label">Release Group</string>
 
     <!-- labels of menu actions -->
     <string name="scan_barcode_action_label">Scan barcode</string>
@@ -203,6 +204,9 @@
     <string name="wiki_item">Wikipedia</string>
     <string name="add_to_collection_item">Add to collection</string>
     <string name="share_artist_item">Share Artist</string>
+    <string name="credits_item">Credits</string>
+    <string name="tracks_item">Tracks</string>
+    <string name="cover_arts_item">Cover Arts</string>
 
     <!-- Tags -->
     <string name="tag_tab_artists">Artists</string>

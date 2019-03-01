@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/coverArtsItem"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_image_24"
+            android:tint="@color/colorPrimaryLight"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/cover_arts_item"
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimaryLight"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/wikiItem"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_wiki_24"
+            android:tint="@color/colorPrimaryLight"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/wiki_item"
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimaryLight"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/addToCollectionItem"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_collection_add_24"
+            android:tint="@color/colorPrimaryLight"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_to_collection_item"
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimaryLight"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/shareItem"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_share_24"
+            android:tint="@color/colorPrimaryLight"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/share_artist_item"
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimaryLight"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -45,18 +45,6 @@ public class ArtistFragment extends BaseFragment implements
         return view;
     }
 
-    private void initMenu() {
-        if (getView() != null) {
-            getView().findViewById(R.id.releasesItem).setOnClickListener(this);
-            getView().findViewById(R.id.relationsItem).setOnClickListener(this);
-            getView().findViewById(R.id.tagsItem).setOnClickListener(this);
-            getView().findViewById(R.id.linksItem).setOnClickListener(this);
-            getView().findViewById(R.id.wikiItem).setOnClickListener(this);
-            getView().findViewById(R.id.addToCollectionItem).setOnClickListener(this);
-            getView().findViewById(R.id.shareItem).setOnClickListener(this);
-        }
-    }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -72,6 +60,18 @@ public class ArtistFragment extends BaseFragment implements
             ArtistFragmentArgs args = ArtistFragmentArgs.fromBundle(getArguments());
             artistVM.getArtist(args.getMbid());
             initMenu();
+        }
+    }
+
+    private void initMenu() {
+        if (getView() != null) {
+            getView().findViewById(R.id.releasesItem).setOnClickListener(this);
+            getView().findViewById(R.id.relationsItem).setOnClickListener(this);
+            getView().findViewById(R.id.tagsItem).setOnClickListener(this);
+            getView().findViewById(R.id.linksItem).setOnClickListener(this);
+            getView().findViewById(R.id.wikiItem).setOnClickListener(this);
+            getView().findViewById(R.id.addToCollectionItem).setOnClickListener(this);
+            getView().findViewById(R.id.shareItem).setOnClickListener(this);
         }
     }
 

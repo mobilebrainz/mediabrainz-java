@@ -23,6 +23,7 @@ import app.mediabrainz.adapter.recycler.ArtistSearchAdapter;
 import app.mediabrainz.adapter.recycler.ReleaseGroupSearchAdapter;
 import app.mediabrainz.adapter.recycler.SearchListAdapter;
 import app.mediabrainz.adapter.recycler.TrackSearchAdapter;
+import app.mediabrainz.api.browse.ReleaseBrowseService;
 import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.Recording;
 import app.mediabrainz.api.model.ReleaseGroup;
@@ -147,8 +148,9 @@ public class ResultSearchFragment extends BaseFragment {
             if (artists != null && !artists.isEmpty()) {
                 resultSearchVM.insertSuggestion(artists.get(0).getArtist().getName(), ARTIST);
             }
-            ResultSearchFragmentDirections.ActionResultSearchFragmentToReleasesFragment action
-                    = ResultSearchFragmentDirections.actionResultSearchFragmentToReleasesFragment(releaseGroup.getId(), null);
+            int type = ReleaseBrowseService.ReleaseBrowseEntityType.RELEASE_GROUP.ordinal();
+            NavGraphDirections.ActionGlobalReleasesFragment action =
+                    NavGraphDirections.actionGlobalReleasesFragment(type, releaseGroup.getId(), null);
             navigate(action);
         }
     }

@@ -38,6 +38,15 @@ public abstract class BaseFragment extends Fragment {
         }
     }
 
+    protected void setTitle(String title) {
+        if (getActivity() != null) {
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setTitle(title);
+            }
+        }
+    }
+
     protected void navigate(@NonNull NavDirections directions) {
         if (getView() != null) {
             Navigation.findNavController(getView()).navigate(directions);

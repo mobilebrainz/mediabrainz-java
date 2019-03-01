@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/tracksItem"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_track_24"
+            android:tint="@color/colorPrimaryLight"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tracks_item"
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimaryLight"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/releasesItem"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_album_24"
+            android:tint="@color/colorPrimaryLight"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/releases_item"
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimaryLight"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/creditsItem"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_artist_relations_24"
+            android:tint="@color/colorPrimaryLight"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/credits_item"
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimaryLight"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tagsItem"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_tag_24"
+            android:tint="@color/colorPrimaryLight"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tags_item"
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimaryLight"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linksItem"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_link_24"
+            android:tint="@color/colorPrimaryLight"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/links_item"
+            android:textSize="14sp"
+            android:textColor="@color/colorPrimaryLight"/>
+
+    </LinearLayout>
+
+</LinearLayout>

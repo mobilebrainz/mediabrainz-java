@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import app.mediabrainz.NavGraphDirections;
 import app.mediabrainz.R;
 import app.mediabrainz.adapter.recycler.PagedReleaseAdapter;
 import app.mediabrainz.api.browse.ReleaseBrowseService;
@@ -22,13 +23,10 @@ import app.mediabrainz.viewmodel.ReleasesVM;
 public class ReleasesFragment extends BaseFragment implements
         RetryCallback {
 
-    public static final int ALBUM_TYPE = 1;
-    public static final int RECORDING_TYPE = 2;
-
     private boolean isLoading;
-    private int type = 0;
     private String mbid;
     private String releaseMbid;
+    private ReleaseBrowseService.ReleaseBrowseEntityType entityType;
 
     private ReleasesVM releasesVM;
     private PagedReleaseAdapter adapter;
@@ -53,27 +51,18 @@ public class ReleasesFragment extends BaseFragment implements
             setSubtitle(null);
             ReleasesFragmentArgs args = ReleasesFragmentArgs.fromBundle(getArguments());
             mbid = args.getMbid();
-            type = args.getType();
+            entityType = ReleaseBrowseService.ReleaseBrowseEntityType.values()[args.getType()];
             releaseMbid = args.getReleaseMbid();
             load();
         }
     }
 
     public void load() {
-        ReleaseBrowseService.ReleaseBrowseEntityType entityType = null;
-        switch (type) {
-            case ALBUM_TYPE:
-                entityType = ReleaseBrowseService.ReleaseBrowseEntityType.RELEASE_GROUP;
-                break;
-
-            case RECORDING_TYPE:
-                entityType = ReleaseBrowseService.ReleaseBrowseEntityType.RECORDING;
-                break;
-        }
-
         adapter = new PagedReleaseAdapter(this, releaseMbid);
         adapter.setHolderClickListener(r -> {
-            //((OnReleaseCommunicator) getContext()).onRelease(r.getId());
+            ReleasesFragmentDirections.ActionReleasesFragmenttToReleaseGroupFragment action =
+                    ReleasesFragmentDirections.actionReleasesFragmenttToReleaseGroupFragment(r.getId());
+            navigate(action);
         });
 
         releasesVM = getViewModel(ReleasesVM.class);

@@ -14,9 +14,11 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import app.mediabrainz.MediaBrainzApp;
+import app.mediabrainz.NavGraphDirections;
 import app.mediabrainz.R;
 import app.mediabrainz.adapter.pager.ReleaseGroupsPagerAdapter;
 import app.mediabrainz.adapter.recycler.ReleaseGroupsAdapter;
+import app.mediabrainz.api.browse.ReleaseBrowseService;
 import app.mediabrainz.core.adapter.RetryCallback;
 import app.mediabrainz.core.fragment.LazyFragment;
 import app.mediabrainz.core.viewmodel.event.Status;
@@ -79,8 +81,9 @@ public class ReleaseGroupsTabFragment extends LazyFragment implements
         adapter = new ReleaseGroupsAdapter(this);
         adapter.setHolderClickListener(releaseGroup -> {
             if (!isLoading) {
-                ArtistReleasesFragmentDirections.ActionArtistReleasesFragmentToReleasesFragment action =
-                        ArtistReleasesFragmentDirections.actionArtistReleasesFragmentToReleasesFragment(releaseGroup.getId(), null);
+                int type = ReleaseBrowseService.ReleaseBrowseEntityType.RELEASE_GROUP.ordinal();
+                NavGraphDirections.ActionGlobalReleasesFragment action =
+                        NavGraphDirections.actionGlobalReleasesFragment(type, releaseGroup.getId(), null);
                 navigate(action);
             }
         });
