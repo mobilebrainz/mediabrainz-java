@@ -1,6 +1,7 @@
 package app.mediabrainz.fragment;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,15 +9,20 @@ import android.widget.RatingBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import app.mediabrainz.R;
+import app.mediabrainz.api.externalResources.lastfm.model.Album;
+import app.mediabrainz.api.externalResources.lastfm.model.LastfmResult;
+import app.mediabrainz.api.model.Artist;
 import app.mediabrainz.api.model.Rating;
-import app.mediabrainz.api.model.Release;
 import app.mediabrainz.api.model.ReleaseGroup;
 import app.mediabrainz.core.fragment.BaseFragment;
+import app.mediabrainz.util.StringFormat;
+import app.mediabrainz.viewmodel.LastfmReleaseGroupVM;
 import app.mediabrainz.viewmodel.ReleaseGroupRatingsVM;
-import app.mediabrainz.viewmodel.StartVM;
 
 import static app.mediabrainz.MediaBrainzApp.oauth;
 
@@ -28,6 +34,7 @@ public class ReleaseGroupRatingsFragment extends BaseFragment {
     private final float LASTFM_ALBUM_LISTENERS_COEFF = 75;
     private final float LASTFM_ALBUM_PLAYCOUNT_COEFF = 300;
 
+    private String artistName;
     private ReleaseGroup releaseGroup;
     private ReleaseGroupRatingsVM releaseGroupRatingsVM;
     private float mrating;
@@ -97,7 +104,6 @@ public class ReleaseGroupRatingsFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setSubtitle(null);
         if (getActivity() != null) {
             releaseGroupRatingsVM = getActivityViewModel(ReleaseGroupRatingsVM.class);
             observeReleaseGroupRatingsVM();
@@ -114,8 +120,13 @@ public class ReleaseGroupRatingsFragment extends BaseFragment {
         releaseGroupRatingsVM.releaseGroupld.observe(this, rg -> {
             if (rg != null) {
                 releaseGroup = rg;
+                List<Artist.ArtistCredit> artistCredit = releaseGroup.getArtistCredits();
+                if (artistCredit != null && !artistCredit.isEmpty()) {
+                    artistName = artistCredit.get(0).getName();
+                }
                 showAllRating();
                 showUserRating();
+                observeLastfmInfo();
                 setEditListeners();
             }
         });
@@ -127,7 +138,7 @@ public class ReleaseGroupRatingsFragment extends BaseFragment {
             }
         });
 
-        releaseGroupRatingsVM.progressld.observe(this, this::showProgressLoading);
+        //releaseGroupRatingsVM.progressld.observe(this, this::showProgressLoading);
         releaseGroupRatingsVM.errorld.observe(this, aBoolean -> {
             if (aBoolean) {
                 showErrorSnackbar(R.string.error_post_rating, R.string.connection_error_retry,
@@ -174,6 +185,50 @@ public class ReleaseGroupRatingsFragment extends BaseFragment {
                 navigate(R.id.action_global_loginFragment);
             }
         });
+    }
+
+    private void observeLastfmInfo() {
+        LastfmReleaseGroupVM vm = getActivityViewModel(LastfmReleaseGroupVM.class);
+        vm.lastfmInfold.observe(this, this::showLastfmInfo);
+        vm.progressld.observe(this, this::showProgressLoading);
+        // todo: тестировать!
+        vm.errorld.observe(this, aBoolean -> {
+            if (aBoolean) {
+                showErrorSnackbar(R.string.lastfm_connection_error, R.string.connection_error_retry,
+                        v -> {
+                            if (!TextUtils.isEmpty(artistName)) {
+                                vm.getReleaseGroupInfo(artistName, releaseGroup.getTitle());
+                            }
+                        });
+            } else {
+                dismissErrorSnackbar();
+            }
+        });
+        if (!TextUtils.isEmpty(artistName)) {
+            showLastfmInfo(vm.getReleaseGroupInfo(artistName, releaseGroup.getTitle()));
+        }
+    }
+
+    private void showLastfmInfo(LastfmResult info) {
+        if (info != null) {
+            Album album = info.getAlbum();
+            if (album != null) {
+                lastfmPlaycountTableRow.setVisibility(View.VISIBLE);
+                lastfmListenersTableRow.setVisibility(View.VISIBLE);
+
+                int listeners = album.getListeners();
+                int playCount = album.getPlaycount();
+
+                lastfmListenersView.setText(StringFormat.decimalFormat(listeners));
+                lastfmPlaycountView.setText(StringFormat.decimalFormat(playCount));
+
+                lastfmListenersRatingBar.setRating((float) Math.sqrt(listeners) / LASTFM_ALBUM_LISTENERS_COEFF);
+                lastfmPlaycountRatingBar.setRating((float) Math.sqrt(playCount) / LASTFM_ALBUM_PLAYCOUNT_COEFF);
+            } else {
+                lastfmPlaycountTableRow.setVisibility(View.GONE);
+                lastfmListenersTableRow.setVisibility(View.GONE);
+            }
+        }
     }
 
     private void showProgressLoading(boolean show) {

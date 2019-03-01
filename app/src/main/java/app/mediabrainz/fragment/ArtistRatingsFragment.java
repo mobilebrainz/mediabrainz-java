@@ -17,9 +17,8 @@ import app.mediabrainz.api.model.Rating;
 import app.mediabrainz.core.fragment.BaseFragment;
 import app.mediabrainz.util.StringFormat;
 import app.mediabrainz.viewmodel.ArtistRatingsVM;
-import app.mediabrainz.viewmodel.LastfmVM;
+import app.mediabrainz.viewmodel.LastfmArtistVM;
 
-import static app.mediabrainz.MediaBrainzApp.api;
 import static app.mediabrainz.MediaBrainzApp.oauth;
 
 
@@ -30,7 +29,6 @@ public class ArtistRatingsFragment extends BaseFragment {
 
     private Artist artist;
     private ArtistRatingsVM artistRatingsVM;
-    private LastfmVM lastfmVM;
     private float mrating;
 
     private View contentView;
@@ -149,20 +147,19 @@ public class ArtistRatingsFragment extends BaseFragment {
     }
 
     private void observeLastfmInfo() {
-        lastfmVM = getActivityViewModel(LastfmVM.class);
-        lastfmVM.lastfmInfold.observe(this, this::showLastfmInfo);
-        lastfmVM.progressld.observe(this, this::showProgressLoading);
+        LastfmArtistVM lastfmArtistVM = getActivityViewModel(LastfmArtistVM.class);
+        lastfmArtistVM.lastfmInfold.observe(this, this::showLastfmInfo);
+        lastfmArtistVM.progressld.observe(this, this::showProgressLoading);
         // todo: тестировать!
-        lastfmVM.errorld.observe(this, aBoolean -> {
-            ratingsTableView.setVisibility(View.GONE);
+        lastfmArtistVM.errorld.observe(this, aBoolean -> {
             if (aBoolean) {
                 showErrorSnackbar(R.string.lastfm_connection_error, R.string.connection_error_retry,
-                        v -> lastfmVM.getLastfmInfo(artist.getName()));
+                        v -> lastfmArtistVM.getArtistInfo(artist.getName()));
             } else {
                 dismissErrorSnackbar();
             }
         });
-        showLastfmInfo(lastfmVM.getLastfmInfo(artist.getName()));
+        showLastfmInfo(lastfmArtistVM.getArtistInfo(artist.getName()));
     }
 
     private void showLastfmInfo(LastfmResult info) {

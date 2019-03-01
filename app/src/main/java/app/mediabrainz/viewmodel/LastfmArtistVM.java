@@ -7,13 +7,12 @@ import app.mediabrainz.core.viewmodel.CompositeDisposableViewModel;
 import static app.mediabrainz.MediaBrainzApp.api;
 
 
-public class LastfmVM extends CompositeDisposableViewModel {
+public class LastfmArtistVM extends CompositeDisposableViewModel {
 
     private String artistName;
-
     public final MutableLiveData<LastfmResult> lastfmInfold = new MutableLiveData<>();
 
-    public LastfmResult getLastfmInfo(String artistName) {
+    public LastfmResult getArtistInfo(String artistName) {
         if (lastfmInfold.getValue() == null || !artistName.equals(this.artistName)) {
             initLoading();
             dispose(api.getArtistFromLastfm(artistName,
