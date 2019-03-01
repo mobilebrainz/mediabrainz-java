@@ -75,6 +75,12 @@ public class ArtistRatingsFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        loginWarningView.setVisibility(oauth.hasAccount() ? View.GONE : View.VISIBLE);
+    }
+
     private void observeArtistRatingsVM() {
         artistRatingsVM.artist.observe(this, artist -> {
             if (artist != null) {
